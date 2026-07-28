@@ -131,21 +131,11 @@ enum class SIconType
     Help
 };
 
-enum class SWindowControlIconType
-{
-    Minimize,
-    Maximize,
-    Restore,
-    Close
-};
-
 class SIconProvider final
 {
   public:
     static QIcon createIcon(SIconType icon_type, const QColor& foreground,
                             const QColor& accent = QColor());
-    static QIcon createWindowControlIcon(SWindowControlIconType icon_type,
-                                         const QColor& foreground);
     static QString iconName(SIconType icon_type);
 };
 

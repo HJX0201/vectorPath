@@ -10,7 +10,6 @@
 class QAction;
 class QLabel;
 class QCloseEvent;
-class QEvent;
 class QAbstractButton;
 class QToolBar;
 class QToolButton;
@@ -51,7 +50,6 @@ class SCadMainWindow final : public SARibbonMainWindow
 
   protected:
     void closeEvent(QCloseEvent* event) override;
-    void changeEvent(QEvent* event) override;
 
   private:
     void createActions();
@@ -132,7 +130,6 @@ class SCadMainWindow final : public SARibbonMainWindow
     void restoreWorkspace();
     void saveWorkspace();
     void refreshIcons();
-    void refreshWindowControlIcons();
     QAction* createAction(const QString& text, SIconType icon_type,
                           const QKeySequence& shortcut = {});
     QToolButton* createStatusButton(SIconType icon_type, const QString& tool_tip, bool is_enabled,

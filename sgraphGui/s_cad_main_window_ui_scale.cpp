@@ -96,7 +96,6 @@ void SCadMainWindow::applyUiScale(int scale_percent)
     {
         m_workspace->applyUiScale(scale_percent);
     }
-    refreshWindowControlIcons();
 }
 
 } // namespace smartGraphics

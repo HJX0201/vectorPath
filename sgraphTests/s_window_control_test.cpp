@@ -9,8 +9,6 @@
 #include <SARibbonCategory.h>
 #include <SARibbonPanel.h>
 #include <SARibbonQuickAccessBar.h>
-#include <SARibbonSystemButtonBar.h>
-#include <QAbstractButton>
 #include <QAction>
 #include <QApplication>
 #include <QCoreApplication>
@@ -46,11 +44,6 @@ QRect visibleIconBounds(const QIcon& icon, const QSize& size)
     return bounds;
 }
 
-bool isVisiblePixel(const QImage& image, int x, int y)
-{
-    return qAlpha(image.pixel(x, y)) > 0;
-}
-
 } // namespace
 
 class SWindowControlTest final : public QObject
@@ -59,10 +52,9 @@ class SWindowControlTest final : public QObject
 
   private slots:
     void initTestCase();
-    void rendersWindowsStyleControlGlyphs();
-    void showsWindowControlIcons();
-    void switchesMaximizeAndRestoreIcon();
-    void keepsOnlyWindowControlsInTitleBar();
+    void usesNativeWindowFrame();
+    void maximizesAndRestoresWithNativeFrame();
+    void keepsRibbonBelowNativeTitleBar();
     void removesDuplicateRibbonPanels();
     void movesManagementToolsIntoHelp();
     void opensShortcutEditorFromHelp();
@@ -83,38 +75,7 @@ void SWindowControlTest::initTestCase()
     QSettings().clear();
 }
 
-void SWindowControlTest::rendersWindowsStyleControlGlyphs()
-{
-    const QColor foreground(Qt::white);
-    const auto create_image = [&foreground](SWindowControlIconType icon_type)
-    {
-        return SIconProvider::createWindowControlIcon(icon_type, foreground)
-            .pixmap(QSize(64, 64))
-            .toImage()
-            .convertToFormat(QImage::Format_ARGB32);
-    };
-
-    const QImage minimize_image = create_image(SWindowControlIconType::Minimize);
-    QVERIFY(isVisiblePixel(minimize_image, 16, 34));
-    QVERIFY(isVisiblePixel(minimize_image, 48, 34));
-    QVERIFY(!isVisiblePixel(minimize_image, 32, 28));
-
-    const QImage restore_image = create_image(SWindowControlIconType::Restore);
-    QVERIFY(isVisiblePixel(restore_image, 30, 14));
-    QVERIFY(isVisiblePixel(restore_image, 50, 34));
-    QVERIFY(isVisiblePixel(restore_image, 14, 28));
-    QVERIFY(isVisiblePixel(restore_image, 38, 50));
-    QVERIFY(!isVisiblePixel(restore_image, 26, 26));
-    QVERIFY(!isVisiblePixel(restore_image, 34, 38));
-
-    const QImage close_image = create_image(SWindowControlIconType::Close);
-    QVERIFY(isVisiblePixel(close_image, 16, 16));
-    QVERIFY(isVisiblePixel(close_image, 48, 16));
-    QVERIFY(isVisiblePixel(close_image, 32, 32));
-    QVERIFY(!isVisiblePixel(close_image, 32, 14));
-}
-
-void SWindowControlTest::showsWindowControlIcons()
+void SWindowControlTest::usesNativeWindowFrame()
 {
     SThemeManager theme_manager;
     QVERIFY(theme_manager.applyTheme(SThemeMode::Dark));
@@ -122,25 +83,15 @@ void SWindowControlTest::showsWindowControlIcons()
     window.showNormal();
     QCoreApplication::processEvents();
 
-    SARibbonSystemButtonBar* button_bar = window.windowButtonBar();
-    QVERIFY(button_bar);
-    QVERIFY(button_bar->minimizeButton());
-    QVERIFY(button_bar->maximizeButton());
-    QVERIFY(button_bar->closeButton());
-    QCOMPARE(button_bar->iconSize(), QSize(24, 24));
-    QVERIFY(!button_bar->minimizeButton()->icon().isNull());
-    QVERIFY(!button_bar->maximizeButton()->icon().isNull());
-    QVERIFY(!button_bar->closeButton()->icon().isNull());
-    const QRect close_icon_bounds =
-        visibleIconBounds(button_bar->closeButton()->icon(), QSize(24, 24));
-    QVERIFY(close_icon_bounds.width() >= 11);
-    QVERIFY(close_icon_bounds.height() >= 11);
-    QCOMPARE(button_bar->minimizeButton()->accessibleName(), QStringLiteral("最小化窗口"));
-    QCOMPARE(button_bar->maximizeButton()->accessibleName(), QStringLiteral("最大化窗口"));
-    QCOMPARE(button_bar->closeButton()->accessibleName(), QStringLiteral("关闭窗口"));
+    const SARibbonMainWindowStyles styles = window.ribbonMainwindowStyle();
+    QVERIFY(styles.testFlag(SARibbonMainWindowStyleFlag::UseNativeFrame));
+    QVERIFY(styles.testFlag(SARibbonMainWindowStyleFlag::UseRibbonMenuBar));
+    QVERIFY(!styles.testFlag(SARibbonMainWindowStyleFlag::UseRibbonFrame));
+    QVERIFY(!(window.windowFlags() & Qt::FramelessWindowHint));
+    QVERIFY(!window.windowButtonBar());
 }
 
-void SWindowControlTest::switchesMaximizeAndRestoreIcon()
+void SWindowControlTest::maximizesAndRestoresWithNativeFrame()
 {
     SThemeManager theme_manager;
     QVERIFY(theme_manager.applyTheme(SThemeMode::Dark));
@@ -148,17 +99,13 @@ void SWindowControlTest::switchesMaximizeAndRestoreIcon()
     window.showNormal();
     QCoreApplication::processEvents();
 
-    QAbstractButton* maximize_button = window.windowButtonBar()->maximizeButton();
-    QVERIFY(maximize_button);
-    const qint64 maximize_icon_key = maximize_button->icon().cacheKey();
-
-    window.setWindowState(window.windowState() | Qt::WindowMaximized);
+    window.showMaximized();
     QTRY_VERIFY(window.isMaximized());
-    QTRY_COMPARE(maximize_button->accessibleName(), QStringLiteral("还原窗口"));
-    QVERIFY(maximize_button->icon().cacheKey() != maximize_icon_key);
+    window.showNormal();
+    QTRY_VERIFY(!window.isMaximized());
 }
 
-void SWindowControlTest::keepsOnlyWindowControlsInTitleBar()
+void SWindowControlTest::keepsRibbonBelowNativeTitleBar()
 {
     SThemeManager theme_manager;
     QVERIFY(theme_manager.applyTheme(SThemeMode::Dark));
@@ -167,9 +114,8 @@ void SWindowControlTest::keepsOnlyWindowControlsInTitleBar()
     QCoreApplication::processEvents();
 
     QVERIFY(window.ribbonBar()->quickAccessBar()->isHidden());
-    QVERIFY(window.windowButtonBar()->minimizeButton());
-    QVERIFY(window.windowButtonBar()->maximizeButton());
-    QVERIFY(window.windowButtonBar()->closeButton());
+    QVERIFY(!window.ribbonBar()->isTitleIconVisible());
+    QVERIFY(!window.windowButtonBar());
 }
 
 void SWindowControlTest::removesDuplicateRibbonPanels()

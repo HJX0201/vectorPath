@@ -18,7 +18,6 @@
 #include <DockAreaWidget.h>
 #include <DockManager.h>
 #include <DockWidget.h>
-#include <QAbstractButton>
 #include <QAction>
 #include <QCloseEvent>
 #include <QColorDialog>
@@ -38,7 +37,6 @@
 #include <QStatusBar>
 #include <QTextBrowser>
 #include <QTextStream>
-#include <QTimer>
 #include <QToolButton>
 #include <QTreeWidget>
 #include <QVBoxLayout>
@@ -54,7 +52,10 @@
 namespace smartGraphics
 {
 SCadMainWindow::SCadMainWindow(SThemeManager& theme_manager, QWidget* parent)
-    : SARibbonMainWindow(parent), m_theme_manager(theme_manager),
+    : SARibbonMainWindow(
+          parent, SARibbonMainWindowStyleFlag::UseRibbonMenuBar |
+                      SARibbonMainWindowStyleFlag::UseNativeFrame),
+      m_theme_manager(theme_manager),
       m_shortcut_manager(std::make_unique<SShortcutManager>()),
       m_document(std::make_unique<SCadDocument>())
 {
@@ -85,11 +86,6 @@ SCadMainWindow::SCadMainWindow(SThemeManager& theme_manager, QWidget* parent)
     restoreWorkspace();
     applyUiScale(m_theme_manager.uiScalePercent());
     refreshIcons();
-    QTimer::singleShot(0, this,
-                       [this]()
-                       {
-                           refreshWindowControlIcons();
-                       });
     updateWindowTitle();
 }
 

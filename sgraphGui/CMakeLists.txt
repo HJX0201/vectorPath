@@ -11,7 +11,6 @@ add_library(smartGui STATIC
     sgraphDesignSystem/s_import_icon.h
     sgraphDesignSystem/s_import_icon.cpp
     sgraphDesignSystem/s_icon_names.cpp
-    sgraphDesignSystem/s_window_control_icon.cpp
     sgraphDesignSystem/s_dimension_icon.h
     sgraphDesignSystem/s_dimension_icon.cpp
     sgraphDesignSystem/s_hatch_icon.h

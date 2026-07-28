@@ -6,10 +6,7 @@
 
 #include <DockWidget.h>
 #include <DockWidgetTab.h>
-#include <SARibbonSystemButtonBar.h>
-#include <QAbstractButton>
 #include <QAction>
-#include <QEvent>
 #include <QKeySequence>
 #include <QStatusBar>
 #include <QToolButton>
@@ -66,54 +63,6 @@ void SCadMainWindow::refreshIcons()
                                                tokens.text_secondary);
     }
     updateGlobalColorActionIcon();
-    refreshWindowControlIcons();
-}
-
-void SCadMainWindow::refreshWindowControlIcons()
-{
-    SARibbonSystemButtonBar* button_bar = windowButtonBar();
-    if (!button_bar)
-    {
-        return;
-    }
-
-    const QColor foreground = m_theme_manager.tokens().text_primary;
-    const int icon_size = qRound(24.0 * m_theme_manager.uiScalePercent() / 100.0);
-    button_bar->setIconSize(QSize(icon_size, icon_size));
-
-    if (QAbstractButton* minimize_button = button_bar->minimizeButton())
-    {
-        minimize_button->setIcon(SIconProvider::createWindowControlIcon(
-            SWindowControlIconType::Minimize, foreground));
-        minimize_button->setToolTip(tr("最小化"));
-        minimize_button->setAccessibleName(tr("最小化窗口"));
-    }
-    if (QAbstractButton* maximize_button = button_bar->maximizeButton())
-    {
-        const SWindowControlIconType icon_type =
-            isMaximized() ? SWindowControlIconType::Restore : SWindowControlIconType::Maximize;
-        const QString description = isMaximized() ? tr("还原") : tr("最大化");
-        maximize_button->setIcon(
-            SIconProvider::createWindowControlIcon(icon_type, foreground));
-        maximize_button->setToolTip(description);
-        maximize_button->setAccessibleName(description + tr("窗口"));
-    }
-    if (QAbstractButton* close_button = button_bar->closeButton())
-    {
-        close_button->setIcon(
-            SIconProvider::createWindowControlIcon(SWindowControlIconType::Close, foreground));
-        close_button->setToolTip(tr("关闭"));
-        close_button->setAccessibleName(tr("关闭窗口"));
-    }
-}
-
-void SCadMainWindow::changeEvent(QEvent* event)
-{
-    SARibbonMainWindow::changeEvent(event);
-    if (event->type() == QEvent::WindowStateChange)
-    {
-        refreshWindowControlIcons();
-    }
 }
 
 QAction* SCadMainWindow::createAction(const QString& text, SIconType icon_type,
