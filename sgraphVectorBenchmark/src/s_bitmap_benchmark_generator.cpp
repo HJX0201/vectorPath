@@ -224,7 +224,7 @@ void drawDisconnected(QImage& image, QRandomGenerator& random)
 void drawSourceVariant(QImage& image, int index)
 {
     const QImage source(
-        QStringLiteral(SGRAPH_BENCHMARK_DATA_DIR "/bitmap_vector_test.png"));
+        QStringLiteral(SGRAPH_BENCHMARK_FIXTURE_DIR "/bitmap_vector_test.png"));
     if (source.isNull())
     {
         drawBands(image, *QRandomGenerator::global());

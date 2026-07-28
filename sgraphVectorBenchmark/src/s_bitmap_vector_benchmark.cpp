@@ -116,6 +116,52 @@ quint64 peakWorkingSet()
     return 0;
 }
 
+QString nextResultDirectory()
+{
+    QDir results_directory(
+        QDir(QStringLiteral(SGRAPH_BENCHMARK_ROOT))
+            .filePath(QStringLiteral("results")));
+    results_directory.mkpath(QStringLiteral("."));
+    const QString prefix =
+        QDateTime::currentDateTime().toString(QStringLiteral("yyyyMMdd-"));
+    int next_index = 1;
+    const QStringList entries = results_directory.entryList(
+        QDir::Dirs | QDir::NoDotAndDotDot);
+    for (const QString& entry : entries)
+    {
+        if (!entry.startsWith(prefix))
+        {
+            continue;
+        }
+        bool is_valid_index = false;
+        const int index = entry.mid(prefix.size()).toInt(&is_valid_index);
+        if (is_valid_index)
+        {
+            next_index = std::max(next_index, index + 1);
+        }
+    }
+    return results_directory.filePath(
+        prefix + QString::number(next_index));
+}
+
+bool removeTemporaryDirectory(const QString& output_directory,
+                              const QString& directory_name)
+{
+    QDir temporary_directory(
+        QDir(output_directory).filePath(directory_name));
+    return !temporary_directory.exists() ||
+           temporary_directory.removeRecursively();
+}
+
+bool removeTemporaryArtifacts(const QString& output_directory)
+{
+    const bool cases_removed = removeTemporaryDirectory(
+        output_directory, QStringLiteral("cases"));
+    const bool failures_removed = removeTemporaryDirectory(
+        output_directory, QStringLiteral("failures"));
+    return cases_removed && failures_removed;
+}
+
 SBitmapBenchmarkOptions parseOptions(QCoreApplication& application)
 {
     QCommandLineParser parser;
@@ -157,12 +203,7 @@ SBitmapBenchmarkOptions parseOptions(QCoreApplication& application)
     options.output_directory = parser.value(output_option);
     if (options.output_directory.isEmpty())
     {
-        const QString timestamp =
-            QDateTime::currentDateTime().toString(
-                QStringLiteral("yyyyMMdd-HHmmss"));
-        options.output_directory =
-            QDir(QStringLiteral(SGRAPH_BENCHMARK_ROOT))
-                .filePath(QStringLiteral("generated/%1").arg(timestamp));
+        options.output_directory = nextResultDirectory();
     }
     return options;
 }
@@ -303,6 +344,12 @@ int main(int argc, char* argv[])
     {
         qCritical().noquote() << report.errorMessage();
         return 1;
+    }
+    if (!smartGraphics::removeTemporaryArtifacts(options.output_directory))
+    {
+        qCritical().noquote()
+            << QStringLiteral("无法清理本次测试生成的临时文件。");
+        return 3;
     }
     qInfo().noquote() << QStringLiteral("报告：%1").arg(report.value());
     qInfo().noquote() << QStringLiteral("通过：%1/%2")

@@ -4,10 +4,10 @@
 
 2026-07-27，Windows、Qt 5.12.10：
 
-- 64 位 Release：CTest 32/32 通过。
-- 64 位 Debug：CTest 32/32 通过。
-- 32 位 Release：CTest 32/32 通过。
-- 32 位 Debug：CTest 32/32 通过。
+- 64 位 Release：当前 CTest 33/33 通过。
+- 64 位 Debug：新增基准输出结构验收前的最近记录为 CTest 32/32 通过。
+- 32 位 Release：新增基准输出结构验收前的最近记录为 CTest 32/32 通过。
+- 32 位 Debug：新增基准输出结构验收前的最近记录为 CTest 32/32 通过。
 - 位图矢量化冒烟测试：20/20 通过。
 - `smartGraphics.exe`：四种构建配置均完成启动存活验证。
 - Qt 运行库：由所选套件的 `windeployqt` 自动部署并生成 SHA-256 清单。
@@ -27,7 +27,7 @@
 - 峰值工作集：384.1 MB
 
 这些数字只代表本次硬件、编译器和测试分布，不保证其他机器取得相同加速。完整逐文件结果和
-可排序表格位于 `sgraphVectorBenchmark/results/5000-case-20260727`。
+可排序表格位于 `sgraphVectorBenchmark/results/20260727-2`。
 
 ## 正确性范围
 

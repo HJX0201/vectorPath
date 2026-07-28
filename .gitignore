@@ -11,9 +11,9 @@
 /.vs/
 /.cache/
 
-# Generated benchmark data
-/sgraphVectorBenchmark/generated/
-/sgraphVectorBenchmark/failures/
+# Transient benchmark artifacts
+/sgraphVectorBenchmark/results/*/cases/
+/sgraphVectorBenchmark/results/*/failures/
 
 # Python and CMake
 __pycache__/

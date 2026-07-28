@@ -29,7 +29,7 @@ DWG/DXF/SVG/位图导入导出、刀路排序与仿真，以及可撤销的文�
 多线程游程法相对 flood fill 为 **11.90×**，相对单线程游程法为 **2.73×**；测试峰值工作集
 384.1 MB。该批次中 4010 张为 4096×4096，结果主要反映大图压力/耐久场景，不代表每种图片
 都能取得相同加速。完整自包含报告位于
-[`sgraphVectorBenchmark/results/5000-case-20260727/bitmap_vector_benchmark_report.html`](sgraphVectorBenchmark/results/5000-case-20260727/bitmap_vector_benchmark_report.html)。
+[`sgraphVectorBenchmark/results/20260727-2/bitmap_vector_benchmark_report.html`](sgraphVectorBenchmark/results/20260727-2/bitmap_vector_benchmark_report.html)。
 
 ## 快速构建
 

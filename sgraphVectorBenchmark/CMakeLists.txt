@@ -20,13 +20,17 @@ target_link_libraries(smartBitmapVectorBenchmark
 )
 
 target_compile_definitions(smartBitmapVectorBenchmark PRIVATE
-    SGRAPH_BENCHMARK_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/data"
+    SGRAPH_BENCHMARK_FIXTURE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/fixtures"
     SGRAPH_BENCHMARK_ROOT="${CMAKE_CURRENT_SOURCE_DIR}"
 )
 
 if(WIN32)
     target_link_libraries(smartBitmapVectorBenchmark PRIVATE Psapi)
 endif()
+
+set(SGRAPH_BENCHMARK_SMOKE_OUTPUT
+    "${CMAKE_CURRENT_BINARY_DIR}/bitmap_benchmark_smoke"
+)
 
 add_test(
     NAME smartCadBitmapVectorBenchmarkSmoke
@@ -38,10 +42,24 @@ add_test(
             --threads 2
             --repetitions 1
             --smoke
-            --output "${CMAKE_CURRENT_BINARY_DIR}/bitmap_benchmark_smoke"
+            --output "${SGRAPH_BENCHMARK_SMOKE_OUTPUT}"
 )
 
 set_tests_properties(
     smartCadBitmapVectorBenchmarkSmoke
     PROPERTIES LABELS "bitmap_vector_benchmark"
+)
+
+add_test(
+    NAME smartCadBitmapBenchmarkOutputLayout
+    COMMAND ${CMAKE_COMMAND}
+            "-DOUTPUT_DIRECTORY=${SGRAPH_BENCHMARK_SMOKE_OUTPUT}"
+            -P "${CMAKE_CURRENT_SOURCE_DIR}/tests/s_verify_output_layout.cmake"
+)
+
+set_tests_properties(
+    smartCadBitmapBenchmarkOutputLayout
+    PROPERTIES
+        DEPENDS smartCadBitmapVectorBenchmarkSmoke
+        LABELS "bitmap_vector_benchmark"
 )
