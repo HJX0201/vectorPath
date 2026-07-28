@@ -1,0 +1,36 @@
+name: Windows build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - bits: "64"
+            config: release
+            qt_arch: win64_msvc2017_64
+          - bits: "32"
+            config: release
+            qt_arch: win32_msvc2017
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Qt 5.12.10
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: "5.12.10"
+          arch: ${{ matrix.qt_arch }}
+          cache: true
+
+      - name: Build and test
+        shell: pwsh
+        run: |
+          $qtDir = (& qmake -query QT_INSTALL_PREFIX).Trim()
+          python "sgraphBuildTools/s_build_${{ matrix.bits }}_${{ matrix.config }}.py" `
+            --qt-dir $qtDir --clean --jobs 4

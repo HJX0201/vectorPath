@@ -1,0 +1,382 @@
+# 版本更新记录(change log):
+
+## 2026-06-13 -> 2.9.0
+
+- 新增Office 2016 Green/Dark和Office 2021 Green/Dark主题变体，内置主题总数扩展至6种
+- 新增`SARibbonThemePalette`类，支持从JSON文件加载主题调色板，实现主题的外部配置和动态加载
+- 新增基于模板的QSS主题系统，支持`{{token}}`占位符替换和透明度修饰符（`|opacity`）
+- 新增`SARibbonBar::loadFromFile`接口，可从外部文件加载自定义主题
+- 新增`SA::applyRibbonTheme()`统一主题应用逻辑，整合调色板、QSS模板和运行时调整
+- 新增Office 2016 QSS模板（`office2016.qss`）和基础主题模板（`theme-base.qss`）
+- 新增主题覆盖冒烟测试和`SARibbonThemePalette` JSON加载测试，集成CTest
+- 新增ThemeDesignerExample示例程序，支持主题切分布局与QSS/JSON语法高亮
+- MainWindowExample新增主题预览ComboBox，可实时切换内置主题
+- 重构主题架构，统一`SARibbonTheme`枚举管理，移除旧的`SARibbonIconHelper`
+- 重构`SARibbonMainWindowStyleFlag`和主题切换流程，支持深色模式自动检测
+- 修复5个严重bug：`SARibbonGalleryGroup`除零崩溃、`SARibbonContextCategory::takeCategory`未发射信号、`SARibbonCustomizeDialog`析构内存泄漏、`SARibbonStackedWidget::showEvent`未调基类、objectName错误
+- 修复11个中等严重度问题，涵盖信号缺失、布局计算和状态同步
+- `Q_PROPERTY`全面补充`NOTIFY`信号，修正API拼写错误
+- CMake构建系统优化，新增PowerShell自动化构建脚本（`scripts/build.ps1`）
+- CI工作流启用`BUILD_TESTS`和ctest自动执行
+- 更新构建文档和编码规范文档
+
+## 2026-04-28 -> 2.8.0
+
+- 新增`SingleRow`（单行）布局模式，Ribbon可在单行样式下展示按钮，图标在左侧文字在右侧，适合空间受限的场景
+- 新增`SARibbonBar::enableIconRightText`属性及级联方法，启用后所有按钮使用SmallButton横向布局（图标左、文字右）
+- 新增`isSingleRowStyle()`静态和实例辅助方法，便于判断当前是否为单行样式
+- 新增`SingleRowMode`枚举扩展，完善单行模式的枚举定义
+- `SARibbonPanelLayout`新增`SingleRowMode`布局计算，单行模式下按钮按横向排列
+- `setRibbonStyle`的`SingleRow`级联设置，自动调整Gallery、BarLayout高度等
+- MainWindowExample新增SingleRow样式切换演示
+
+![single-style-loose](./docs/assets/screenshot/single-style-loose.png)
+
+![single-style-compact](./docs/assets/screenshot/single-style-compact.png)
+
+## 2026-04-19 -> 2.7.1
+
+- 新增RTL（从右到左）布局支持，包括`saIsRTL`/`saMirrorX`辅助函数、`SARibbonAlignment::AlignRight`枚举值、`LayoutDirectionChange`事件处理
+  ![SARibbon-RTL](./docs/assets/screenshot/SARibbon-RTL.png)
+- `SARibbonBarLayout`新增RTL镜像绘制，支持loose/compact样式及标题区域的RTL适配
+- `SARibbonCategoryLayout`新增RTL镜像滚动和布局反转
+- `SARibbonPanelLayout`新增RTL镜像，按钮列、选项按钮和标题均支持RTL
+- `SARibbonButtonLayoutStrategy`新增RTL绘制区域镜像
+- `SARibbonToolButton`新增RTL指示器和图标位置镜像
+- `SARibbonContextCategory`新增RTL适配，上下文标签绘制和标题区域计算支持RTL
+- `SARibbonSystemButtonBar`新增RTL定位（按钮在左侧边缘）及`LayoutDirectionChange`事件处理
+- `SARibbonGallery`修正`saIsRTL()`函数调用
+- 新增`setCategoriesVisible`批量设置Category可见性API
+- Fix #123：在`SARibbonBar::eventFilter`中添加`WindowStateChange`事件处理，修复MDI窗口最大化时右上角corner widget显示异常问题
+  ![mdi-window](./docs/assets/screenshot/mdiwindow.png)
+- Fix #147：在`hideCategory()`和`showCategory()`中添加`relayout()`和`update()`，修复批量隐藏/显示Category时的显示异常
+- 优化：为`SARibbonCategoryLayout::setScrollPosition()`添加注释说明刷新模式正确性
+- MainWindowExample新增RTL布局方向切换和样式/对齐方式循环演示
+- 新增Qt Test框架及RTL布局单元测试
+- 新增6个RTL单元测试文件覆盖LayoutDirectionChange、ToolButton、ButtonLayoutStrategy、Gallery、SystemButtonBar、ContextCategory
+
+
+## 2026-04-18 -> 2.7.0 (docs)
+
+- 大幅重写和扩展文档：zh/ribbon-interface-hierarchy.md（94→305行）、en/ribbon-interface-hierarchy.md（33→305行）
+- 重写zh/SARibbon-size-settings.md（86→115行）、en/SARibbon-size-settings.md（35→115行）
+- 重写zh/titlebar-setting.md（76→158行）、en/titlebar-setting.md（48→158行）
+- 新增zh/en/SARibbonWidget-guide.md、zh/en/color-widgets.md文档页面
+- 扩展zh/en/create-ribbon-ui.md、zh/en/create-ribbon-style-window.md文档
+- 扩展theme/faq/build-guide页面（zh+en）
+- 添加mkdocs.yml i18n配置修复和导航补全
+- 修复8处跨语言文档错误
+
+## 2026-04-02 ~ 2026-04-09 -> 2.6.2
+
+- 移除qmake构建方式，彻底移除pri相关文件，删除qmake相关的安装配置
+- 优化Ribbon按钮的渲染实现
+
+## 2026-03-28 -> 2.6.1
+- 增加`SARibbonCategory::insertPanel(SARibbonPanel*, int)`函数，支持在指定位置插入panel
+- 添加ribbonbar的时候进行raise操作避免被其它窗口覆盖
+- 修复panel下的title有些情况没有完全隐藏的问题
+- 更新qwk到1.4.0
+- 使用AI进行了大量Doxygen双语注释重构，完善API文档
+
+## 2026-03-05 -> 2.6.0
+- 使用AI进行了代码优化和重构
+- 调整注释信息，完善文档
+
+## 2026-02-28 -> 2.5.8
+- 修正label text没有隐藏的问题
+- 原生无边框方案增加对多屏幕的判断
+- 修复MainWindowExample示例窗口缩放问题
+
+## 2026-01-23 -> 2.5.7
+- 完善对Qt6的支持，修复了一个潜在的重大异常
+- 修复颜色按钮在大按钮模式下，在一些特殊情况图标不显示问题
+- `SARibbonGalleryGroup`增加`removeItem`接口，支持移除gallery项(感谢[@AndyYangjd](https://github.com/AndyYangjd)的贡献)
+- qwk更新到v1.4.0
+
+## 2025-12-20 -> 2.5.6
+- `SARibbonGallery`的窗口尺寸根据内容自适应
+- `SARibbonGallery`的弹出菜单改为滚动区域，且增加尺寸调整功能，如果空间不够，用户可实时调整尺寸
+- `SARibbonGallery`的弹出窗口可根据当前屏幕位置进行尺寸调整，不会超出屏幕尺寸范围，如果不够显示会显示滚动条
+- `SARibbonGalleryGroup`针对流式布局的`heightForWidth`功能
+
+## 2025-11-07 -> 2.5.5
+
+- 增加setPanelLargeIconSize、setPanelSmallIconSize等接口，可设置按钮图标大小
+- MainWindowExample例子修改，增加了ui文件
+- 兼容Qt5.12
+
+## 2025-10-15 -> 2.5.4
+
+- 增加application button纵向扩展功能
+- 修正了对不同屏幕的缩放比例的处理
+- 添加matlab主题教程
+- 增加多语言翻译
+- 调整contents magins的默认值，ribbonbar的宽度适配主窗口的magins
+
+## 2025-10-10 -> 2.5.2
+
+- 增加标题栏图标隐藏的方法
+- 添加英文文档
+- 修正qmake的编译错误
+- 增加了getBuiltInRibbonThemeQss方法，可获取主题的qss内容
+- 增加了对不同屏幕的缩放比例的处理，`SARibbonToolButton`和`SARibbonColorToolButton`可以对不同屏幕比例进行自适应缩放绘制图标，不会应屏幕比例导致显示不清晰
+
+## 2025-09-24 -> 2.5.1
+
+- 调整了`SARibbonButtonGroupWidget`、`SARibbonQuickAccessBar`、`SARibbonSystemButtonBar`的实现方式，直接继承QToolBar，并通过`Qss`实现对应效果
+- 针对`SARibbonButtonGroupWidget`调整，对应调整了布局
+- 添加了`SARibbonTitleIconWidget`窗口，用于显示ribbon的图标，点击图标可以弹出系统菜单
+- 调整了qss内容
+- 完善了文档
+
+
+## 2025-09-10 -> 2.5.0
+
+- 修正了原来panel的拼写错误，原来所有pannel的拼写都改为panel
+- 调整`SARibbonToolButton`的`setEnableWordWrap`方法，由原来静态方法调整为成员函数，避免跨库创建导致状态不同步问题
+- `SARibbonToolButton`大按钮增加icononly和textonly模式
+- 调整`SARibbonToolButton`的实现，调整了刷新策略，增加了sizehint的缓存，提升性能
+- 把一些旧的c++方法改为cpp11
+- [解决一个添加上下文标签问题](https://gitee.com/czyt1988/SARibbon/issues/IA45AU)
+- doxygen文档添加例外，不导出内部类
+- 调整`SARibbonToolButton`原来的静态方法，把静态变量调整为成员变量，避免跨库状态不一致
+- 增加了`SARibbonBar::setButtonMaximumAspectRatio`方法，可以设置按钮的最大宽高比，从而调整按钮的文字显示效果
+- 完善了类的注释
+
+## 2025-07-31 -> 2.4.2
+
+- 调整了`SARibbonApplicationButton`的布局比例，让其更协调
+- 调整了文档
+
+## 2025-07-14 -> 2.4.1
+
+- 调整了SARibbonBar的布局方式，添加了SARibbonBarLayout类
+- 调整了原来的代码格式化clang-format
+- category的滚动增加动画效果，默认开启，添加了动画设置相关接口
+- stackWidget的弹出模式添加了动画效果，默认不开启
+- category在布局过程中，最后一个pannel后面不会增加分割线
+- 修正了设置居中显示时，category不会立即布局的问题
+- 修正了已知的一些bug
+
+## 2025-03-12 -> 2.3.0
+
+- 静态引入版本仅仅只需`SARibbon.h`和`SARibbon.cpp`两个文件，其他文件不需要
+- 增加`SARibbonApplicationWidget`,可以方便快速实现类似office的文件窗口的效果，具体见MainWindow例子
+- `SARibbonMainWindow`的构造函数第二个参数设置为枚举类
+- 支持使用原生边框，不使用无边框的方案，具体见`example/UseNativeFrameExample`例子,效果如下：
+
+![](./doc/screenshot/use-native-frame.png)
+
+
+## 2025-02-05 -> 2.2.9
+
+- `SARibbonBar`增加`setWindowTitleBackgroundBrush`/`windowTitleBackgroundBrush`函数，允许用户设置标题栏的背景色
+
+![](./doc/screenshot/SARibbonBar-setWindowTitleBackgroundBrush.png)
+
+- 修正了`SARibbonBar`针对标题的渲染方式，能根据父窗口的`isWindowModified`状态，针对`[*]`占位符进行渲染
+- 例子中增加了标题栏背景颜色周期改变的示例
+
+## 2025-01-04 -> 2.2.8 [hotfix]
+
+- 修正合并文件会存在宏重复定义问题-2.2.7遗漏了一个调试宏
+- `SARibbonSeparatorWidget`的宽度增加了最小1像素的判断
+- `SARibbonToolButton`添加了`textEllipsisAspectFactor`相关函数，用户可以通过设置文字省略显示的长宽比，来调整按钮的最宽宽度
+- 优化了一些cmake的内容
+
+## 2024-12-23 -> 2.2.7 [hotfix]
+
+- 修正合并文件会存在宏重复定义问题
+
+## 2024-12-23 -> 2.2.6 
+
+- 修正了category在滚动时，右边的滚动按钮不会随着滚动到最右边消失的问题
+- 统一所有文件的换行为CRLF
+- 调整cmake，qwk的依赖为private
+- example的cmake添加静态编译的例子
+
+## 2024-10-17 -> 2.2.5
+
+- 原有的qt关键宏替换为`Q_SIGNAL` / `Q_SLOT` / `Q_EMIT`，以适应no_keywords设置
+- 调整目录结构，单独把example提取出来
+- 完善mdi窗口的例子，可以结合qwk实现mdi窗口的最大最小化按钮的显示
+
+## 2024-09-12 -> 2.2.4
+
+- 修正自定义`SARibbonMainWindow`调用`setRibbonBar`后，会导致最大最小化按钮被遮挡的问题
+- 调整Mdi例子中cmake的文件大小写，避免在linux系统下大小写敏感
+- 修正qwk开启后，`SARibbonMainWindow::eventfilter`没有捕获的问题
+
+## 2024-07-25 -> 2.2.1
+
+- 增加`setPannelSpacing`接口，可调节pannel按钮的间距
+- `SARibbonToolButton`的icon尺寸可设置，在小按钮模式下，用户可指定icon尺寸
+- 把`SARibbonMainWindow`的事件处理通过`eventfilter`实现，避免用户在重写事件时误操作
+- 修正`SARibbonGalleryButton`的样式错误
+- 修正SystemBar在qwk下会位置有偏离的问题
+
+## 2024-07-15 -> 2.2.0
+
+- 增加了mdi窗口的示例
+- 增加了`SARibbonTabBar`的tab尺寸计算方式，可以让tab高度按照tabbar高度自动调整
+- 示例增加了尺寸设置的配置，可以任意调整titlebar，tabbar，pannel title height的高度
+- 修正调整category高度后，pannel高度不跟着改变的问题
+- 添加snap layout的开关，在依赖qwk下，可以设置是否开启snap layout
+
+## 2024-05-23 -> 2.1.0
+
+- 添加`actionTriggered`信号
+- 修正了滚动action显示效果
+- 把`SARibbonTheme`从SARibbonMainWindow中转移到`SARibbonGloabls.h`中并作为枚举类(enum class)
+- 添加`SARibbonWidget`，同时调整example/widget示例
+- 调整了布局移动的实现方式，不会出现压缩式移动
+
+## 2024-02-07 -> 2.0.3
+
+- 调整`SAColorToolButton`的实现，使之更简单
+- 修正qwk库引入的cmake
+- 调整文档
+
+## 2024-02-07 -> 2.0.2 
+
+- 修正`SARibbonSystemButtonBar`的编码问题，可能会导致vs下无法编译成功
+- `SARibbonContextCategory`的标签颜色调整
+
+## 2024-01-27 -> 2.0.1【失效，请使用v2.0.2及以上版本】
+
+- 调整qss，让`SARibbonApplicationButton`的下拉箭头不显示
+- 文档添加gallery
+- 修正了一个布局可能异常的点
+
+## 2024-01-09 -> 2.0.0
+
+- `SARibbonCategory`和`SARibbonPannel`可以通过qss定制
+- `SARibbonPannel`的文字使用`SARibbonPannelLabel(QLabel)`显示，可以通过qss进行自定义
+- `SARibbonSeparatorWidget`分割线也支持qss定制
+- `SARibbonBar`的样式`RibbonStyle`改为`QFlags`
+- `SARibbonBar`添加了相关的迭代函数，可快速遍历所有的category和pannel
+- 尺寸的计算重新进行了调整
+- 默认的qss进行了重新调整，适用更多的屏幕尺寸
+- `SARibbonBar`添加了如下接口：
+  1.`SARibbonBar::setCornerWidgetVisible` 可以设置`cornerwidget`的显示隐藏与否
+  2.属性`enableShowPannelTitle`，控制是否显示pannel的标题
+  3.属性`pannelTitleHeight`，控制pannel标题栏高度
+  4.属性`pannelLayoutMode`，可控制pannel的布局方式
+  5.属性`tabOnTitle`，可控制tab放置在title栏上
+  6.`titleBarHeight`，`tabBarHeight`，`categoryHeight`这三个高度支持用户自定义，默认会根据字体大小计算
+  7.`setTabBarBaseLineColor`控制tabbar下基线颜色，某些主题需要设置颜色（窗口标题栏和category区域颜色一样的情况下如office 2013主题）可通过此函数设置，传入`QColor()`取消颜色
+- 添加了`SARibbonBar::initHighDpi()`静态函数，方便开启高分屏设置
+- 【注意】frameless库更换为qwindowkit(https://github.com/stdware/qwindowkit)，qwindowkit源码不作为项目一部分，使用`git submodule`管理，因此，项目clone下来后，需要执行`git submodule update --init --recursive`
+- 【注意】如果开启`SARIBBON_USE_FRAMELESS_LIB`（默认不开启），需要先构建`qwindowkit`，目前`qwindowkit`不提供qmake，只提供cmake，编译完`qwindowkit`后，SARibbon支持qmake和cmake
+- `SARibbonMainWindow`支持非ribbon模式
+- 原`SAWindowButtonGroup`改名为`SARibbonSystemButtonGroupBar`，同时支持添加action
+
+【警告】编译过程会在当前目录下生成bin_qtx.x.x_[MSVC/GNU]_x[64/86]这样的文件夹，请确保有写入权限，否则执行qmake过程会报错
+
+由于接口函数有明显调整，因此版本变更为2.0
+
+## 2023-12-29 -> 1.1.2
+
+- 合并了lixinchang的修改(https://gitee.com/lixinchang)
+- 添加了`SARibbonControlToolButton`，ControlBar不再使用QToolButton，避免和QToolButton的qss冲突
+- ControlBar支持按钮菜单样式的指定
+- 调整了默认样式的内容
+
+## 2023-12-25 -> 1.1.1
+
+- 修正了`SARibbonBar`的布局过程对窗体隐藏的判断方式，使得在窗口没显示时也能正确布局
+
+## 2023-12-25 -> 1.1.0
+
+- 修正了尺寸刷新的问题，在首次显示不会出现控件跳动的状态
+- 修正了一些问题
+- 调整了创建RibbonButton的方式
+- 调整了`SARibbonPannel`一些接口，使得创建更加规范
+- 调整了ToolButton的渲染方式
+
+  ------------------------
+
+## 2023-11-19 -> 1.0.6
+
+- 添加Office2016主题
+- Category可以居中对齐
+- QuickAccessBar的图标调小一像素，且用户可设置
+
+## 2023-11-10 -> 1.0.5
+
+- 自动根据Qt版本来适配是否加载frameless库
+
+## 2023-11-02 -> 1.0.4
+
+cn:因为引入了framelss库，导致很多版本的qt无法编译，为了兼容不同版本的qt编译问题，进行了版本自适应，
+不符合framelss的qt版本自动使用原来的framelss方案，从而实现了qt5.9到qt6的完全支持
+
+en:Because of the introduction of the framelss library, many versions of qt cannot be compiled.
+In order to be compatible with different versions of qt compilation, version adaptation is carried out.
+The qt version that does not conform to the framelss automatically uses the original framelss scheme, thus realizing full support for qt5.9 to qt6
+
+## 2023-10-26 -> 1.0.2
+
+- 添加了SARibbonBar在QWidget窗口上使用的例子
+- 整理了SARibbon.h和SARibbon.cpp,调整了静态使用的例子
+- frameless库更新到c4a7bc8版本（20231022）
+
+## 2023-10-14 -> 1.0.1
+
+cn:
+- 引入第三方库frameless
+- 支持ubuntu和macos
+- 解决windwos系统的多屏幕移动问题
+- 依赖frameless，实现windows系统的一些界面操作，如边缘触发半屏
+- 添加深色主题
+- 优化了一些界面刷新逻辑
+- 最低C++版本要求为c++17
+- 一些接口的调整和一些枚举名称的调整
+- 添加了QWidget使用SARibbonBar的例子
+- 同步把自定义ribbon的SARibbonMainWindow的依赖去除
+- 完善了文档包括高分屏问题和linux编译的方法
+
+en(machine translation):
+- import third-party library:frameless
+- Supports ubuntu and macos
+- Solving the problem of multi screen movement in Windwos system
+- Relying on frameless library to implement some interface operations in Windows systems, such as edge triggered half screen
+- Add a dark theme
+- Optimized some interface refresh logic
+- The minimum C++version requirement is c++17
+- Some interface adjustments and some enumeration name adjustments
+- Added an example of using SARibbonBar for QWidgets
+- Synchronize the removal of dependencies on SARibbonMainWindow for custom ribbons
+- Improved documentation including high resolution issues and methods for compiling Linux
+
+## 2023-10-09 -> 0.7.1
+
+- 增加了深色主题
+- 调整了枚举的命名方式
+- 增加了一些重绘方式
+
+## 2023-10-09 -> 0.7.0
+
+- 修正了category的布局问题
+
+## 2023-09-27 -> 0.6.0
+
+- 添加了Amalgamate，修正了一些显示的bug，修正cmake的异常
+- 添加了上下文标签中category标题名字改变的信号
+
+## 2023-05-28 -> 0.5.0
+
+- 调整了大按钮模式下的显示方案，去除了原来`SARibbonToolButton`的Lite和Normal模式，以WordWrap来表征
+- 支持文字自定义换行
+- 调整了RibbonPannel的标题栏的高度计算方案
+
+## 0.5.1
+
+- 不使用`QString::simplified`,而是简单的仅仅替换\n的simplified，这样中文换行不会多出空格
+
+## 0.5.2
+
+- `SARibbonColorToolButton` / `SARibbonToolButton`修正&操作在三项表达式未加括号问题
+- `SARibbonStyleOption`添加虚析构函数
+- 原来`SARibbonElementCreateDelegate`类改名为`SARibbonElementFactory`

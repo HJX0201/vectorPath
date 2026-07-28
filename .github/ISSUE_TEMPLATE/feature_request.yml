@@ -1,0 +1,24 @@
+name: 功能建议
+description: 提议新的二维 CAD/CAM 功能或改进
+title: "[Feature] "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 使用场景
+      description: 说明当前工作流中的问题，而不只是期望增加的按钮。
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 建议方案
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 替代方案与兼容性
+      description: 包括文件格式、撤销重做、快捷键或现有行为的影响。

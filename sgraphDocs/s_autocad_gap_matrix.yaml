@@ -1,0 +1,104 @@
+schema_version: 1
+baseline: autocad_2026_core
+implementation: smartCad
+audited: 2026-07-25
+meaning:
+  complete: usable_end_to_end_and_tested
+  partial: usable_subset_or_missing_persistence_interchange
+  stub: visible_shell_without_domain_behavior
+  missing: no_usable_implementation
+  out_of_scope: explicitly_excluded_product_specific_capability
+  blocked_by_sdk: design_ready_but_dependency_unavailable_or_unverified
+summary:
+  complete: 32
+  partial: 8
+  stub: 2
+  missing: 24
+  out_of_scope: 3
+  blocked_by_sdk: 2
+gaps:
+  - {id: ACAD.UI.RIBBON, status: complete, priority: P0}
+  - {id: ACAD.UI.PALETTES, status: partial, priority: P1,
+     missing: [properties_palette, real_tool_palette, design_center, sheet_set],
+     note: properties_panel_removed_by_user_request}
+  - {id: ACAD.UI.WORKSPACE, status: complete, priority: P0}
+  - {id: ACAD.UI.COMMAND_LINE, status: complete, priority: P0}
+  - {id: ACAD.FILE.LIFECYCLE, status: complete, priority: P0}
+  - {id: ACAD.FILE.DWG_DXF, status: partial, priority: P0, missing: [blocks, attributes, layouts, proxy_preservation, dynamic_blocks]}
+  - {id: ACAD.FILE.AUDIT, status: partial, priority: P1, missing: [purge, overkill, checkstandards]}
+  - {id: ACAD.FILE.TEMPLATES, status: missing, priority: P1}
+  - {id: ACAD.VIEW.NAVIGATION, status: complete, priority: P0,
+     note: auto_zoom_wheel_zoom_and_pan_retained_view_history_and_regeneration_removed_by_user_request}
+  - {id: ACAD.VIEW.NAMED, status: missing, priority: P1, note: user_requested_feature_removal}
+  - {id: ACAD.VIEW.MULTI, status: missing, priority: P2}
+  - {id: ACAD.PRECISION.SNAP_GRID, status: complete, priority: P0}
+  - {id: ACAD.PRECISION.ORTHO_POLAR, status: partial, priority: P0,
+     missing: [polar_tracking, isometric_plane], note: user_requested_feature_removal}
+  - {id: ACAD.PRECISION.OSNAP, status: partial, priority: P0,
+     missing: [midpoint, quadrant, intersection, extension, parallel, perpendicular, tangent, nearest],
+     note: unified_independent_grid_endpoint_and_true_center_snap_menu}
+  - {id: ACAD.PRECISION.OTRACK, status: complete, priority: P0}
+  - {id: ACAD.PRECISION.COORDINATES, status: complete, priority: P0}
+  - {id: ACAD.DRAW.LINE, status: partial, priority: P1, missing: [xline, ray]}
+  - {id: ACAD.DRAW.POLYLINE, status: complete, priority: P0}
+  - {id: ACAD.DRAW.CURVES, status: complete, priority: P0}
+  - {id: ACAD.DRAW.POLYGON, status: partial, priority: P1,
+     note: six_fixed_standard_shapes_complete, missing: [arbitrary_side_count_regular_polygon]}
+  - {id: ACAD.DRAW.POINT, status: missing, priority: P2}
+  - {id: ACAD.DRAW.REGION, status: missing, priority: P1}
+  - {id: ACAD.DRAW.REVCLOUD, status: missing, priority: P1}
+  - {id: ACAD.PARAMETRIC.GEOMETRIC, status: missing, priority: P2}
+  - {id: ACAD.PARAMETRIC.DIMENSIONAL, status: missing, priority: P2}
+  - {id: ACAD.MODIFY.TRANSFORM, status: complete, priority: P0}
+  - {id: ACAD.MODIFY.ARRAY, status: complete, priority: P0}
+  - {id: ACAD.MODIFY.RESHAPE, status: complete, priority: P0}
+  - {id: ACAD.MODIFY.CUT_JOIN, status: complete, priority: P0}
+  - {id: ACAD.MODIFY.OFFSET, status: complete, priority: P0}
+  - {id: ACAD.MODIFY.CORNERS, status: complete, priority: P0}
+  - {id: ACAD.MODIFY.TOPOLOGY, status: complete, priority: P0}
+  - {id: ACAD.MODIFY.PROPERTIES, status: partial, priority: P1, missing: [matchprop, draworder]}
+  - {id: ACAD.MODIFY.GRIPS, status: complete, priority: P0}
+  - {id: ACAD.LAYER.MANAGE, status: partial, priority: P0,
+     note: user_requested_simplified_layer_ui_with_same_color_merge}
+  - {id: ACAD.LAYER.STATE, status: partial, priority: P0, note: visibility_only_by_user_request}
+  - {id: ACAD.LAYER.PROPERTIES, status: partial, priority: P0, note: color_only_by_user_request}
+  - {id: ACAD.LAYER.VP_OVERRIDE, status: missing, priority: P1}
+  - {id: ACAD.ANNOTATION.TEXT, status: complete, priority: P0}
+  - {id: ACAD.ANNOTATION.STYLE, status: complete, priority: P0}
+  - {id: ACAD.ANNOTATION.LEADER, status: complete, priority: P0}
+  - {id: ACAD.ANNOTATION.SPELL, status: missing, priority: P2}
+  - {id: ACAD.DIMENSION.TYPES, status: complete, priority: P0}
+  - {id: ACAD.DIMENSION.STYLE, status: complete, priority: P0}
+  - {id: ACAD.DIMENSION.EDIT, status: missing, priority: P1}
+  - {id: ACAD.DIMENSION.TOLERANCE, status: missing, priority: P1}
+  - {id: ACAD.CONTENT.HATCH, status: complete, priority: P0}
+  - {id: ACAD.CONTENT.TABLE, status: missing, priority: P1}
+  - {id: ACAD.CONTENT.BLOCK, status: missing, priority: P0, note: user_requested_feature_removal}
+  - {id: ACAD.CONTENT.ATTRIBUTES, status: missing, priority: P1}
+  - {id: ACAD.CONTENT.DYNAMIC_BLOCK, status: missing, priority: P2}
+  - {id: ACAD.REFERENCE.XREF, status: stub, priority: P1}
+  - {id: ACAD.REFERENCE.PDF_IMAGE, status: blocked_by_sdk, priority: P1, dependency: poppler_qt5}
+  - {id: ACAD.REFERENCE.UNDERLAY_IMPORT, status: blocked_by_sdk, priority: P2, dependency: poppler_qt5}
+  - {id: ACAD.DATA.EXTRACT, status: missing, priority: P2}
+  - {id: ACAD.DATA.LINK, status: missing, priority: P2}
+  - {id: ACAD.LAYOUT.SPACE, status: complete, priority: P0}
+  - {id: ACAD.LAYOUT.VIEWPORT, status: complete, priority: P0}
+  - {id: ACAD.OUTPUT.PAGE_SETUP, status: complete, priority: P0}
+  - {id: ACAD.OUTPUT.PLOT, status: complete, priority: P0}
+  - {id: ACAD.COLLABORATE.COMPARE, status: missing, priority: P2}
+  - {id: ACAD.COLLABORATE.TRACE, status: missing, priority: P2}
+  - {id: ACAD.COLLABORATE.SHARE, status: missing, priority: P2}
+  - {id: ACAD.COLLABORATE.SHEET_SET, status: stub, priority: P2}
+  - {id: ACAD.CUSTOMIZE.CUI, status: partial, priority: P2,
+     missing: [menu_layout_customization, toolbar_layout_customization, cui_import_export]}
+  - {id: ACAD.CUSTOMIZE.SCRIPT, status: missing, priority: P1, note: user_requested_feature_removal}
+  - {id: ACAD.CUSTOMIZE.LISP, status: missing, priority: P1}
+  - {id: ACAD.CUSTOMIZE.PLUGIN, status: missing, priority: P1, note: user_requested_feature_removal}
+  - {id: ACAD.3D.MODEL, status: out_of_scope, priority: P3, note: user_deferred_3d_upgrade}
+  - {id: ACAD.3D.EDIT, status: out_of_scope, priority: P3, note: user_deferred_3d_upgrade}
+  - {id: ACAD.3D.VISUALIZE, status: out_of_scope, priority: P3, note: user_deferred_3d_upgrade}
+product_extensions:
+  - {id: SMARTCAD.IMPORT.SVG_BITMAP_VECTOR, status: complete, priority: P0,
+     note: deterministic_parallel_run_length_vectorization_and_5000_file_release_benchmark_complete}
+  - {id: SMARTCAD.CAM.TOOLPATH_SIMULATION, status: complete, priority: P0,
+     note: layer_grouped_two_dimensional_row_scan_shortest_path_direction_reversal_and_simulation_complete}

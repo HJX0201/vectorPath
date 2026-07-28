@@ -1,0 +1,12 @@
+# Changelog
+
+## 0.1.0-alpha.1 - 2026-07-27
+
+- 整理为 GitHub 可发布的 smartGraphics 项目结构。
+- 自研目录统一使用 `sgraph` 前缀，C++ 命名空间统一为 `smartGraphics`。
+- 主程序输出统一为 `smartGraphics.exe`。
+- 增加 32/64 位 Debug/Release 四套自动构建、Qt 查找和运行库部署入口。
+- 第三方组件集中到 `sgraphThirdParty`，Qt SDK 不进入仓库。
+- 独立位图矢量化基准模块，保留 1000 与 5000 文件自包含报告和清单，并支持断点续生成。
+- 修复对象捕捉模式过滤和 SVG 数字解析问题。
+- 32/64 位 Debug/Release 四套配置的 32 项 CTest 全部通过。

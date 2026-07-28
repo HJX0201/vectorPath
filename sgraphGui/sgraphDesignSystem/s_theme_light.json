@@ -1,0 +1,12 @@
+{
+  "window": "#F1F3F5",
+  "surface": "#FFFFFF",
+  "elevatedSurface": "#E7EAED",
+  "border": "#C7CDD3",
+  "textPrimary": "#232A31",
+  "textSecondary": "#606B75",
+  "accent": "#087EB8",
+  "accentHover": "#1594CE",
+  "danger": "#C93847",
+  "canvas": "#10151D"
+}

@@ -1,0 +1,35 @@
+# Build and package output
+/build/
+/dist/
+/build-*/
+/buildVerify/
+
+# Local toolchains and IDE state
+/.toolchain/
+/.vscode/
+/.idea/
+/.vs/
+/.cache/
+
+# Generated benchmark data
+/sgraphVectorBenchmark/generated/
+/sgraphVectorBenchmark/results/
+/sgraphVectorBenchmark/failures/
+
+# Python and CMake
+__pycache__/
+*.py[cod]
+CMakeUserPresets.json
+
+# Runtime/user files
+*.autosave
+*.bak
+*.log
+*.tmp
+*.user
+*.suo
+Thumbs.db
+Desktop.ini
+
+# Generated Qt translation/build artifacts
+*.qm

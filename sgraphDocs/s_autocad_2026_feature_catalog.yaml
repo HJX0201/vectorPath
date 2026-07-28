@@ -1,0 +1,145 @@
+schema_version: 1
+catalog_id: autocad_2026_core
+source_product: AutoCAD 2026
+source_language: ENU
+accessed: 2026-07-22
+primary_source: ADSK.ACD.2026.HOME
+status_vocabulary: [complete, partial, stub, missing, out_of_scope, blocked_by_sdk]
+comparison_scope:
+  included: [general_ui, 2d_drafting, annotation, blocks, references, data, layouts, output,
+             collaboration, customization, 3d_core]
+  excluded: [architecture_toolset, mechanical_toolset, map_3d_toolset, civil_3d]
+domains:
+  - id: ACAD.UI
+    name_zh: 用户界面与工作区
+    capabilities:
+      - {id: ACAD.UI.RIBBON, name_zh: Ribbon 与上下文选项卡, commands: [RIBBON, RIBBONCLOSE]}
+      - {id: ACAD.UI.PALETTES, name_zh: 停靠面板与工具选项板, commands: [PROPERTIES, TOOLPALETTES, ADCENTER]}
+      - {id: ACAD.UI.WORKSPACE, name_zh: 工作区保存与恢复, commands: [WSSAVE, WORKSPACE]}
+      - {id: ACAD.UI.COMMAND_LINE, name_zh: 命令行、历史和动态输入, commands: [COMMANDLINE, COMMANDHISTORY, DYNMODE]}
+  - id: ACAD.FILE
+    name_zh: 图形与文件管理
+    capabilities:
+      - {id: ACAD.FILE.LIFECYCLE, name_zh: 新建打开保存恢复, commands: [NEW, OPEN, QSAVE, SAVEAS, RECOVER, DRAWINGRECOVERY]}
+      - {id: ACAD.FILE.DWG_DXF, name_zh: DWG 与 DXF 交换, commands: [DXFIN, DXFOUT, EXPORT, IMPORT]}
+      - {id: ACAD.FILE.AUDIT, name_zh: 审计清理标准检查, commands: [AUDIT, PURGE, OVERKILL, CHECKSTANDARDS]}
+      - {id: ACAD.FILE.TEMPLATES, name_zh: 模板和图形标准, commands: [NEW, DWSAVE]}
+  - id: ACAD.VIEW
+    name_zh: 视图控制
+    capabilities:
+      - {id: ACAD.VIEW.NAVIGATION, name_zh: 缩放平移重生成, commands: [ZOOM, PAN, REGEN, REDRAW]}
+      - {id: ACAD.VIEW.NAMED, name_zh: 命名视图和视图管理器, commands: [VIEW, VPOINT]}
+      - {id: ACAD.VIEW.MULTI, name_zh: 模型空间多视口, commands: [VPORTS]}
+  - id: ACAD.PRECISION
+    name_zh: 精确绘图辅助
+    capabilities:
+      - {id: ACAD.PRECISION.SNAP_GRID, name_zh: 捕捉与栅格, commands: [SNAP, GRID, DSETTINGS]}
+      - {id: ACAD.PRECISION.ORTHO_POLAR, name_zh: 正交与极轴追踪, commands: [ORTHO, POLAR]}
+      - {id: ACAD.PRECISION.OSNAP, name_zh: 对象捕捉, commands: [OSNAP, OSMODE]}
+      - {id: ACAD.PRECISION.OTRACK, name_zh: 对象捕捉追踪, commands: [OTRACK]}
+      - {id: ACAD.PRECISION.COORDINATES, name_zh: 绝对相对极坐标和单位, commands: [UNITS, ID]}
+  - id: ACAD.DRAW
+    name_zh: 创建二维对象
+    capabilities:
+      - {id: ACAD.DRAW.LINE, name_zh: 直线与射线, commands: [LINE, XLINE, RAY]}
+      - {id: ACAD.DRAW.POLYLINE, name_zh: 多段线与三维多段线, commands: [PLINE, PEDIT, 3DPOLY]}
+      - {id: ACAD.DRAW.CURVES, name_zh: 圆圆弧椭圆样条曲线, commands: [CIRCLE, ARC, ELLIPSE, SPLINE, HELIX]}
+      - {id: ACAD.DRAW.POLYGON, name_zh: 矩形和正多边形, commands: [RECTANG, POLYGON]}
+      - {id: ACAD.DRAW.POINT, name_zh: 点和等分点, commands: [POINT, DIVIDE, MEASURE]}
+      - {id: ACAD.DRAW.REGION, name_zh: 面域与边界, commands: [REGION, BOUNDARY]}
+      - {id: ACAD.DRAW.REVCLOUD, name_zh: 修订云线, commands: [REVCLOUD]}
+  - id: ACAD.PARAMETRIC
+    name_zh: 参数化约束
+    capabilities:
+      - {id: ACAD.PARAMETRIC.GEOMETRIC, name_zh: 几何约束, commands: [GEOMCONSTRAINT, AUTOCONSTRAIN]}
+      - {id: ACAD.PARAMETRIC.DIMENSIONAL, name_zh: 标注约束和参数管理, commands: [DIMCONSTRAINT, PARAMETERS]}
+  - id: ACAD.MODIFY
+    name_zh: 修改对象
+    capabilities:
+      - {id: ACAD.MODIFY.TRANSFORM, name_zh: 移动复制旋转缩放镜像, commands: [MOVE, COPY, ROTATE, SCALE, MIRROR, ALIGN]}
+      - {id: ACAD.MODIFY.ARRAY, name_zh: 矩形环形路径阵列, commands: [ARRAY, ARRAYRECT, ARRAYPOLAR, ARRAYPATH]}
+      - {id: ACAD.MODIFY.RESHAPE, name_zh: 拉伸拉长延伸, commands: [STRETCH, LENGTHEN, EXTEND]}
+      - {id: ACAD.MODIFY.CUT_JOIN, name_zh: 修剪打断合并, commands: [TRIM, BREAK, BREAKATPOINT, JOIN]}
+      - {id: ACAD.MODIFY.OFFSET, name_zh: 偏移, commands: [OFFSET]}
+      - {id: ACAD.MODIFY.CORNERS, name_zh: 圆角倒角混合曲线, commands: [FILLET, CHAMFER, BLEND]}
+      - {id: ACAD.MODIFY.TOPOLOGY, name_zh: 分解和多段线编辑, commands: [EXPLODE, PEDIT, SPLINEDIT]}
+      - {id: ACAD.MODIFY.PROPERTIES, name_zh: 特性匹配和对象顺序, commands: [MATCHPROP, CHPROP, DRAWORDER]}
+      - {id: ACAD.MODIFY.GRIPS, name_zh: 夹点和多功能夹点编辑, commands: [GRIP_STRETCH, GRIP_MOVE, GRIP_ROTATE, GRIP_SCALE, GRIP_MIRROR]}
+  - id: ACAD.LAYER
+    name_zh: 图层与对象特性
+    capabilities:
+      - {id: ACAD.LAYER.MANAGE, name_zh: 新建删除重命名当前图层, commands: [LAYER, LAYDEL, LAYMRG]}
+      - {id: ACAD.LAYER.STATE, name_zh: 开关冻结锁定打印和图层状态, commands: [LAYER, LAYERSTATE]}
+      - {id: ACAD.LAYER.PROPERTIES, name_zh: 颜色线型线宽透明度, commands: [COLOR, LINETYPE, LWEIGHT, TRANSPARENCY]}
+      - {id: ACAD.LAYER.VP_OVERRIDE, name_zh: 布局视口图层替代, commands: [VPLAYER]}
+  - id: ACAD.ANNOTATION
+    name_zh: 文字标签与引线
+    capabilities:
+      - {id: ACAD.ANNOTATION.TEXT, name_zh: 单行和多行文字, commands: [TEXT, MTEXT, TEXTEDIT]}
+      - {id: ACAD.ANNOTATION.STYLE, name_zh: 文字样式和注释性比例, commands: [STYLE, OBJECTSCALE]}
+      - {id: ACAD.ANNOTATION.LEADER, name_zh: 多重引线和引线样式, commands: [MLEADER, MLEADERSTYLE, QLEADER]}
+      - {id: ACAD.ANNOTATION.SPELL, name_zh: 拼写检查和查找替换, commands: [SPELL, FIND]}
+  - id: ACAD.DIMENSION
+    name_zh: 标注
+    capabilities:
+      - {id: ACAD.DIMENSION.TYPES, name_zh: 线性对齐角度半径直径弧长坐标标注, commands: [DIM, DIMLINEAR, DIMALIGNED, DIMANGULAR, DIMRADIUS, DIMDIAMETER, DIMARC, DIMORDINATE]}
+      - {id: ACAD.DIMENSION.STYLE, name_zh: 标注样式和替代, commands: [DIMSTYLE, DIMOVERRIDE]}
+      - {id: ACAD.DIMENSION.EDIT, name_zh: 连续基线折弯和标注编辑, commands: [DIMCONTINUE, DIMBASELINE, DIMBREAK, DIMEDIT]}
+      - {id: ACAD.DIMENSION.TOLERANCE, name_zh: 公差和中心标记, commands: [TOLERANCE, CENTERMARK, CENTERLINE]}
+  - id: ACAD.CONTENT
+    name_zh: 填充表格和块
+    capabilities:
+      - {id: ACAD.CONTENT.HATCH, name_zh: 图案实体渐变填充, commands: [HATCH, HATCHEDIT, GRADIENT]}
+      - {id: ACAD.CONTENT.TABLE, name_zh: 表格和表格样式, commands: [TABLE, TABLESTYLE, TABLEDIT]}
+      - {id: ACAD.CONTENT.BLOCK, name_zh: 块定义插入写块分解, commands: [BLOCK, INSERT, WBLOCK, EXPLODE]}
+      - {id: ACAD.CONTENT.ATTRIBUTES, name_zh: 块属性定义与编辑, commands: [ATTDEF, EATTEDIT, BATTMAN, ATTSYNC]}
+      - {id: ACAD.CONTENT.DYNAMIC_BLOCK, name_zh: 动态块参数动作和可见性, commands: [BEDIT, BCLOSE, BTESTBLOCK]}
+  - id: ACAD.REFERENCE
+    name_zh: 外部参照与数据
+    capabilities:
+      - {id: ACAD.REFERENCE.XREF, name_zh: DWG 外部参照, commands: [XREF, XATTACH, XCLIP, REFEDIT]}
+      - {id: ACAD.REFERENCE.PDF_IMAGE, name_zh: PDF DWF DGN 图像附着与裁剪, commands: [PDFATTACH, DWFATTACH, DGNATTACH, IMAGEATTACH, XCLIP]}
+      - {id: ACAD.REFERENCE.UNDERLAY_IMPORT, name_zh: PDF 导入, commands: [PDFIMPORT]}
+      - {id: ACAD.DATA.EXTRACT, name_zh: 数据提取字段和超链接, commands: [DATAEXTRACTION, FIELD, HYPERLINK]}
+      - {id: ACAD.DATA.LINK, name_zh: Excel 数据链接, commands: [DATALINK, DATALINKUPDATE]}
+  - id: ACAD.LAYOUT
+    name_zh: 布局与输出
+    capabilities:
+      - {id: ACAD.LAYOUT.SPACE, name_zh: 模型空间图纸空间和布局, commands: [MODEL, LAYOUT, TILEMODE]}
+      - {id: ACAD.LAYOUT.VIEWPORT, name_zh: 布局视口比例和锁定, commands: [MVIEW, VPORTS, VPSCALE]}
+      - {id: ACAD.OUTPUT.PAGE_SETUP, name_zh: 页面设置和打印样式, commands: [PAGESETUP, PLOTSTYLE, STYLESMANAGER]}
+      - {id: ACAD.OUTPUT.PLOT, name_zh: 打印预览批量发布和 PDF, commands: [PLOT, PREVIEW, PUBLISH, EXPORTPDF]}
+  - id: ACAD.COLLABORATE
+    name_zh: 协作
+    capabilities:
+      - {id: ACAD.COLLABORATE.COMPARE, name_zh: 图形和外部参照比较, commands: [COMPARE, XCOMPARE]}
+      - {id: ACAD.COLLABORATE.TRACE, name_zh: Trace 和标记导入, commands: [TRACE, MARKUPIMPORT, MARKUPASSIST]}
+      - {id: ACAD.COLLABORATE.SHARE, name_zh: 共享视图和电子传递, commands: [SHARE, SHAREDVIEWS, ETRANSMIT]}
+      - {id: ACAD.COLLABORATE.SHEET_SET, name_zh: 图纸集, commands: [SHEETSET]}
+  - id: ACAD.CUSTOMIZE
+    name_zh: 自定义与自动化
+    capabilities:
+      - {id: ACAD.CUSTOMIZE.CUI, name_zh: CUI 菜单工具栏快捷键, commands: [CUI, CUILOAD]}
+      - {id: ACAD.CUSTOMIZE.SCRIPT, name_zh: SCR 脚本和命令别名, commands: [SCRIPT, REINIT]}
+      - {id: ACAD.CUSTOMIZE.LISP, name_zh: AutoLISP 与 Visual LISP, commands: [APPLOAD, VLIDE]}
+      - {id: ACAD.CUSTOMIZE.PLUGIN, name_zh: ObjectARX 和 .NET 插件, commands: [ARX, NETLOAD]}
+  - id: ACAD.3D
+    name_zh: 三维建模与可视化
+    capabilities:
+      - {id: ACAD.3D.MODEL, name_zh: 实体曲面网格建模, commands: [BOX, EXTRUDE, REVOLVE, PRESSPULL, UNION, SUBTRACT, INTERSECT, MESH]}
+      - {id: ACAD.3D.EDIT, name_zh: 三维变换与编辑, commands: [3DMOVE, 3DROTATE, 3DSCALE, SLICE, SHELL]}
+      - {id: ACAD.3D.VISUALIZE, name_zh: 视觉样式材质灯光渲染, commands: [VSCURRENT, MATERIALS, LIGHT, RENDER]}
+product_extensions:
+  - id: SMARTCAD.IMPORT
+    name_zh: 矢量与位图导入
+    capabilities:
+      - {id: SMARTCAD.IMPORT.SVG_BITMAP_VECTOR,
+         name_zh: SVG 色块导入、选择感知的独立线填充、图层去重与位图像素边界矢量化,
+         commands: [IMPORTSVG, SVGIMPORT, IMPORTBITMAP, BITMAPIMPORT, IMAGEIMPORT,
+                    SVGFILL, SVGDEDUP]}
+  - id: SMARTCAD.CAM
+    name_zh: 二维加工仿真
+    capabilities:
+      - {id: SMARTCAD.CAM.TOOLPATH_SIMULATION, name_zh: 二维轮廓刀路排序与动态仿真,
+         commands: [TOOLPATH, TP, SIMULATE, SIM, SIMPLAY, SIMPAUSE, SIMSTOP, SIMSTEP,
+                    SIMSPEED, SIMTRACE, TPSORT]}

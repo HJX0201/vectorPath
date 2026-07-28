@@ -1,0 +1,53 @@
+name: 缺陷报告
+description: 提交可复现的 smartGraphics 问题
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: 请勿在公开 Issue 中提交私密图纸或敏感数据。
+  - type: input
+    id: version
+    attributes:
+      label: 版本或提交
+      placeholder: 例如 0.1.0-alpha.1 或提交哈希
+    validations:
+      required: true
+  - type: dropdown
+    id: build
+    attributes:
+      label: 构建配置
+      options:
+        - 64 位 Release
+        - 64 位 Debug
+        - 32 位 Release
+        - 32 位 Debug
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 请提供最小、完整、可重复的操作步骤。
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期结果
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际结果
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: 环境
+      description: Windows、Qt、Visual Studio 版本，以及相关日志。
+    validations:
+      required: true

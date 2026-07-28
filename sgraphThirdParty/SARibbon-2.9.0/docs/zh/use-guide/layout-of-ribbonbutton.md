@@ -1,0 +1,186 @@
+# Ribbon栏按钮布局说明
+
+- ✅ **策略模式架构**：v2.7.0+ 引入 SARibbonButtonLayoutStrategy 类层次，布局逻辑清晰分离
+- ✅ **两种布局方案**：文字换行（Office风格）和不换行（WPS风格），按语言场景选择
+- ✅ **三种按钮尺寸**：Large(32×32)/Medium/Small(20×20)，图标尺寸自动随按钮模式适配
+- ✅ **单行横向布局**：v2.8.0 新增 enableIconRightText 属性，图标左文字右横向排列
+- ✅ **二分查找换行算法**：长文本自动换行，最多10次迭代找到最优宽度
+- ✅ **MenuButtonPopup上下分割**：Ribbon特色按钮模式，上半执行默认动作，下半弹出菜单
+
+---
+
+Ribbon界面无法用普通的tab+toolbutton组合来实现主要就是因为ribbon界面对工具按钮有特殊的渲染方式，和经典菜单按钮是有很大不同的，在没有菜单的情况下没有什么区别，但有菜单的情况下，会有明显不同
+
+差别主要通过下面这个动图可以体现，尤其是在`MenuPopup`模式下，按钮会被拆分为两部分，普通的工具栏是左右拆分，而`ribbon`的工具按钮是上下拆分
+
+![ribbon工具按钮](../../assets/pic/ribbon-toolbutton.gif)
+
+`SARibbon`的工具栏按钮为`SARibbonToolButton`，它继承`QToolButton`，重写了其绘图方法
+
+工具栏按钮分3个矩形区域，一个是icon绘制区域，一个是文本显示区域，一个是indicator绘制区域
+
+三个区域会有两种布局方案，根据文本是否换行来进行布局
+
+## 布局策略架构 (v2.7.0+)
+
+从 v2.7.0 版本开始，`SARibbonToolButton` 的布局计算被重构为**策略模式**，引入了 `SARibbonButtonLayoutStrategy` 类层次结构：
+
+```mermaid
+classDiagram
+    class SARibbonButtonLayoutStrategy {
+        <<abstract>>
+        +layout(SARibbonButtonLayoutContext*) QRectList
+        +iconRect() QRect
+        +textRect() QRect
+        +indicatorRect() QRect
+    }
+    class SARibbonLargeButtonLayoutStrategy {
+        +layout(context) QRectList
+        +iconRect() QRect
+        +textRect() QRect
+        +indicatorRect() QRect
+    }
+    class SARibbonSmallButtonLayoutStrategy {
+        +layout(context) QRectList
+        +iconRect() QRect
+        +textRect() QRect
+        +indicatorRect() QRect
+    }
+    class SARibbonButtonLayoutContext {
+        +buttonSize : QSize
+        +iconSize : QSize
+        +spacing : int
+        +wordWrap : bool
+        +hasMenu : bool
+        +text : QString
+        +fontMetrics : QFontMetrics
+    }
+    SARibbonButtonLayoutStrategy <|-- SARibbonLargeButtonLayoutStrategy
+    SARibbonButtonLayoutStrategy <|-- SARibbonSmallButtonLayoutStrategy
+    SARibbonButtonLayoutStrategy --> SARibbonButtonLayoutContext : uses
+```
+
+这种设计允许：
+
+- 更清晰的布局逻辑分离
+- 易于扩展新的按钮类型布局
+- 更好的单元测试支持
+
+布局上下文 `SARibbonButtonLayoutContext` 封装了布局计算所需的所有参数，包括间距、图标尺寸、文本换行设置等。
+
+## 按钮图标设置
+
+Ribbon的按钮有大、中、小三种按钮，大按钮的图标大小为32x32，中按钮和小按钮的图标大小为20x20
+
+`SARibbonBar`提供了如下函数用于设置大按钮和小按钮的尺寸：
+
+```cpp
+// 大按钮图标尺寸
+void setPanelLargeIconSize(const QSize& largeSize);
+// 小按钮图标尺寸
+void setPanelSmallIconSize(const QSize& smallSize);
+// 设置panel按钮的icon尺寸,第一个参数为小图标尺寸，第二个参数为大图标尺寸
+void setPanelToolButtonIconSize(const QSize& smallSize, const QSize& largeSize);
+```
+
+通过这些函数你可以在自定义布局时设置自己的图标尺寸
+
+!!! example "示例"
+    你可以运行`example/MainWindowExample`例子手动设置尺寸进行修改测试
+
+## 文字换行显示的布局方案
+
+换行模式下，文本区域会占据两行行高，office的word就是这种布局方案
+
+![office-word-wrodwrap](../../assets/pic/office-word-wrodwrap.png)
+
+可以看到，第一个pannel文本没有换行，会有一行的留白，第二个pannel文本都换行，充满了文本区域,且能看到菜单的箭头在第二行最右边
+
+对于没有换行的文本，但有菜单的情况下，indicator在第二行文本处
+
+![office-word-wrodwrap2](../../assets/pic/office-word-wrodwrap2.png)
+
+下图为`SARibbonToolButton`文本换行的布局方案
+
+![ribbon-toolbutton-largebutton](../../assets/pic/ribbon-toolbutton-largebutton.png)
+
+indicator是有菜单时的下箭头提示，在文本确切要换行时，下箭头在第二行文本的最右边，若在换行模式，但文本没有换行，第二行的位置就用来显示indicator
+
+SARibbon可以通过以下方式设置是否换行：
+
+```cpp
+//SARibbonBar::setEnableWordWrap函数设置是否换行显示文本
+ribbonBar()->setEnableWordWrap(b);
+```
+
+如果文本太长，`SARibbonToolButton`会尝试换行。从 v2.7.0 开始，换行估算算法已优化为**二分查找**，最多进行 10 次迭代，性能比原来的线性尝试更好。
+
+算法逻辑：
+
+1. 首先尝试将文本宽度减半（1/2）
+2. 使用二分查找在 [1/2, 原宽度] 范围内寻找最优宽度
+3. 确保文本能在两行内完整显示
+
+!!! warning "注意"
+    换行模式下，用户可以手动给文本换行，就是加入`\n`换行，加入`\n`的文本，`SARibbonToolButton`就不用进行换行估算
+
+!!! info "说明"
+    `SARibbonToolButton`会自动处理文字的换行，如果当前为单行显示模式，而文本里面有换行符`\n`，则`SARibbonToolButton`会忽略掉`\n`
+
+## 文字不换行显示的布局方案
+
+对于不换行的方案，最经典的就是wps的布局方案，wps-word所有文字都是一行，不存在换行的情况，indicator布置在最右边
+
+![wps-word-nowrodwrap](../../assets/pic/wps-word-nowrodwrap.png)
+
+wps的方案尤其适合显示中文文本，但英文会有可能放不下，或者英文太长，单行很难显示全，因此如果要显示英文，建议使用换行方案，要显示中文，建议使用不换行方案
+
+`SARibbonToolButton`不换行的布局方案如下
+
+![ribbon-toolbutton-largebutton-nowordwrap](../../assets/pic/ribbon-toolbutton-largebutton-nowordwrap.png)
+
+## 如何布置一个更美观的Ribbon界面
+
+如果文字都比较短，又没有菜单情况下，使用换行模式显示会有一行文本的留白，如果很多的话会不太美观
+
+![office-excel-oneline-spacing](../../assets/pic/office-excel-oneline-spacing.png)
+
+此时又如下几种方案：
+
+- 大小搭配，如2个大按钮搭配3个小按钮
+- 使用\n强制换行,尤其是4个文字的情况下可以两个两个
+
+## 按钮布局最佳实践
+
+下面总结了不同场景下的推荐布局方式：
+
+| 场景 | 推荐方式 | 说明 |
+|------|---------|------|
+| 中文界面 | 不换行模式 | 中文文字短小精悍，单行显示效果好，使用 `setEnableWordWrap(false)` |
+| 英文界面 | 换行模式 | 英文单词较长，换行能确保完整显示，使用 `setEnableWordWrap(true)` |
+| 空间极度受限 | 单行模式 + enableIconRightText | 图标左文字右横向排列，使用 `RibbonStyleCompactSingleRow` + `setEnableIconRightText(true)` |
+| 重要功能 | Large 按钮 | 大图标+文字，一眼可见 |
+| 常用功能 | Medium 按钮 | 适中大小，在三行模式下占2行 |
+| 辅助功能 | Small 按钮 | 小图标，节省空间 |
+| 一组相关操作 | ButtonGroup | 使用 `SARibbonButtonGroupWidget` 紧密排列，如对齐按钮组 |
+| 文字较短无菜单 | 大小搭配 | 2个Large + 3个Small 避免留白 |
+| 四字中文按钮 | 手动换行 | 使用 `\n` 强制两两换行，如 `"文件\n管理"` |
+
+## 单行模式下的按钮渲染 (v2.8.0+)
+
+从 v2.8.0 开始，SARibbon 新增了单行布局模式（`SingleRowMode`），在此模式下：
+
+- 所有按钮（Large/Medium/Small）都使用 Small 横向布局：图标在左侧，文字在右侧
+- `SARibbonBar::setEnableIconRightText(true)` 可以强制所有按钮使用图标左、文字右的横向布局（在非单行模式下也可使用）
+- 文字不换行，长文本会被截断
+
+启用方式：
+
+```cpp
+// 方式一：通过 setRibbonStyle 自动级联
+ribbonBar()->setRibbonStyle(SARibbonBar::RibbonStyleCompactSingleRow);
+// setRibbonStyle 在 SingleRow 模式下会自动启用 enableIconRightText
+
+// 方式二：单独启用 enableIconRightText（适用于非单行模式）
+ribbonBar()->setEnableIconRightText(true);
+```
