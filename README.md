@@ -62,7 +62,6 @@ python sgraphBuildTools/s_build_64_release.py --qt-dir C:\Qt\Qt5.12.10\5.12.10\m
 - [代码架构](sgraphDocs/ARCHITECTURE.md)
 - [完整编译工具链](sgraphDocs/BUILDING.md)
 - [测试结果](sgraphDocs/TEST_RESULTS.md)
-- [项目面试 100 问与参考回答](sgraphDocs/s_interview_100_questions.md)
 - [实现状态](sgraphDocs/s_implementation_status.md)
 - [默认快捷键](sgraphDocs/s_default_shortcuts.md)
 - [第三方组件与许可证](THIRD_PARTY_NOTICES.md)
