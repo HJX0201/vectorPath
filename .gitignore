@@ -13,7 +13,6 @@
 
 # Generated benchmark data
 /sgraphVectorBenchmark/generated/
-/sgraphVectorBenchmark/results/
 /sgraphVectorBenchmark/failures/
 
 # Python and CMake
