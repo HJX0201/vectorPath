@@ -1,5 +1,6 @@
 #include "s_cad_main_window.h"
 #include "s_cad_viewport.h"
+#include "s_icon_provider.h"
 #include "s_shortcut_dialog.h"
 #include "s_theme_manager.h"
 #include "s_vector_import_dialog.h"
@@ -45,6 +46,11 @@ QRect visibleIconBounds(const QIcon& icon, const QSize& size)
     return bounds;
 }
 
+bool isVisiblePixel(const QImage& image, int x, int y)
+{
+    return qAlpha(image.pixel(x, y)) > 0;
+}
+
 } // namespace
 
 class SWindowControlTest final : public QObject
@@ -53,6 +59,7 @@ class SWindowControlTest final : public QObject
 
   private slots:
     void initTestCase();
+    void rendersWindowsStyleControlGlyphs();
     void showsWindowControlIcons();
     void switchesMaximizeAndRestoreIcon();
     void keepsOnlyWindowControlsInTitleBar();
@@ -74,6 +81,37 @@ void SWindowControlTest::initTestCase()
     QCoreApplication::setOrganizationName(QStringLiteral("smartCadTests"));
     QCoreApplication::setApplicationName(QStringLiteral("smartCadWindowControlTests"));
     QSettings().clear();
+}
+
+void SWindowControlTest::rendersWindowsStyleControlGlyphs()
+{
+    const QColor foreground(Qt::white);
+    const auto create_image = [&foreground](SWindowControlIconType icon_type)
+    {
+        return SIconProvider::createWindowControlIcon(icon_type, foreground)
+            .pixmap(QSize(64, 64))
+            .toImage()
+            .convertToFormat(QImage::Format_ARGB32);
+    };
+
+    const QImage minimize_image = create_image(SWindowControlIconType::Minimize);
+    QVERIFY(isVisiblePixel(minimize_image, 16, 34));
+    QVERIFY(isVisiblePixel(minimize_image, 48, 34));
+    QVERIFY(!isVisiblePixel(minimize_image, 32, 28));
+
+    const QImage restore_image = create_image(SWindowControlIconType::Restore);
+    QVERIFY(isVisiblePixel(restore_image, 30, 14));
+    QVERIFY(isVisiblePixel(restore_image, 50, 34));
+    QVERIFY(isVisiblePixel(restore_image, 14, 28));
+    QVERIFY(isVisiblePixel(restore_image, 38, 50));
+    QVERIFY(!isVisiblePixel(restore_image, 26, 26));
+    QVERIFY(!isVisiblePixel(restore_image, 34, 38));
+
+    const QImage close_image = create_image(SWindowControlIconType::Close);
+    QVERIFY(isVisiblePixel(close_image, 16, 16));
+    QVERIFY(isVisiblePixel(close_image, 48, 16));
+    QVERIFY(isVisiblePixel(close_image, 32, 32));
+    QVERIFY(!isVisiblePixel(close_image, 32, 14));
 }
 
 void SWindowControlTest::showsWindowControlIcons()
