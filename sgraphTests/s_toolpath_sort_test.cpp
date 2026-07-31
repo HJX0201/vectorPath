@@ -8,7 +8,7 @@
 #include <QTemporaryDir>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SToolpathSortTest final : public QObject
@@ -241,7 +241,7 @@ void SToolpathSortTest::clockwiseArcPersistenceAndDxfDegradation()
     QCOMPARE(loaded_arc.end_angle, 90.0);
 }
 
-} // namespace smartCam
+} // namespace vectorPath
 
-QTEST_MAIN(smartCam::SToolpathSortTest)
+QTEST_MAIN(vectorPath::SToolpathSortTest)
 #include "s_toolpath_sort_test.moc"

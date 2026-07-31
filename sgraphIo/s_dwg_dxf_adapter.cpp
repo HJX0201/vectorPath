@@ -10,7 +10,7 @@
 #include <cmath>
 #include <vector>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -78,7 +78,7 @@ void writeEmptyTable(QTextStream& stream, const QString& name, const QString& ha
 
 void writeHeader(QTextStream& stream)
 {
-    writePair(stream, 999, QStringLiteral("smartCam LibreDWG R2000 interchange"));
+    writePair(stream, 999, QStringLiteral("vectorPath LibreDWG R2000 interchange"));
     writePair(stream, 0, QStringLiteral("SECTION"));
     writePair(stream, 2, QStringLiteral("HEADER"));
     writePair(stream, 9, QStringLiteral("$ACADVER"));
@@ -354,4 +354,4 @@ SResult<void> prepareLibreDwgR2000Dxf(const QString& source_path, const QString&
     return SResult<void>::success();
 }
 
-} // namespace smartCam
+} // namespace vectorPath

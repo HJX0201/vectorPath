@@ -7,7 +7,7 @@
 #include <cmath>
 #include <limits>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -399,4 +399,4 @@ std::vector<SToolpathMotion> generateToolpathMotions(
     return motions;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

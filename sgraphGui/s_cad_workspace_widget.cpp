@@ -10,7 +10,7 @@
 #include <QToolBar>
 #include <QVBoxLayout>
 
-namespace smartCam
+namespace vectorPath
 {
 
 SCadWorkspaceWidget::SCadWorkspaceWidget(QWidget* parent) : QWidget(parent)
@@ -93,4 +93,4 @@ void SCadWorkspaceWidget::updateDocumentTitle()
     m_document_tabs->setTabText(0, title);
 }
 
-} // namespace smartCam
+} // namespace vectorPath

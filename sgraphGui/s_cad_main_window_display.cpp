@@ -14,7 +14,7 @@
 #include <SARibbonCategory.h>
 #include <SARibbonPanel.h>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -157,4 +157,4 @@ void SCadMainWindow::configureViewOptions(SARibbonCategory* view_category)
     display_panel->addLargeAction(display_action, QToolButton::InstantPopup);
 }
 
-} // namespace smartCam
+} // namespace vectorPath

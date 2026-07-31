@@ -6,7 +6,7 @@
 #include <QStringList>
 #include <vector>
 
-namespace smartCam
+namespace vectorPath
 {
 
 enum class SVectorFillRule
@@ -38,4 +38,4 @@ struct SSvgVectorData
     QStringList warnings;
 };
 
-} // namespace smartCam
+} // namespace vectorPath

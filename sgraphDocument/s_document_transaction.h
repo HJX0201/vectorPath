@@ -9,7 +9,7 @@
 #include <optional>
 #include <vector>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SCadDocument;
@@ -72,4 +72,4 @@ class SDocumentTransaction final
     bool m_is_committed = false;
 };
 
-} // namespace smartCam
+} // namespace vectorPath

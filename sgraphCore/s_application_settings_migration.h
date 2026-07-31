@@ -2,9 +2,9 @@
 
 class QSettings;
 
-namespace smartCam
+namespace vectorPath
 {
 
 int migrateMissingApplicationSettings(QSettings& legacy_settings, QSettings& current_settings);
 
-} // namespace smartCam
+} // namespace vectorPath

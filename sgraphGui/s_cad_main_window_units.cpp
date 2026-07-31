@@ -12,7 +12,7 @@
 #include <QSpinBox>
 #include <QVBoxLayout>
 
-namespace smartCam
+namespace vectorPath
 {
 
 void SCadMainWindow::showUnitsDialog()
@@ -105,4 +105,4 @@ void SCadMainWindow::showUnitsDialog()
     }
 }
 
-} // namespace smartCam
+} // namespace vectorPath

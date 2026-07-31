@@ -14,7 +14,7 @@
 #include <limits>
 #include <utility>
 
-namespace smartCam
+namespace vectorPath
 {
 
 void SCadViewport::acceptPoint(const SPoint2d& world_point)
@@ -633,4 +633,4 @@ void SCadViewport::acceptPoint(const SPoint2d& world_point)
     update();
 }
 
-} // namespace smartCam
+} // namespace vectorPath

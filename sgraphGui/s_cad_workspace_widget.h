@@ -7,7 +7,7 @@ class QTabBar;
 class QTabWidget;
 class QToolBar;
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SCadDocument;
@@ -33,4 +33,4 @@ class SCadWorkspaceWidget final : public QWidget
     QToolBar* m_quick_operation_bar = nullptr;
 };
 
-} // namespace smartCam
+} // namespace vectorPath

@@ -14,7 +14,7 @@
 #include <QUuid>
 #include <algorithm>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -131,7 +131,7 @@ SResult<QString> SDocumentRecoveryManager::autosaveNow()
     const qint64 timestamp = QDateTime::currentMSecsSinceEpoch();
     const QString base_name = QStringLiteral("%1_%2").arg(recoveryKey()).arg(timestamp);
     SRecoveryEntry entry;
-    entry.recovery_file_path = directory.filePath(base_name + QStringLiteral(".smartcam.sv$"));
+    entry.recovery_file_path = directory.filePath(base_name + QStringLiteral(".vectorpath.sv$"));
     entry.metadata_file_path = directory.filePath(base_name + QStringLiteral(".recovery.json"));
     entry.original_file_path = normalizedSourcePath(m_document->filePath());
     entry.display_name = m_document->displayName();
@@ -241,4 +241,4 @@ void SDocumentRecoveryManager::pruneRecoveries(const QString& original_file_path
     }
 }
 
-} // namespace smartCam
+} // namespace vectorPath

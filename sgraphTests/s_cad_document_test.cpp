@@ -9,7 +9,7 @@
 #include <QTemporaryDir>
 #include <QtTest>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -53,6 +53,7 @@ class SCadDocumentTest final : public QObject
     void transactionUndoRedo();
     void entityCopyUndoRedo();
     void nativeFormatRoundTrip();
+    void legacySmartCamExtensionRoundTrip();
     void legacySmartCadExtensionRoundTrip();
     void dxfRoundTrip();
     void modificationUndoRedo();
@@ -105,7 +106,7 @@ void SCadDocumentTest::nativeFormatRoundTrip()
 {
     QTemporaryDir temporary_directory;
     QVERIFY(temporary_directory.isValid());
-    const QString file_path = temporary_directory.filePath(QStringLiteral("round_trip.smartcam"));
+    const QString file_path = temporary_directory.filePath(QStringLiteral("round_trip.vectorpath"));
 
     SCadDocument source_document;
     QVERIFY(source_document.addLayer(QStringLiteral("ANNOTATION")));
@@ -134,7 +135,7 @@ void SCadDocumentTest::nativeFormatRoundTrip()
     transaction->addCircle({3.0, 7.0}, 12.5);
     transaction->addArc({5.0, 6.0}, 8.0, 15.0, 145.0);
     transaction->addPolyline({{0.0, 0.0}, {10.0, 0.0}, {10.0, 10.0}}, true);
-    transaction->addText({2.0, 3.0}, QStringLiteral("smartCam"));
+    transaction->addText({2.0, 3.0}, QStringLiteral("vectorPath"));
     transaction->addLinearDimension({0.0, 0.0}, {10.0, 0.0}, {0.0, 3.0});
     transaction->addHatch({{0.0, 0.0}, {10.0, 0.0}, {10.0, 10.0}});
     transaction->commit();
@@ -187,6 +188,27 @@ void SCadDocumentTest::legacySmartCadExtensionRoundTrip()
     QVERIFY2(load_result.isSuccess(), qPrintable(load_result.errorMessage()));
     QCOMPARE(loaded_document.entities().size(), std::size_t(1));
     QCOMPARE(loaded_document.entities().front().type, SEntityType::Line);
+}
+
+void SCadDocumentTest::legacySmartCamExtensionRoundTrip()
+{
+    QTemporaryDir temporary_directory;
+    QVERIFY(temporary_directory.isValid());
+    const QString file_path =
+        temporary_directory.filePath(QStringLiteral("legacy_extension.smartcam"));
+
+    SCadDocument source_document;
+    auto transaction = source_document.beginTransaction(QStringLiteral("smartCam extension"));
+    transaction->addCircle({5.0, 6.0}, 7.0);
+    transaction->commit();
+    const SResult<void> save_result = source_document.save(file_path);
+    QVERIFY2(save_result.isSuccess(), qPrintable(save_result.errorMessage()));
+
+    SCadDocument loaded_document;
+    const SResult<void> load_result = loaded_document.load(file_path);
+    QVERIFY2(load_result.isSuccess(), qPrintable(load_result.errorMessage()));
+    QCOMPARE(loaded_document.entities().size(), std::size_t(1));
+    QCOMPARE(loaded_document.entities().front().type, SEntityType::Circle);
 }
 
 void SCadDocumentTest::dxfRoundTrip()
@@ -468,7 +490,7 @@ void SCadDocumentTest::drawingSettingsUndoRedoAndFormatting()
     QCOMPARE(formatAngleValue(37.5125, settings), QStringLiteral("37°30′45.0″"));
 }
 
-} // namespace smartCam
+} // namespace vectorPath
 
-QTEST_APPLESS_MAIN(smartCam::SCadDocumentTest)
+QTEST_APPLESS_MAIN(vectorPath::SCadDocumentTest)
 #include "s_cad_document_test.moc"

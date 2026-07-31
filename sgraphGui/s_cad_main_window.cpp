@@ -49,7 +49,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 SCadMainWindow::SCadMainWindow(SThemeManager& theme_manager, QWidget* parent)
     : SARibbonMainWindow(
@@ -519,7 +519,7 @@ void SCadMainWindow::createRibbon()
         [this]()
         {
             SDialogService::information(
-                this, tr("smartCam 使用帮助"),
+                this, tr("vectorPath 使用帮助"),
                 tr("绘图：LINE/L、CIRCLE/C、ELLIPSE/EL、SPLINE/SPL、PLINE/PL、ARC/A、RECTANG/REC\n"
                    "标准图形：STAR、TRIANGLE、PENTAGON、HEXAGON、OCTAGON、DIAMOND\n"
                    "修改：MOVE/M、COPY/CO、ROTATE/RO、SCALE/SC、MIRROR/MI、"
@@ -575,4 +575,4 @@ void SCadMainWindow::updateToolButtonHighlight(SToolMode current_mode)
     }
 }
 
-} // namespace smartCam
+} // namespace vectorPath

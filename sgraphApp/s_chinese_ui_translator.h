@@ -2,7 +2,7 @@
 
 #include <QTranslator>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SChineseUiTranslator final : public QTranslator
@@ -14,4 +14,4 @@ class SChineseUiTranslator final : public QTranslator
                       const char* disambiguation = nullptr, int count = -1) const override;
 };
 
-} // namespace smartCam
+} // namespace vectorPath

@@ -5,7 +5,7 @@
 
 #include <algorithm>
 
-namespace smartCam
+namespace vectorPath
 {
 
 void SCadMainWindow::runDocumentAudit(bool repair)
@@ -44,4 +44,4 @@ void SCadMainWindow::runDocumentAudit(bool repair)
     }
 }
 
-} // namespace smartCam
+} // namespace vectorPath

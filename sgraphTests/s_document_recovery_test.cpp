@@ -6,7 +6,7 @@
 #include <QTemporaryDir>
 #include <QtTest>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SDocumentRecoveryTest final : public QObject
@@ -81,7 +81,7 @@ void SDocumentRecoveryTest::namedDocumentKeepsActivePathAndModifiedState()
     QCOMPARE(manager.discardRecoveriesForSource(drawing_path), 1);
 }
 
-} // namespace smartCam
+} // namespace vectorPath
 
-QTEST_MAIN(smartCam::SDocumentRecoveryTest)
+QTEST_MAIN(vectorPath::SDocumentRecoveryTest)
 #include "s_document_recovery_test.moc"

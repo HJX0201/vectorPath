@@ -9,10 +9,10 @@
 
 class QTextStream;
 
-namespace smartCam
+namespace vectorPath
 {
 
 SResult<SHatchEntity> readDxfHatch(const std::vector<SDxfPair>& entity_pairs);
 void writeDxfHatch(QTextStream& stream, const SEntityRecord& entity);
 
-} // namespace smartCam
+} // namespace vectorPath

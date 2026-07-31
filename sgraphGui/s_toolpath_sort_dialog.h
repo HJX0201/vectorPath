@@ -6,7 +6,7 @@
 
 class QCheckBox;
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SToolpathSortDialog final : public QDialog
@@ -29,4 +29,4 @@ class SToolpathSortDialog final : public QDialog
     QCheckBox* m_reverse_check = nullptr;
 };
 
-} // namespace smartCam
+} // namespace vectorPath

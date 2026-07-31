@@ -4,7 +4,7 @@
 #include <QSet>
 #include <algorithm>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -258,4 +258,4 @@ int SCadDocument::mergeLayersByColor()
     return merged_count;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

@@ -6,7 +6,7 @@
 #include <QTemporaryDir>
 #include <QtTest>
 
-using namespace smartCam;
+using namespace vectorPath;
 
 class SDwgCodecTest final : public QObject
 {

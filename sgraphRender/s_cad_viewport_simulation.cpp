@@ -3,7 +3,7 @@
 #include <QPainter>
 #include <algorithm>
 
-namespace smartCam
+namespace vectorPath
 {
 
 SPoint2d SCadViewport::visibleWorldBottomLeft() const
@@ -72,4 +72,4 @@ void SCadViewport::drawSimulationOverlay(QPainter& painter)
     painter.restore();
 }
 
-} // namespace smartCam
+} // namespace vectorPath

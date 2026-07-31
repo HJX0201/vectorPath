@@ -7,7 +7,7 @@
 #include <QString>
 #include <vector>
 
-namespace smartCam
+namespace vectorPath
 {
 
 enum class SPlotStyleTableType
@@ -54,4 +54,4 @@ class SPlotStyleTable final
     bool m_force_grayscale = false;
 };
 
-} // namespace smartCam
+} // namespace vectorPath

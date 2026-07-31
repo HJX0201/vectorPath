@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SArrayOperationsTest final : public QObject
@@ -199,7 +199,7 @@ void SArrayOperationsTest::associativeArrayPersistence()
                 .contains(QStringLiteral("关联阵列")));
 }
 
-} // namespace smartCam
+} // namespace vectorPath
 
-QTEST_MAIN(smartCam::SArrayOperationsTest)
+QTEST_MAIN(vectorPath::SArrayOperationsTest)
 #include "s_array_operations_test.moc"

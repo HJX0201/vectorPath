@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.3.0-alpha.1 - 2026-07-31
+
+- 产品由 smartCam 完整改名为 vectorPath，统一窗口标题、C++ 命名空间、CMake 项目、
+  `vectorPath.exe`、运行清单和发布包名称。
+- 新建原生文档默认使用 `.vectorpath`，继续兼容 `.smartcam`、`.smartcad`、
+  `SMCAD001` magic、版本 24 清单和旧恢复/打印样式标识。
+- 首次启动按优先级迁移 `smartCamLearning/smartCam` 和
+  `smartCadLearning/smartGraphics` 中缺失的设置，不覆盖已有 vectorPath 设置。
+- CMake 测试开关改为 `VECTORPATH_BUILD_TESTS`，旧 `SMARTCAM_BUILD_TESTS` 和
+  `SMARTCAD_BUILD_TESTS` 保留一个版本的弃用兼容映射。
+- 增加 `.smartcam` 向后兼容和两代旧设置迁移优先级测试；发布 Windows x64
+  `v0.3.0-alpha.1` 预发布包。
+
 ## 0.2.0-alpha.1 - 2026-07-31
 
 - 产品由 smartGraphics 完整改名为 smartCam，统一窗口标题、C++ 命名空间、CMake 项目、

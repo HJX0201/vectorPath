@@ -4,7 +4,7 @@
 #include <QPolygonF>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -142,4 +142,4 @@ void SCadViewport::drawObjectSnapMarker(QPainter& painter)
     painter.restore();
 }
 
-} // namespace smartCam
+} // namespace vectorPath

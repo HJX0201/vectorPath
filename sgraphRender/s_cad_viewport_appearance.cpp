@@ -1,6 +1,6 @@
 #include "s_cad_viewport.h"
 
-namespace smartCam
+namespace vectorPath
 {
 
 void SCadViewport::setAppearance(const QColor& canvas_color, const QColor& grid_color,
@@ -13,4 +13,4 @@ void SCadViewport::setAppearance(const QColor& canvas_color, const QColor& grid_
     update();
 }
 
-} // namespace smartCam
+} // namespace vectorPath

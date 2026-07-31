@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -147,4 +147,4 @@ void SCadDocument::commitTextStyleChange(QString label, std::vector<STextStyleRe
     emitDocumentState();
 }
 
-} // namespace smartCam
+} // namespace vectorPath

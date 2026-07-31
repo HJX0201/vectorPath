@@ -3,7 +3,7 @@
 #include <QPainter>
 #include <QPainterPath>
 
-namespace smartCam
+namespace vectorPath
 {
 
 bool drawImportIcon(QPainter& painter, SIconType icon_type,
@@ -63,4 +63,4 @@ bool drawImportIcon(QPainter& painter, SIconType icon_type,
     return true;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

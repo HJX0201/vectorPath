@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-namespace smartCam
+namespace vectorPath
 {
 
 QStringList commandCompletionEntries()
@@ -224,4 +224,4 @@ QStringList commandCompletionsForPrefix(const QString& prefix)
     return matches;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

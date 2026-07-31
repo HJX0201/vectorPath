@@ -4,7 +4,7 @@
 
 #include <QDataStream>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -102,4 +102,4 @@ SResult<SHatchEntity> readHatchData(QDataStream& stream, quint32 format_version)
     return SResult<SHatchEntity>::success(std::move(hatch));
 }
 
-} // namespace smartCam
+} // namespace vectorPath

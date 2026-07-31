@@ -5,7 +5,7 @@
 #include <utility>
 #include <vector>
 
-namespace smartCam
+namespace vectorPath
 {
 
 bool bulgeArc(const SPoint2d& start_point, const SPoint2d& end_point, double bulge,
@@ -130,4 +130,4 @@ std::vector<SPoint2d> polylineSegmentOutline(const SPolylineEntity& polyline,
     return outline;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

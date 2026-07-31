@@ -4,7 +4,7 @@
 
 #include <QString>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SCadDocument;
@@ -12,4 +12,4 @@ class SCadDocument;
 SResult<void> prepareLibreDwgR2000Dxf(const QString& source_path, const QString& target_path,
                                       const SCadDocument& document);
 
-} // namespace smartCam
+} // namespace vectorPath

@@ -4,7 +4,7 @@
 #include "s_document_transaction.h"
 #include "s_standard_shape.h"
 
-namespace smartCam
+namespace vectorPath
 {
 
 void SCadViewport::setStandardShapeType(SStandardShapeType shape_type)
@@ -45,4 +45,4 @@ void SCadViewport::acceptStandardShapePoint(const SPoint2d& world_point)
     update();
 }
 
-} // namespace smartCam
+} // namespace vectorPath

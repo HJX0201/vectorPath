@@ -1,6 +1,6 @@
 # 第三方组件与许可证
 
-第三方源码和运行组件统一位于 `sgraphThirdParty`，其许可证优先于 smartCam 自研
+第三方源码和运行组件统一位于 `sgraphThirdParty`，其许可证优先于 vectorPath 自研
 代码许可证。
 
 | 组件 | 版本 | 用途 | 许可证 |

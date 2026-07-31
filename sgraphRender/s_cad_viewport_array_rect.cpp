@@ -9,7 +9,7 @@
 #include <cmath>
 #include <utility>
 
-namespace smartCam
+namespace vectorPath
 {
 
 std::vector<SEntityRecord> rectangularArrayEntities(const std::vector<SEntityRecord>& sources,
@@ -161,4 +161,4 @@ void SCadViewport::drawRectangularArrayPreview(QPainter& painter)
     }
 }
 
-} // namespace smartCam
+} // namespace vectorPath

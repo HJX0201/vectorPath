@@ -4,7 +4,7 @@
 #include <QtTest>
 #include <limits>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SDocumentAuditTest final : public QObject
@@ -64,7 +64,7 @@ void SDocumentAuditTest::cleanDocumentReport()
     QCOMPARE(report.scanned_entity_count, 2);
 }
 
-} // namespace smartCam
+} // namespace vectorPath
 
-QTEST_MAIN(smartCam::SDocumentAuditTest)
+QTEST_MAIN(vectorPath::SDocumentAuditTest)
 #include "s_document_audit_test.moc"

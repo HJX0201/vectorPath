@@ -3,7 +3,7 @@
 #include <QPainter>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 
 void SCadViewport::drawGrid(QPainter& painter)
@@ -76,4 +76,4 @@ void SCadViewport::drawNavigationOverlay(QPainter& painter)
     painter.restore();
 }
 
-} // namespace smartCam
+} // namespace vectorPath

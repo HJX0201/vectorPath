@@ -7,7 +7,7 @@
 #include <QTemporaryDir>
 #include <QtTest>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SAnnotationTest final : public QObject
@@ -151,7 +151,7 @@ void SAnnotationTest::mtextDxfCompatibility()
              QStringLiteral("Rich text"));
 }
 
-} // namespace smartCam
+} // namespace vectorPath
 
-QTEST_MAIN(smartCam::SAnnotationTest)
+QTEST_MAIN(vectorPath::SAnnotationTest)
 #include "s_annotation_test.moc"

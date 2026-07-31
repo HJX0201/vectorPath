@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Shared Windows build driver for smartCam."""
+"""Shared Windows build driver for vectorPath."""
 
 from __future__ import annotations
 
@@ -16,8 +16,8 @@ import zipfile
 
 
 QT_VERSION = "5.12.10"
-PRODUCT_NAME = "smartCam"
-PRODUCT_VERSION = "0.2.0-alpha.1"
+PRODUCT_NAME = "vectorPath"
+PRODUCT_VERSION = "0.3.0-alpha.1"
 RUNTIME_DIRECTORIES = (
     "iconengines",
     "imageformats",
@@ -332,7 +332,7 @@ def create_package(build_dir: Path, bits: str, configuration: str) -> Path:
 
 
 def parse_arguments() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="构建 smartCam")
+    parser = argparse.ArgumentParser(description="构建 vectorPath")
     parser.add_argument("--jobs", default="auto", help="并行数，默认 auto")
     parser.add_argument("--qt-dir", help="显式指定 Qt 套件根目录")
     parser.add_argument("--clean", action="store_true", help="先删除对应输出目录")
@@ -372,7 +372,7 @@ def run_build(bits: str, configuration: str) -> int:
             f"-DCMAKE_MAKE_PROGRAM={ninja}",
             f"-DCMAKE_BUILD_TYPE={configuration}",
             f"-DCMAKE_PREFIX_PATH={qt_dir}",
-            f"-DSMARTCAM_BUILD_TESTS={tests}",
+            f"-DVECTORPATH_BUILD_TESTS={tests}",
         ],
         check=True,
         env=environment,

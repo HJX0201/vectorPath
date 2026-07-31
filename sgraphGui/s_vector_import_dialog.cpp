@@ -18,7 +18,7 @@
 #include <cmath>
 #include <variant>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -420,4 +420,4 @@ SVectorImportSettings SVectorImportDialog::settings() const
     return result;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

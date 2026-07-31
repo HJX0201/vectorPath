@@ -10,7 +10,7 @@
 #include <cmath>
 #include <utility>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -435,4 +435,4 @@ void SCadViewport::drawDimensionEntity(QPainter& painter, const SLinearDimension
     }
 }
 
-} // namespace smartCam
+} // namespace vectorPath

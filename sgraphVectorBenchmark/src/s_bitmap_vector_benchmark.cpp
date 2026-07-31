@@ -24,7 +24,7 @@
 #include <Psapi.h>
 #endif
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -209,34 +209,34 @@ SBitmapBenchmarkOptions parseOptions(QCoreApplication& application)
 }
 
 } // namespace
-} // namespace smartCam
+} // namespace vectorPath
 
 int main(int argc, char* argv[])
 {
     QCoreApplication application(argc, argv);
     application.setApplicationName(
         QStringLiteral("smartBitmapVectorBenchmark"));
-    const smartCam::SBitmapBenchmarkOptions options =
-        smartCam::parseOptions(application);
+    const vectorPath::SBitmapBenchmarkOptions options =
+        vectorPath::parseOptions(application);
     qInfo().noquote() << QStringLiteral("生成 %1 张测试图片：%2")
                              .arg(options.case_count)
                              .arg(options.output_directory);
-    const auto generated = smartCam::generateBitmapBenchmarkCases(options);
+    const auto generated = vectorPath::generateBitmapBenchmarkCases(options);
     if (!generated)
     {
         qCritical().noquote() << generated.errorMessage();
         return 1;
     }
 
-    std::vector<smartCam::SBitmapBenchmarkCaseResult> results;
+    std::vector<vectorPath::SBitmapBenchmarkCaseResult> results;
     results.reserve(generated.value().size());
     int failure_count = 0;
     for (std::size_t index = 0; index < generated.value().size(); ++index)
     {
-        const smartCam::SBitmapBenchmarkCase& test_case =
+        const vectorPath::SBitmapBenchmarkCase& test_case =
             generated.value()[index];
         const QImage source(test_case.file_path);
-        smartCam::SBitmapBenchmarkCaseResult case_result;
+        vectorPath::SBitmapBenchmarkCaseResult case_result;
         case_result.test_case = test_case;
         if (source.isNull())
         {
@@ -246,14 +246,14 @@ int main(int argc, char* argv[])
             ++failure_count;
             continue;
         }
-        smartCam::SBitmapVectorSettings flood_settings;
+        vectorPath::SBitmapVectorSettings flood_settings;
         flood_settings.ignore_background = false;
-        smartCam::SBitmapVectorSettings serial_settings = flood_settings;
+        vectorPath::SBitmapVectorSettings serial_settings = flood_settings;
         serial_settings.worker_count = 1;
-        smartCam::SBitmapVectorSettings parallel_settings = flood_settings;
+        vectorPath::SBitmapVectorSettings parallel_settings = flood_settings;
         parallel_settings.worker_count = options.thread_count;
 
-        std::array<smartCam::SMeasuredResult, 3> measured;
+        std::array<vectorPath::SMeasuredResult, 3> measured;
         std::array<int, 3> order{0, 1, 2};
         std::rotate(order.begin(),
                     order.begin() + static_cast<int>(index % 3),
@@ -262,31 +262,31 @@ int main(int argc, char* argv[])
         {
             if (algorithm == 0)
             {
-                measured[0] = smartCam::measure(
+                measured[0] = vectorPath::measure(
                     options.repetitions,
                     [&]()
                     {
-                        return smartCam::bitmapToVectorFloodFill(
+                        return vectorPath::bitmapToVectorFloodFill(
                             source, flood_settings);
                     });
             }
             else if (algorithm == 1)
             {
-                measured[1] = smartCam::measure(
+                measured[1] = vectorPath::measure(
                     options.repetitions,
                     [&]()
                     {
-                        return smartCam::bitmapToVectorResult(
+                        return vectorPath::bitmapToVectorResult(
                             source, serial_settings);
                     });
             }
             else
             {
-                measured[2] = smartCam::measure(
+                measured[2] = vectorPath::measure(
                     options.repetitions,
                     [&]()
                     {
-                        return smartCam::bitmapToVectorResult(
+                        return vectorPath::bitmapToVectorResult(
                             source, parallel_settings);
                     });
             }
@@ -298,8 +298,8 @@ int main(int argc, char* argv[])
             measured[1].summary.success &&
             measured[2].summary.success)
         {
-            const smartCam::SBitmapValidationResult validation =
-                smartCam::validateBitmapBenchmarkCase(
+            const vectorPath::SBitmapValidationResult validation =
+                vectorPath::validateBitmapBenchmarkCase(
                     source, measured[0].value,
                     measured[1].value, measured[2].value);
             case_result.passed = validation.passed;
@@ -309,7 +309,7 @@ int main(int argc, char* argv[])
             case_result.run_parallel.contour_hash = validation.parallel_hash;
             if (!validation.passed)
             {
-                smartCam::saveFailureArtifacts(
+                vectorPath::saveFailureArtifacts(
                     options, test_case, source, measured[0], measured[1],
                     measured[2], validation.difference);
             }
@@ -319,7 +319,7 @@ int main(int argc, char* argv[])
             case_result.validation_error =
                 measured[0].summary.error + measured[1].summary.error +
                 measured[2].summary.error;
-            smartCam::saveFailureArtifacts(
+            vectorPath::saveFailureArtifacts(
                 options, test_case, source, measured[0], measured[1],
                 measured[2], {});
         }
@@ -338,14 +338,14 @@ int main(int argc, char* argv[])
         }
     }
 
-    const auto report = smartCam::writeBitmapBenchmarkReport(
-        options, results, smartCam::peakWorkingSet());
+    const auto report = vectorPath::writeBitmapBenchmarkReport(
+        options, results, vectorPath::peakWorkingSet());
     if (!report)
     {
         qCritical().noquote() << report.errorMessage();
         return 1;
     }
-    if (!smartCam::removeTemporaryArtifacts(options.output_directory))
+    if (!vectorPath::removeTemporaryArtifacts(options.output_directory))
     {
         qCritical().noquote()
             << QStringLiteral("无法清理本次测试生成的临时文件。");

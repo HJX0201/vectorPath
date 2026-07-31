@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -597,4 +597,4 @@ void SCadDocument::emitDocumentState()
     emit historyChanged(canUndo(), canRedo());
 }
 
-} // namespace smartCam
+} // namespace vectorPath

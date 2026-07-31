@@ -13,7 +13,7 @@
 #include <utility>
 #include <vector>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -115,7 +115,7 @@ void writeLayerTable(QTextStream& stream, const SCadDocument& document)
 
 QString SDxfCodec::id() const
 {
-    return QStringLiteral("smartCam.dxf.ascii");
+    return QStringLiteral("vectorPath.dxf.ascii");
 }
 
 QString SDxfCodec::displayName() const
@@ -258,4 +258,4 @@ SResult<SFileCompatibilityReport> SDxfCodec::write(const QString& file_path,
     return SResult<SFileCompatibilityReport>::success(std::move(report));
 }
 
-} // namespace smartCam
+} // namespace vectorPath

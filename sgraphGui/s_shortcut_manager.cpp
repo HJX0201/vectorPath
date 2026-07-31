@@ -4,7 +4,7 @@
 #include <QSettings>
 #include <algorithm>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -181,4 +181,4 @@ void SShortcutManager::applySequence(SShortcutBinding& binding,
     }
 }
 
-} // namespace smartCam
+} // namespace vectorPath

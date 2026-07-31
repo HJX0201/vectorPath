@@ -6,7 +6,7 @@
 #include <QtTest>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SGripEditTest final : public QObject
@@ -211,7 +211,7 @@ void SGripEditTest::lengthenGeometryAndUndo()
     QCOMPARE(std::get<SLineEntity>(document.entities().front().geometry).end_point.x, 10.0);
 }
 
-} // namespace smartCam
+} // namespace vectorPath
 
-QTEST_MAIN(smartCam::SGripEditTest)
+QTEST_MAIN(vectorPath::SGripEditTest)
 #include "s_grip_edit_test.moc"

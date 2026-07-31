@@ -7,7 +7,7 @@
 #include <iterator>
 #include <optional>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -185,4 +185,4 @@ void writeDxfHatch(QTextStream& stream, const SEntityRecord& entity)
     }
 }
 
-} // namespace smartCam
+} // namespace vectorPath

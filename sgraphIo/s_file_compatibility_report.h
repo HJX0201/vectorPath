@@ -3,7 +3,7 @@
 #include <QStringList>
 #include <cstddef>
 
-namespace smartCam
+namespace vectorPath
 {
 
 struct SFileCompatibilityReport
@@ -19,4 +19,4 @@ struct SFileCompatibilityReport
     }
 };
 
-} // namespace smartCam
+} // namespace vectorPath

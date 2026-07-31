@@ -15,7 +15,7 @@
 #include <optional>
 #include <vector>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SDocumentTransaction;
@@ -177,4 +177,4 @@ class SCadDocument final : public QObject
     bool m_is_modified = false;
 };
 
-} // namespace smartCam
+} // namespace vectorPath

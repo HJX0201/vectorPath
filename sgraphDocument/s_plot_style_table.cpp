@@ -8,7 +8,7 @@
 #include <cmath>
 #include <limits>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -301,12 +301,13 @@ SResult<SPlotStyleTable> SPlotStyleTable::fromReference(const QString& reference
     {
         return SResult<SPlotStyleTable>::success(grayscaleTable());
     }
-    if (reference.compare(QLatin1String("smartCam.stb"), Qt::CaseInsensitive) == 0
+    if (reference.compare(QLatin1String("vectorPath.stb"), Qt::CaseInsensitive) == 0
+        || reference.compare(QLatin1String("smartCam.stb"), Qt::CaseInsensitive) == 0
         || reference.compare(QLatin1String("smartCad.stb"), Qt::CaseInsensitive) == 0)
     {
         SPlotStyleTable table;
         table.m_type = SPlotStyleTableType::Named;
-        table.m_description = QObject::tr("smartCam 默认命名打印样式");
+        table.m_description = QObject::tr("vectorPath 默认命名打印样式");
         table.m_styles.push_back({0, QStringLiteral("Normal")});
         return SResult<SPlotStyleTable>::success(std::move(table));
     }
@@ -404,4 +405,4 @@ SPlotStyleTable SPlotStyleTable::grayscaleTable()
     return table;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

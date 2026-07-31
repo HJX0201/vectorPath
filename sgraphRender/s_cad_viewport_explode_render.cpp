@@ -4,7 +4,7 @@
 
 #include <QPainter>
 
-namespace smartCam
+namespace vectorPath
 {
 
 void SCadViewport::drawExplodePreview(QPainter& painter)
@@ -29,4 +29,4 @@ void SCadViewport::drawExplodePreview(QPainter& painter)
     }
 }
 
-} // namespace smartCam
+} // namespace vectorPath

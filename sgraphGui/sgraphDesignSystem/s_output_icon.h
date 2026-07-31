@@ -4,11 +4,11 @@
 
 class QPainter;
 
-namespace smartCam
+namespace vectorPath
 {
 
 enum class SIconType;
 
 void drawOutputIcon(QPainter& painter, SIconType icon_type, const QColor& accent_color);
 
-} // namespace smartCam
+} // namespace vectorPath

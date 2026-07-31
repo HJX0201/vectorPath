@@ -4,7 +4,7 @@
 #include "s_command_line_widget.h"
 #include "s_coordinate_input.h"
 
-namespace smartCam
+namespace vectorPath
 {
 
 bool SCadMainWindow::executeCoordinateInput(const QString& command)
@@ -39,4 +39,4 @@ void SCadMainWindow::previewCommandInput(const QString& command)
     m_workspace->viewport()->clearCoordinateInputPreview();
 }
 
-} // namespace smartCam
+} // namespace vectorPath

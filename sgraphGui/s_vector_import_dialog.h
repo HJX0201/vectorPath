@@ -16,7 +16,7 @@ class QDoubleSpinBox;
 class QLabel;
 class QPushButton;
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SVectorImportDialog final : public QDialog
@@ -60,4 +60,4 @@ class SVectorImportDialog final : public QDialog
     bool m_is_fill_only = false;
 };
 
-} // namespace smartCam
+} // namespace vectorPath

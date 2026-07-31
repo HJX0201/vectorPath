@@ -6,7 +6,7 @@
 
 #include <utility>
 
-namespace smartCam
+namespace vectorPath
 {
 
 void SCadViewport::completeMove(const SPoint2d& destination)
@@ -233,4 +233,4 @@ void SCadViewport::completePolyline(bool is_closed)
     update();
 }
 
-} // namespace smartCam
+} // namespace vectorPath

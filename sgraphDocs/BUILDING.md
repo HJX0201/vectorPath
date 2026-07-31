@@ -1,4 +1,4 @@
-# 编译 smartCam
+# 编译 vectorPath
 
 ## 支持矩阵
 
@@ -9,7 +9,7 @@
 | 64 位 | Debug | `s_build_64_debug.py` | `build/64/Debug` |
 | 64 位 | Release | `s_build_64_release.py` | `build/64/Release` |
 
-四个入口均位于 `sgraphBuildTools`。生成的主程序统一名为 `smartCam.exe`。
+四个入口均位于 `sgraphBuildTools`。生成的主程序统一名为 `vectorPath.exe`。
 
 ## 必需工具
 
@@ -53,7 +53,7 @@ python sgraphBuildTools/s_build_32_debug.py --clean --jobs 8
 - `--jobs auto|N`：并行编译数量。
 - `--run`：通过测试后启动应用。
 - `--package`：生成便携 ZIP 和 SHA-256 文件；64 位 Release 包名为
-  `smartCam-0.2.0-alpha.1-windows-x64.zip`。
+  `vectorPath-0.3.0-alpha.1-windows-x64.zip`。
 - `--no-test`：仅在明确不需要测试时使用。
 
 构建完成后脚本运行 CTest，并生成 `runtime_manifest.json`，记录运行文件的大小、架构、
@@ -83,8 +83,8 @@ cmake --build build/64/Release --parallel
 ctest --test-dir build/64/Release --output-on-failure
 ```
 
-新项目应使用 `SMARTCAM_BUILD_TESTS` 控制测试构建。旧的 `SMARTCAD_BUILD_TESTS`
-仍会映射到新变量并显示弃用提示，仅用于一个版本的构建兼容。
+新项目应使用 `VECTORPATH_BUILD_TESTS` 控制测试构建。旧的 `SMARTCAM_BUILD_TESTS`、
+`SMARTCAD_BUILD_TESTS` 仍会映射到新变量并显示弃用提示，仅用于一个版本的构建兼容。
 
 ## 常见问题
 

@@ -4,7 +4,7 @@
 
 #include <QDataStream>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -63,4 +63,4 @@ SResult<SLinearDimensionEntity> readDimensionData(QDataStream& stream, quint32 f
     return SResult<SLinearDimensionEntity>::success(std::move(dimension));
 }
 
-} // namespace smartCam
+} // namespace vectorPath

@@ -8,7 +8,7 @@
 #include <cmath>
 #include <utility>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -267,4 +267,4 @@ void SCadViewport::drawFilletPreview(QPainter& painter)
     drawEntityGeometry(painter, arc_result, QColor(105, 219, 142, 72));
 }
 
-} // namespace smartCam
+} // namespace vectorPath

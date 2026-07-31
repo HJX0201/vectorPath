@@ -9,7 +9,7 @@
 #include <cmath>
 #include <utility>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -245,4 +245,4 @@ void SCadViewport::drawPathArrayPreview(QPainter& painter)
     }
 }
 
-} // namespace smartCam
+} // namespace vectorPath

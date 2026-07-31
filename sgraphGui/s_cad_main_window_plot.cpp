@@ -16,7 +16,7 @@
 #include <QStandardPaths>
 #include <QVBoxLayout>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -208,4 +208,4 @@ void SCadMainWindow::showPlotStyleManager()
     dialog.exec();
 }
 
-} // namespace smartCam
+} // namespace vectorPath

@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -423,4 +423,4 @@ bool readAssociativeArrayData(QDataStream& stream, std::optional<SAssociativeArr
     return true;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

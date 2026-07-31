@@ -3,7 +3,7 @@
 #include <QtTest>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -67,7 +67,7 @@ void SPolygonBooleanTest::clipsOverlappingRectangles()
     QVERIFY(std::abs(pathsArea(result.value()) - expected_area) < 1.0e-6);
 }
 
-} // namespace smartCam
+} // namespace vectorPath
 
-QTEST_APPLESS_MAIN(smartCam::SPolygonBooleanTest)
+QTEST_APPLESS_MAIN(vectorPath::SPolygonBooleanTest)
 #include "s_polygon_boolean_test.moc"

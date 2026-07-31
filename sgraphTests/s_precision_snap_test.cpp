@@ -7,7 +7,7 @@
 
 #include <QtTest>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SPrecisionSnapTest final : public QObject
@@ -161,7 +161,7 @@ void SPrecisionSnapTest::commandCompletionAndActiveKeywords()
     QCOMPARE(document.entities().size(), std::size_t(3));
 }
 
-} // namespace smartCam
+} // namespace vectorPath
 
-QTEST_MAIN(smartCam::SPrecisionSnapTest)
+QTEST_MAIN(vectorPath::SPrecisionSnapTest)
 #include "s_precision_snap_test.moc"

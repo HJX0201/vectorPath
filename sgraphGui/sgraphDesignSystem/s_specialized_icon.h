@@ -5,10 +5,10 @@
 class QColor;
 class QPainter;
 
-namespace smartCam
+namespace vectorPath
 {
 
 bool drawSpecializedIcon(QPainter& painter, SIconType icon_type, const QColor& foreground,
                          const QColor& accent);
 
-} // namespace smartCam
+} // namespace vectorPath

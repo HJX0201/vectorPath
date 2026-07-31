@@ -4,7 +4,7 @@
 
 #include <QObject>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SThemeManager final : public QObject
@@ -21,7 +21,7 @@ class SThemeManager final : public QObject
     bool setUiScalePercent(int scale_percent);
 
   signals:
-    void themeChanged(smartCam::SThemeMode theme_mode);
+    void themeChanged(vectorPath::SThemeMode theme_mode);
     void uiScaleChanged(int scale_percent);
 
   private:
@@ -33,4 +33,4 @@ class SThemeManager final : public QObject
     int m_ui_scale_percent = 100;
 };
 
-} // namespace smartCam
+} // namespace vectorPath

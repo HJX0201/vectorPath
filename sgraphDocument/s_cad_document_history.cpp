@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <utility>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -211,4 +211,4 @@ void SCadDocument::commitEntities(QString label, std::vector<SEntityRecord> adde
     emitDocumentState();
 }
 
-} // namespace smartCam
+} // namespace vectorPath

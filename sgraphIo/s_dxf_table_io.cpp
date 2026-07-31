@@ -8,7 +8,7 @@
 #include <cmath>
 #include <utility>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -161,4 +161,4 @@ void applyDxfLayerTable(SCadDocument& document, const std::vector<SLayerRecord>&
     }
 }
 
-} // namespace smartCam
+} // namespace vectorPath

@@ -3,10 +3,10 @@
 #include <QString>
 #include <QStringList>
 
-namespace smartCam
+namespace vectorPath
 {
 
 QStringList commandCompletionEntries();
 QStringList commandCompletionsForPrefix(const QString& prefix);
 
-} // namespace smartCam
+} // namespace vectorPath

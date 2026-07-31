@@ -5,7 +5,7 @@
 #include <QPolygonF>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -102,4 +102,4 @@ void drawShapeBooleanIcon(QPainter& painter, SIconType icon_type,
     }
 }
 
-} // namespace smartCam
+} // namespace vectorPath

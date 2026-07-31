@@ -6,7 +6,7 @@
 #include <QtTest>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SUiScaleTest final : public QObject
@@ -23,7 +23,7 @@ void SUiScaleTest::persistsScaleAndUpdatesFont()
     QVERIFY(settings_directory.isValid());
     QSettings::setDefaultFormat(QSettings::IniFormat);
     QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, settings_directory.path());
-    QCoreApplication::setOrganizationName(QStringLiteral("smartCamTest"));
+    QCoreApplication::setOrganizationName(QStringLiteral("vectorPathTest"));
     QCoreApplication::setApplicationName(QStringLiteral("uiScaleTest"));
 
     SThemeManager first_manager;
@@ -37,7 +37,7 @@ void SUiScaleTest::persistsScaleAndUpdatesFont()
     QVERIFY(restored_manager.setUiScalePercent(100));
 }
 
-} // namespace smartCam
+} // namespace vectorPath
 
-QTEST_MAIN(smartCam::SUiScaleTest)
+QTEST_MAIN(vectorPath::SUiScaleTest)
 #include "s_ui_scale_test.moc"

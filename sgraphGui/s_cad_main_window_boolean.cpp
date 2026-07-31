@@ -18,7 +18,7 @@
 #include <cmath>
 #include <optional>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -190,4 +190,4 @@ void SCadMainWindow::executePolygonBoolean(SPolygonBooleanOperation operation)
             .arg(static_cast<qulonglong>(boolean_result.value().size())));
 }
 
-} // namespace smartCam
+} // namespace vectorPath

@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -175,4 +175,4 @@ bool isDimensionValid(const SLinearDimensionEntity& dimension) noexcept
     return pointDistance(dimension.first_point, dimension.second_point) > kGeometryTolerance;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

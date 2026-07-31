@@ -8,7 +8,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-namespace smartCam
+namespace vectorPath
 {
 
 SToolpathSortDialog::SToolpathSortDialog(const SToolpathSortOptions& initial_options,
@@ -126,4 +126,4 @@ void SToolpathSortDialog::updateControlStates()
     }
 }
 
-} // namespace smartCam
+} // namespace vectorPath

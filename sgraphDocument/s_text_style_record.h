@@ -2,7 +2,7 @@
 
 #include <QString>
 
-namespace smartCam
+namespace vectorPath
 {
 
 struct STextStyleRecord
@@ -16,4 +16,4 @@ struct STextStyleRecord
     bool is_italic = false;
 };
 
-} // namespace smartCam
+} // namespace vectorPath

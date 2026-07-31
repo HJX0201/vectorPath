@@ -25,27 +25,31 @@ int main(int argument_count, char* argument_values[])
 
     QApplication application(argument_count, argument_values);
     Q_INIT_RESOURCE(s_gui_resources);
-    QSettings legacy_settings(QSettings::NativeFormat, QSettings::UserScope,
-                              QStringLiteral("smartCadLearning"),
-                              QStringLiteral("smartGraphics"));
+    QSettings smart_cam_settings(QSettings::NativeFormat, QSettings::UserScope,
+                                 QStringLiteral("smartCamLearning"),
+                                 QStringLiteral("smartCam"));
+    QSettings smart_cad_settings(QSettings::NativeFormat, QSettings::UserScope,
+                                 QStringLiteral("smartCadLearning"),
+                                 QStringLiteral("smartGraphics"));
     QSettings current_settings(QSettings::NativeFormat, QSettings::UserScope,
-                               QStringLiteral("smartCamLearning"), QStringLiteral("smartCam"));
-    smartCam::migrateMissingApplicationSettings(legacy_settings, current_settings);
-    QCoreApplication::setOrganizationName(QStringLiteral("smartCamLearning"));
-    QCoreApplication::setApplicationName(QStringLiteral("smartCam"));
-    QCoreApplication::setApplicationVersion(QStringLiteral("0.2.0-alpha.1"));
+                               QStringLiteral("vectorPathLearning"), QStringLiteral("vectorPath"));
+    vectorPath::migrateMissingApplicationSettings(smart_cam_settings, current_settings);
+    vectorPath::migrateMissingApplicationSettings(smart_cad_settings, current_settings);
+    QCoreApplication::setOrganizationName(QStringLiteral("vectorPathLearning"));
+    QCoreApplication::setApplicationName(QStringLiteral("vectorPath"));
+    QCoreApplication::setApplicationVersion(QStringLiteral("0.3.0-alpha.1"));
 
     QTranslator qt_translator;
     qt_translator.load(QStringLiteral("qt_zh_CN"),
                        QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     application.installTranslator(&qt_translator);
-    smartCam::SChineseUiTranslator ui_translator;
+    vectorPath::SChineseUiTranslator ui_translator;
     application.installTranslator(&ui_translator);
 
-    smartCam::SThemeManager theme_manager;
-    theme_manager.applyTheme(smartCam::SThemeMode::Dark);
+    vectorPath::SThemeManager theme_manager;
+    theme_manager.applyTheme(vectorPath::SThemeMode::Dark);
 
-    smartCam::SCadMainWindow main_window(theme_manager);
+    vectorPath::SCadMainWindow main_window(theme_manager);
     main_window.showMaximized();
     return application.exec();
 }

@@ -5,7 +5,7 @@
 
 #include <QtTest>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SSplineEditTest final : public QObject
@@ -107,7 +107,7 @@ void SSplineEditTest::viewportPointPreviewWorkflow()
              3.0);
 }
 
-} // namespace smartCam
+} // namespace vectorPath
 
-QTEST_MAIN(smartCam::SSplineEditTest)
+QTEST_MAIN(vectorPath::SSplineEditTest)
 #include "s_spline_edit_test.moc"

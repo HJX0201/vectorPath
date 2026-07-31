@@ -2,7 +2,7 @@
 
 #include <QProxyStyle>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SProxyStyle final : public QProxyStyle
@@ -16,4 +16,4 @@ class SProxyStyle final : public QProxyStyle
                            const QWidget* widget) const override;
 };
 
-} // namespace smartCam
+} // namespace vectorPath

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build and run the smartCam bitmap vector benchmark."""
+"""Build and run the vectorPath bitmap vector benchmark."""
 
 from __future__ import annotations
 

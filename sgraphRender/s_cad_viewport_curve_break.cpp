@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -121,4 +121,4 @@ std::vector<SEntityRecord> brokenEntityParts(const SEntityRecord& source,
     return {};
 }
 
-} // namespace smartCam
+} // namespace vectorPath

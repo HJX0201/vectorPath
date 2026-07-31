@@ -14,7 +14,7 @@
 #include <QTreeWidget>
 #include <QVBoxLayout>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -200,4 +200,4 @@ void SShortcutDialog::restoreDefaultShortcuts()
     updateEditor(m_tree->currentItem());
 }
 
-} // namespace smartCam
+} // namespace vectorPath

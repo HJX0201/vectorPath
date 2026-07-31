@@ -43,5 +43,5 @@ target_link_libraries(smartIo PUBLIC
     Qt5::Concurrent
 )
 target_compile_definitions(smartIo PRIVATE
-    SMARTCAM_LIBREDWG_DIR="${PROJECT_SOURCE_DIR}/sgraphThirdParty/libredwg-0.14-win64"
+    VECTORPATH_LIBREDWG_DIR="${PROJECT_SOURCE_DIR}/sgraphThirdParty/libredwg-0.14-win64"
 )

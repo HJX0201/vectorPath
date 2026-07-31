@@ -22,7 +22,7 @@
 #include <QVBoxLayout>
 #include <algorithm>
 
-namespace smartCam
+namespace vectorPath
 {
 
 namespace
@@ -283,4 +283,4 @@ ads::CDockWidget* SCadMainWindow::createLayerDock()
     return layer_dock;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

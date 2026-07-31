@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -42,4 +42,4 @@ std::vector<SPoint2d> ellipseApproximation(const SEllipseEntity& ellipse, int se
     return points;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

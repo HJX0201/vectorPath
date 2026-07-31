@@ -1,4 +1,4 @@
-# smartCam 默认快捷键
+# vectorPath 默认快捷键
 
 快捷键可在“管理 → 快捷键”中修改，也可使用 `CUI`、`SHORTCUTS` 或 `KEYBOARD`
 命令打开设置界面。修改结果保存在当前用户配置中。

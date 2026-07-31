@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -63,4 +63,4 @@ std::vector<SPoint2d> standardShapeVertices(SStandardShapeType shape_type,
     return vertices;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

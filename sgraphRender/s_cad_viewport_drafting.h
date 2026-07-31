@@ -2,7 +2,7 @@
 
 #include "s_geometry_types.h"
 
-namespace smartCam
+namespace vectorPath
 {
 
 struct SGridBasis
@@ -14,4 +14,4 @@ struct SGridBasis
 SGridBasis draftingGridBasis(double rotation_degrees);
 SPoint2d snapPointToDraftingGrid(const SPoint2d& point, double spacing, const SGridBasis& basis);
 
-} // namespace smartCam
+} // namespace vectorPath

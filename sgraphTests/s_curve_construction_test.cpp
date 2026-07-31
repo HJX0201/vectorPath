@@ -6,7 +6,7 @@
 #include <QtTest>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SCurveConstructionTest final : public QObject
@@ -303,7 +303,7 @@ void SCurveConstructionTest::tangentCircleMixedInteractionAndUndo()
     QCOMPARE(document.entities().size(), std::size_t(3));
 }
 
-} // namespace smartCam
+} // namespace vectorPath
 
-QTEST_MAIN(smartCam::SCurveConstructionTest)
+QTEST_MAIN(vectorPath::SCurveConstructionTest)
 #include "s_curve_construction_test.moc"

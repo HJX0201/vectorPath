@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(smartCam VERSION 0.2.0 LANGUAGES CXX)
+project(vectorPath VERSION 0.3.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -18,12 +18,18 @@ if(MSVC AND CMAKE_GENERATOR MATCHES "Ninja")
     )
 endif()
 
-option(SMARTCAM_BUILD_TESTS "Build smartCam tests" ON)
+option(VECTORPATH_BUILD_TESTS "Build vectorPath tests" ON)
+if(DEFINED SMARTCAM_BUILD_TESTS)
+    message(DEPRECATION
+        "SMARTCAM_BUILD_TESTS is deprecated; use VECTORPATH_BUILD_TESTS instead."
+    )
+    set(VECTORPATH_BUILD_TESTS "${SMARTCAM_BUILD_TESTS}")
+endif()
 if(DEFINED SMARTCAD_BUILD_TESTS)
     message(DEPRECATION
-        "SMARTCAD_BUILD_TESTS is deprecated; use SMARTCAM_BUILD_TESTS instead."
+        "SMARTCAD_BUILD_TESTS is deprecated; use VECTORPATH_BUILD_TESTS instead."
     )
-    set(SMARTCAM_BUILD_TESTS "${SMARTCAD_BUILD_TESTS}")
+    set(VECTORPATH_BUILD_TESTS "${SMARTCAD_BUILD_TESTS}")
 endif()
 
 set(SGRAPH_QT_COMPONENTS
@@ -35,7 +41,7 @@ set(SGRAPH_QT_COMPONENTS
     PrintSupport
     Concurrent
 )
-if(SMARTCAM_BUILD_TESTS)
+if(VECTORPATH_BUILD_TESTS)
     list(APPEND SGRAPH_QT_COMPONENTS Test)
 endif()
 find_package(Qt5 5.12.10 REQUIRED COMPONENTS ${SGRAPH_QT_COMPONENTS})
@@ -68,7 +74,7 @@ add_subdirectory(sgraphRender)
 add_subdirectory(sgraphGui)
 add_subdirectory(sgraphApp)
 
-if(SMARTCAM_BUILD_TESTS)
+if(VECTORPATH_BUILD_TESTS)
     enable_testing()
     add_subdirectory(sgraphTests)
     add_subdirectory(sgraphVectorBenchmark)

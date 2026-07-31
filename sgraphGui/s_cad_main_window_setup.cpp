@@ -19,7 +19,7 @@
 #include <QStatusBar>
 #include <QToolButton>
 
-namespace smartCam
+namespace vectorPath
 {
 
 void SCadMainWindow::createActions()
@@ -423,4 +423,4 @@ void SCadMainWindow::configureGripAction(QAction* grip_action)
             });
 }
 
-} // namespace smartCam
+} // namespace vectorPath

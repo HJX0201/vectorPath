@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -443,4 +443,4 @@ SEntityRecord mirroredEntity(const SEntityRecord& source, const SPoint2d& axis_s
     return result;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -317,4 +317,4 @@ SResult<QString> writeBitmapBenchmarkReport(
     return SResult<QString>::success(report_path);
 }
 
-} // namespace smartCam
+} // namespace vectorPath

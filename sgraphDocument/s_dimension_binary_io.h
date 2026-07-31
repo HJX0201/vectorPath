@@ -5,10 +5,10 @@
 
 class QDataStream;
 
-namespace smartCam
+namespace vectorPath
 {
 
 void writeDimensionData(QDataStream& stream, const SLinearDimensionEntity& dimension);
 SResult<SLinearDimensionEntity> readDimensionData(QDataStream& stream, quint32 format_version);
 
-} // namespace smartCam
+} // namespace vectorPath

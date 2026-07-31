@@ -5,7 +5,7 @@
 
 #include <QtTest>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SCurveFilletTest final : public QObject
@@ -155,7 +155,7 @@ void SCurveFilletTest::arcArcChamferGeometry()
     QCOMPARE(chamfer_result.type, SEntityType::Line);
 }
 
-} // namespace smartCam
+} // namespace vectorPath
 
-QTEST_MAIN(smartCam::SCurveFilletTest)
+QTEST_MAIN(vectorPath::SCurveFilletTest)
 #include "s_curve_fillet_test.moc"

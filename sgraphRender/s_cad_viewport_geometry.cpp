@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -525,4 +525,4 @@ std::vector<SEntityRecord> explodedEntityParts(const SEntityRecord& source)
     return results;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

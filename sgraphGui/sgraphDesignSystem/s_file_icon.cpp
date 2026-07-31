@@ -3,7 +3,7 @@
 #include <QPainter>
 #include <QPainterPath>
 
-namespace smartCam
+namespace vectorPath
 {
 
 void drawFileIcon(QPainter& painter, bool has_plus)
@@ -32,4 +32,4 @@ void drawArrowHead(QPainter& painter, const QPointF& point, bool points_right)
     painter.drawLine(point, point + QPointF(direction * 9.0, 7.0));
 }
 
-} // namespace smartCam
+} // namespace vectorPath

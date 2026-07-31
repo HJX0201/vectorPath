@@ -4,7 +4,7 @@
 #include <QIcon>
 #include <QString>
 
-namespace smartCam
+namespace vectorPath
 {
 
 enum class SIconType
@@ -139,4 +139,4 @@ class SIconProvider final
     static QString iconName(SIconType icon_type);
 };
 
-} // namespace smartCam
+} // namespace vectorPath

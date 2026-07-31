@@ -5,7 +5,7 @@
 #include <QString>
 #include <vector>
 
-namespace smartCam
+namespace vectorPath
 {
 
 enum class SAuditSeverity
@@ -37,4 +37,4 @@ struct SDocumentAuditReport
     }
 };
 
-} // namespace smartCam
+} // namespace vectorPath

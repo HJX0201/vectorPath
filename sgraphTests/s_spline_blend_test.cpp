@@ -10,7 +10,7 @@
 #include <QtTest>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SSplineBlendTest final : public QObject
@@ -186,7 +186,7 @@ void SSplineBlendTest::interactiveSplineAndUndo()
     QVERIFY(document.entities().empty());
 }
 
-} // namespace smartCam
+} // namespace vectorPath
 
-QTEST_MAIN(smartCam::SSplineBlendTest)
+QTEST_MAIN(vectorPath::SSplineBlendTest)
 #include "s_spline_blend_test.moc"

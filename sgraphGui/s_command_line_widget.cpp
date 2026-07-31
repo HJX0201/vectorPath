@@ -11,7 +11,7 @@
 #include <QVBoxLayout>
 #include <algorithm>
 
-namespace smartCam
+namespace vectorPath
 {
 
 SCommandLineWidget::SCommandLineWidget(QWidget* parent) : QWidget(parent)
@@ -27,7 +27,7 @@ SCommandLineWidget::SCommandLineWidget(QWidget* parent) : QWidget(parent)
     m_history->setMinimumHeight(34);
     m_history->setAcceptRichText(false);
     m_history->setFrameShape(QFrame::NoFrame);
-    m_history->setText(tr("smartCam 已就绪。输入 LINE、CIRCLE、UNDO 或 ZOOM EXTENTS。"));
+    m_history->setText(tr("vectorPath 已就绪。输入 LINE、CIRCLE、UNDO 或 ZOOM EXTENTS。"));
 
     m_input = new QLineEdit(this);
     m_input->setObjectName(QStringLiteral("smartCommandInput"));
@@ -109,4 +109,4 @@ void SCommandLineWidget::focusInput()
     m_input->selectAll();
 }
 
-} // namespace smartCam
+} // namespace vectorPath

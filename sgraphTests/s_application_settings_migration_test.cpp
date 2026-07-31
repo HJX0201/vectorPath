@@ -4,7 +4,7 @@
 #include <QTemporaryDir>
 #include <QtTest>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SApplicationSettingsMigrationTest final : public QObject
@@ -14,6 +14,7 @@ class SApplicationSettingsMigrationTest final : public QObject
   private slots:
     void copiesOnlyMissingSettings();
     void isIdempotent();
+    void preservesNewerLegacyPrecedence();
     void acceptsEmptyLegacySettings();
     void reportsDestinationWriteFailure();
 };
@@ -45,6 +46,25 @@ void SApplicationSettingsMigrationTest::isIdempotent()
     QCOMPARE(migrateMissingApplicationSettings(legacy, current), 0);
 }
 
+void SApplicationSettingsMigrationTest::preservesNewerLegacyPrecedence()
+{
+    QTemporaryDir directory;
+    QVERIFY(directory.isValid());
+    QSettings smart_cad(directory.filePath(QStringLiteral("smartcad.ini")), QSettings::IniFormat);
+    QSettings smart_cam(directory.filePath(QStringLiteral("smartcam.ini")), QSettings::IniFormat);
+    QSettings vector_path(directory.filePath(QStringLiteral("vectorpath.ini")),
+                          QSettings::IniFormat);
+    smart_cad.setValue(QStringLiteral("ui/theme"), QStringLiteral("classic"));
+    smart_cad.setValue(QStringLiteral("ui/scalePercent"), 100);
+    smart_cam.setValue(QStringLiteral("ui/theme"), QStringLiteral("dark"));
+    vector_path.setValue(QStringLiteral("ui/scalePercent"), 150);
+
+    QCOMPARE(migrateMissingApplicationSettings(smart_cam, vector_path), 1);
+    QCOMPARE(migrateMissingApplicationSettings(smart_cad, vector_path), 0);
+    QCOMPARE(vector_path.value(QStringLiteral("ui/theme")).toString(), QStringLiteral("dark"));
+    QCOMPARE(vector_path.value(QStringLiteral("ui/scalePercent")).toInt(), 150);
+}
+
 void SApplicationSettingsMigrationTest::acceptsEmptyLegacySettings()
 {
     QTemporaryDir directory;
@@ -67,8 +87,8 @@ void SApplicationSettingsMigrationTest::reportsDestinationWriteFailure()
     QCOMPARE(migrateMissingApplicationSettings(legacy, current), -1);
 }
 
-} // namespace smartCam
+} // namespace vectorPath
 
-QTEST_APPLESS_MAIN(smartCam::SApplicationSettingsMigrationTest)
+QTEST_APPLESS_MAIN(vectorPath::SApplicationSettingsMigrationTest)
 
 #include "s_application_settings_migration_test.moc"

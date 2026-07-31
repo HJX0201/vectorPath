@@ -18,7 +18,7 @@
 #include <QVBoxLayout>
 #include <SARibbonPanel.h>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -237,4 +237,4 @@ bool SCadMainWindow::executeHatchCommand(const QString& command)
     return true;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

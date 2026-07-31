@@ -13,7 +13,7 @@
 #include <limits>
 #include <utility>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -520,4 +520,4 @@ void SCadViewport::drawPreview(QPainter& painter)
     }
 }
 
-} // namespace smartCam
+} // namespace vectorPath

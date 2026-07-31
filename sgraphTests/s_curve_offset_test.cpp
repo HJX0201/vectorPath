@@ -6,7 +6,7 @@
 #include <QtTest>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SCurveOffsetTest final : public QObject
@@ -117,7 +117,7 @@ void SCurveOffsetTest::viewportOffsetAndUndo()
     QCOMPARE(document.entities().size(), std::size_t(1));
 }
 
-} // namespace smartCam
+} // namespace vectorPath
 
-QTEST_MAIN(smartCam::SCurveOffsetTest)
+QTEST_MAIN(vectorPath::SCurveOffsetTest)
 #include "s_curve_offset_test.moc"

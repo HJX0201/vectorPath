@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <limits>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -169,4 +169,4 @@ void SCadViewport::zoomExtents()
     update();
 }
 
-} // namespace smartCam
+} // namespace vectorPath

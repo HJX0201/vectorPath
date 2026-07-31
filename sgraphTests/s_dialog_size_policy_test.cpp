@@ -9,7 +9,7 @@
 #include <QTimer>
 #include <QtTest>
 
-using namespace smartCam;
+using namespace vectorPath;
 
 class SDialogSizePolicyTest final : public QObject
 {

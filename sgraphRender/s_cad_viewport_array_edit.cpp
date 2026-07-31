@@ -8,7 +8,7 @@
 #include <cmath>
 #include <utility>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -181,4 +181,4 @@ void SCadViewport::drawArrayEditPreview(QPainter& painter)
     painter.restore();
 }
 
-} // namespace smartCam
+} // namespace vectorPath

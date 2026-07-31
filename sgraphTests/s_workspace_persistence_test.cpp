@@ -12,7 +12,7 @@
 #include <QToolBar>
 #include <QtTest>
 
-using namespace smartCam;
+using namespace vectorPath;
 
 class SWorkspacePersistenceTest final : public QObject
 {
@@ -30,8 +30,8 @@ void SWorkspacePersistenceTest::initTestCase()
     Q_INIT_RESOURCE(s_gui_resources);
     QSettings::setDefaultFormat(QSettings::IniFormat);
     QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, QDir::tempPath());
-    QCoreApplication::setOrganizationName(QStringLiteral("smartCamTests"));
-    QCoreApplication::setApplicationName(QStringLiteral("smartCamWorkspacePersistenceTests"));
+    QCoreApplication::setOrganizationName(QStringLiteral("vectorPathTests"));
+    QCoreApplication::setApplicationName(QStringLiteral("vectorPathWorkspacePersistenceTests"));
     QSettings().clear();
 }
 

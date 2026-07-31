@@ -7,7 +7,7 @@
 #include <QPolygonF>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -226,4 +226,4 @@ void SCadViewport::drawEntityDisplayOverlay(QPainter& painter)
     painter.restore();
 }
 
-} // namespace smartCam
+} // namespace vectorPath

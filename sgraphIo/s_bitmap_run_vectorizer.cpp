@@ -12,7 +12,7 @@
 #include <numeric>
 #include <utility>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -389,4 +389,4 @@ SResult<SBitmapVectorResult> bitmapToVectorResult(
     return SResult<SBitmapVectorResult>::success(std::move(result));
 }
 
-} // namespace smartCam
+} // namespace vectorPath

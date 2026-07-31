@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -230,4 +230,4 @@ SDocumentAuditReport SCadDocument::audit(bool repair)
     return report;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

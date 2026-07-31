@@ -4,7 +4,7 @@
 
 #include <QString>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SCadDocument;
@@ -26,4 +26,4 @@ class SICadCommand
     virtual void cancel() = 0;
 };
 
-} // namespace smartCam
+} // namespace vectorPath

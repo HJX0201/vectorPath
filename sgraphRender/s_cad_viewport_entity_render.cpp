@@ -13,7 +13,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -248,4 +248,4 @@ void SCadViewport::drawEntityGeometry(QPainter& painter, const SEntityRecord& en
     }
 }
 
-} // namespace smartCam
+} // namespace vectorPath

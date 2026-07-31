@@ -6,7 +6,7 @@
 #include <QMap>
 #include <algorithm>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -210,4 +210,4 @@ SBitmapValidationResult validateBitmapBenchmarkCase(
     return result;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

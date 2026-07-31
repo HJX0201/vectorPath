@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -444,4 +444,4 @@ SResult<std::vector<SSvgSubpath>> parseSvgPathData(const QString& path_data)
     return SResult<std::vector<SSvgSubpath>>::success(std::move(result));
 }
 
-} // namespace smartCam
+} // namespace vectorPath

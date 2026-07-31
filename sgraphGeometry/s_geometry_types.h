@@ -4,7 +4,7 @@
 #include <QString>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 
 struct SPoint2d
@@ -25,4 +25,4 @@ struct SPoint2d
 double distance(const SPoint2d& first_point, const SPoint2d& second_point) noexcept;
 QString formatPoint(const SPoint2d& point, int precision = 3);
 
-} // namespace smartCam
+} // namespace vectorPath

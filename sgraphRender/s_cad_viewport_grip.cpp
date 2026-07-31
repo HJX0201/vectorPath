@@ -8,7 +8,7 @@
 #include <cmath>
 #include <limits>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -590,4 +590,4 @@ void SCadViewport::drawGrips(QPainter& painter)
     painter.restore();
 }
 
-} // namespace smartCam
+} // namespace vectorPath

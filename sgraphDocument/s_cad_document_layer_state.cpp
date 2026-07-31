@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <utility>
 
-namespace smartCam
+namespace vectorPath
 {
 
 QStringList SCadDocument::layerStateNames() const
@@ -123,4 +123,4 @@ bool SCadDocument::removeLayerState(const QString& state_name)
     return true;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

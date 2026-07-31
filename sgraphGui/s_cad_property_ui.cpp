@@ -3,7 +3,7 @@
 #include <QComboBox>
 #include <QObject>
 
-namespace smartCam
+namespace vectorPath
 {
 
 const QVector<double>& standardLineWidths()
@@ -75,4 +75,4 @@ QString propertyColorButtonStyle(const QColor& color, const SDesignToken& tokens
         .arg(tokens.accent.name(), tokens.elevated_surface.name(), tokens.text_secondary.name());
 }
 
-} // namespace smartCam
+} // namespace vectorPath

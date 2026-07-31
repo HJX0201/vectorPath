@@ -15,7 +15,7 @@
 #include <QTreeWidget>
 #include <QVBoxLayout>
 
-namespace smartCam
+namespace vectorPath
 {
 
 void SCadMainWindow::createRecoveryCopy()
@@ -132,4 +132,4 @@ void SCadMainWindow::showRecoveryManager()
     dialog.exec();
 }
 
-} // namespace smartCam
+} // namespace vectorPath

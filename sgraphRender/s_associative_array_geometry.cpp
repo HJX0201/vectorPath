@@ -6,7 +6,7 @@
 #include <iterator>
 #include <map>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -194,4 +194,4 @@ bool regenerateAssociativeArray(const std::vector<SEntityRecord>& document_entit
     return !results.empty() && !existing_ids.empty();
 }
 
-} // namespace smartCam
+} // namespace vectorPath

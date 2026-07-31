@@ -3,7 +3,7 @@
 #include <QPainter>
 #include <QPainterPath>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -72,4 +72,4 @@ void drawQuickTransformIcon(QPainter& painter, SIconType icon_type, const QColor
     drawRotation(painter, clockwise, half_turn, accent);
 }
 
-} // namespace smartCam
+} // namespace vectorPath

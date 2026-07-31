@@ -20,7 +20,7 @@
 #include <SARibbonPanel.h>
 #include <algorithm>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -278,4 +278,4 @@ void SCadMainWindow::updateGlobalColorActionIcon()
         tr("全局绘图颜色：%1").arg(m_document->preferredDrawingColor().name()));
 }
 
-} // namespace smartCam
+} // namespace vectorPath

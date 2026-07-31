@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 
 bool operator==(const SDrawingSettings& left, const SDrawingSettings& right) noexcept
@@ -174,4 +174,4 @@ QString formatAngleValue(double angle_degrees, const SDrawingSettings& settings)
     return QStringLiteral("%1°").arg(angle_degrees, 0, 'f', settings.angular_precision);
 }
 
-} // namespace smartCam
+} // namespace vectorPath

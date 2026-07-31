@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace smartCam
+namespace vectorPath
 {
 
 enum class SObjectSnapType
@@ -57,4 +57,4 @@ std::optional<SObjectSnapResult> findObjectSnap(const std::vector<const SEntityR
                                                     objectSnapModeValue(SObjectSnapMode::Endpoint) |
                                                     objectSnapModeValue(SObjectSnapMode::Center));
 
-} // namespace smartCam
+} // namespace vectorPath

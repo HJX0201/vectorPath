@@ -4,7 +4,7 @@
 
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -405,4 +405,4 @@ bool SCadViewport::submitCommandKeyword(const QString& keyword)
     return false;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

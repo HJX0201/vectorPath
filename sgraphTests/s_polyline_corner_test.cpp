@@ -9,7 +9,7 @@
 #include <QtTest>
 #include <algorithm>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SPolylineCornerTest final : public QObject
@@ -353,7 +353,7 @@ void SPolylineCornerTest::polylineEditOperationsAndJoin()
              0.0);
 }
 
-} // namespace smartCam
+} // namespace vectorPath
 
-QTEST_MAIN(smartCam::SPolylineCornerTest)
+QTEST_MAIN(vectorPath::SPolylineCornerTest)
 #include "s_polyline_corner_test.moc"

@@ -13,7 +13,7 @@
 #include <QImage>
 #include <vector>
 
-namespace smartCam
+namespace vectorPath
 {
 
 void SCadMainWindow::openSvgAsNewDocument()
@@ -179,4 +179,4 @@ void SCadMainWindow::deduplicateImportedSvg(SSvgLayerPriority priority)
             .arg(result.value().result_region_count));
 }
 
-} // namespace smartCam
+} // namespace vectorPath

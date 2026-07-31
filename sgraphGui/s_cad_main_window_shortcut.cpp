@@ -5,7 +5,7 @@
 
 #include <QAction>
 
-namespace smartCam
+namespace vectorPath
 {
 
 void SCadMainWindow::registerShortcutAction(QAction* action, const QString& command_id,
@@ -39,4 +39,4 @@ bool SCadMainWindow::executeShortcutCommand(const QString& simplified_command)
     return false;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

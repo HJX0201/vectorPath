@@ -5,10 +5,10 @@
 
 class QDataStream;
 
-namespace smartCam
+namespace vectorPath
 {
 
 void writeHatchData(QDataStream& stream, const SHatchEntity& hatch);
 SResult<SHatchEntity> readHatchData(QDataStream& stream, quint32 format_version);
 
-} // namespace smartCam
+} // namespace vectorPath

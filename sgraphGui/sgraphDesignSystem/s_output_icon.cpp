@@ -4,7 +4,7 @@
 
 #include <QPainter>
 
-namespace smartCam
+namespace vectorPath
 {
 
 void drawOutputIcon(QPainter& painter, SIconType icon_type, const QColor& accent_color)
@@ -60,4 +60,4 @@ void drawOutputIcon(QPainter& painter, SIconType icon_type, const QColor& accent
     }
 }
 
-} // namespace smartCam
+} // namespace vectorPath

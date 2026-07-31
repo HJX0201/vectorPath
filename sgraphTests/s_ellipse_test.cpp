@@ -9,7 +9,7 @@
 #include <QtTest>
 #include <cmath>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SEllipseTest final : public QObject
@@ -81,7 +81,7 @@ void SEllipseTest::geometryTransformGripAndSnap()
     QCOMPARE(center_snap->type, SObjectSnapType::Center);
 }
 
-} // namespace smartCam
+} // namespace vectorPath
 
-QTEST_MAIN(smartCam::SEllipseTest)
+QTEST_MAIN(vectorPath::SEllipseTest)
 #include "s_ellipse_test.moc"

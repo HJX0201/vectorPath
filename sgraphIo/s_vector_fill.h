@@ -9,7 +9,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace smartCam
+namespace vectorPath
 {
 
 enum class SImportFillMode : std::uint8_t
@@ -53,4 +53,4 @@ SResult<std::vector<SHatchEntity>> createRegionHatches(const SVectorRegion& regi
 SResult<SVectorImportGeometry> createVectorImportGeometry(
     const SSvgVectorData& vector_data, const SVectorImportSettings& settings);
 
-} // namespace smartCam
+} // namespace vectorPath

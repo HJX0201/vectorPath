@@ -1,12 +1,12 @@
-# smartCam
+# vectorPath
 
-smartCam 是一个面向 Windows 的现代二维 CAD/CAM 学习与技术展示项目，使用
+vectorPath 是一个面向 Windows 的现代二维 CAD/CAM 学习与技术展示项目，使用
 C++17、Qt 5.12.10、OpenGL、CMake 和 Ninja 开发。项目覆盖二维绘制与编辑、图层和标注、
 DWG/DXF/SVG/位图导入导出、刀路排序与仿真，以及可撤销的文档事务。
 
-> 当前版本：`0.2.0-alpha.1`。项目仍在持续开发，不宣称完整兼容 AutoCAD。
+> 当前版本：`0.3.0-alpha.1`。项目仍在持续开发，不宣称完整兼容 AutoCAD。
 
-![smartCam 位图矢量化结果界面](sgraphDocs/images/s_bitmap_vectorization_ui.png)
+![vectorPath 位图矢量化结果界面](sgraphDocs/images/s_bitmap_vectorization_ui.png)
 
 > 位图经颜色分区和轮廓提取后转换为可编辑矢量实体，并按颜色组织到图层中。
 
@@ -15,7 +15,7 @@ DWG/DXF/SVG/位图导入导出、刀路排序与仿真，以及可撤销的文�
 - 直线、圆、圆弧、椭圆、样条、多段线和常用规则图形。
 - 修剪、延伸、打断、连接、倒角、圆角、偏移、阵列、拉伸、夹点编辑等二维操作。
 - 图层、颜色、线宽、文字、标注、填充与可撤销/重做事务。
-- 原生 `.smartcam` 文档并兼容旧 `.smartcad` 文件、ASCII DXF、基于 GNU LibreDWG
+- 原生 `.vectorpath` 文档并兼容旧 `.smartcam`、`.smartcad` 文件、ASCII DXF、基于 GNU LibreDWG
   适配器的 DWG 读写。
 - SVG 色块导入、像素精确的位图矢量化、偏移线填充与图层去重。
 - 刀路排序、方向调整和交互式仿真。
@@ -23,7 +23,7 @@ DWG/DXF/SVG/位图导入导出、刀路排序与仿真，以及可撤销的文�
 
 ## 位图矢量化：精确结果与大图优化
 
-smartCam 的位图导入不是模糊拟合，也不依赖 K-means、Potrace 或曲线平滑。算法按
+vectorPath 的位图导入不是模糊拟合，也不依赖 K-means、Potrace 或曲线平滑。算法按
 像素精确比较颜色，使用四邻域判定色块，将结果转换为闭合 SVG 轮廓。它特别适合颜色边界
 明确的图标、像素图、标牌和规则色块素材。
 
@@ -98,7 +98,7 @@ python sgraphBuildTools/s_build_64_release.py --qt-dir C:\Qt\Qt5.12.10\5.12.10\m
 
 ## 许可与状态
 
-smartCam 自研代码目前采用仓库内的
+vectorPath 自研代码目前采用仓库内的
 [`LICENSE.md`](LICENSE.md)；第三方组件继续适用各自许可证。
 特别是 LibreDWG 为 GPLv3+，Qt 5.12.10 和 Qt Advanced Docking System 适用 LGPL
 条款。发布二进制前请阅读 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)。

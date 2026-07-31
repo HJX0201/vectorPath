@@ -54,7 +54,7 @@
 #include <cmath>
 #include <vector>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -551,7 +551,7 @@ void SCadMainWindow::createDockingWorkspace()
     m_icon_docks.emplace_back(report_dock, SIconType::CompatibilityReport);
     auto* report_view = new QTextBrowser(report_dock);
     report_view->setText(
-        tr("当前原生 .smartcam/.smartcad 格式无兼容性警告。\n"
+        tr("当前原生 .vectorpath/.smartcam/.smartcad 格式无兼容性警告。\n"
            "DWG/DXF 适配器将在后续里程碑启用。"));
     report_dock->setWidget(report_view);
     m_dock_manager->addDockWidget(ads::CenterDockWidgetArea, report_dock,
@@ -621,4 +621,4 @@ void SCadMainWindow::configureDockSplitters()
     }
 }
 
-} // namespace smartCam
+} // namespace vectorPath

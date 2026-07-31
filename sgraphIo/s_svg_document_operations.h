@@ -9,7 +9,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SCadDocument;
@@ -43,4 +43,4 @@ SResult<SSvgFillReport> fillSvgColorBlocks(
 SResult<SSvgDeduplicateReport> deduplicateSvgColorBlocks(
     SCadDocument& document, SSvgLayerPriority priority);
 
-} // namespace smartCam
+} // namespace vectorPath

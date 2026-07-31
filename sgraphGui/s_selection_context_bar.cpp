@@ -7,7 +7,7 @@
 #include <QScreen>
 #include <QToolButton>
 
-namespace smartCam
+namespace vectorPath
 {
 
 SSelectionContextBar::SSelectionContextBar(QWidget* parent)
@@ -55,4 +55,4 @@ void SSelectionContextBar::popupAt(const QPoint& global_position)
     activateWindow();
 }
 
-} // namespace smartCam
+} // namespace vectorPath

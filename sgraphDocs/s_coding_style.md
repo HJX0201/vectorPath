@@ -1,4 +1,4 @@
-# smartCam 代码风格
+# vectorPath 代码风格
 
 ## 命名
 
@@ -9,7 +9,7 @@
 - 函数使用小驼峰，例如 `openDocument()`。
 - 局部变量和参数使用小写下划线，例如 `entity_id`。
 - 私有成员使用 `m_` 加小写下划线，例如 `m_entity_count`。
-- 常量使用 `kPascalCase`；宏使用 `SMARTCAM_UPPER_SNAKE_CASE`。
+- 常量使用 `kPascalCase`；宏使用 `VECTORPATH_UPPER_SNAKE_CASE`。
 
 ## C++ 与 Qt
 

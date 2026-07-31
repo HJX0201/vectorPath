@@ -6,7 +6,7 @@
 #include "s_quick_transform_icon.h"
 #include "s_shape_boolean_icon.h"
 
-namespace smartCam
+namespace vectorPath
 {
 
 bool drawSpecializedIcon(QPainter& painter, SIconType icon_type, const QColor& foreground,
@@ -65,4 +65,4 @@ bool drawSpecializedIcon(QPainter& painter, SIconType icon_type, const QColor& f
     }
 }
 
-} // namespace smartCam
+} // namespace vectorPath

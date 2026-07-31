@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -68,4 +68,4 @@ QString SChineseUiTranslator::translate(const char* context, const char* source_
     return {};
 }
 
-} // namespace smartCam
+} // namespace vectorPath

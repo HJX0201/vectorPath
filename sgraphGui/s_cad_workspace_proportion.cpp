@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <numeric>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -85,4 +85,4 @@ void SCadMainWindow::applyDefaultWorkspaceProportions()
     configureDockSplitters();
 }
 
-} // namespace smartCam
+} // namespace vectorPath

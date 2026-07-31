@@ -10,7 +10,7 @@
 #include <optional>
 #include <utility>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -509,4 +509,4 @@ bool writeDxfEntity(QTextStream& stream, const SEntityRecord& entity,
     return true;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

@@ -11,7 +11,7 @@
 #include <QStatusBar>
 #include <QToolButton>
 
-namespace smartCam
+namespace vectorPath
 {
 
 void SCadMainWindow::refreshIcons()
@@ -99,4 +99,4 @@ QToolButton* SCadMainWindow::createStatusButton(SIconType icon_type, const QStri
     return button;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

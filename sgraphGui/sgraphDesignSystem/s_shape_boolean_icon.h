@@ -5,10 +5,10 @@
 class QColor;
 class QPainter;
 
-namespace smartCam
+namespace vectorPath
 {
 
 void drawShapeBooleanIcon(QPainter& painter, SIconType icon_type,
                           const QColor& foreground, const QColor& accent_color);
 
-} // namespace smartCam
+} // namespace vectorPath

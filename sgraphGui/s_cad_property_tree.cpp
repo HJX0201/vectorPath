@@ -15,7 +15,7 @@
 #include <cmath>
 #include <vector>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -356,4 +356,4 @@ QTreeWidgetItem* addEntityPropertyTree(QTreeWidgetItem* parent_item, const SEnti
     return entity_item;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

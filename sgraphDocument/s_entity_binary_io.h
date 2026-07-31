@@ -7,10 +7,10 @@
 
 class QDataStream;
 
-namespace smartCam
+namespace vectorPath
 {
 
 void writeEntityRecord(QDataStream& stream, const SEntityRecord& entity);
 SResult<SEntityRecord> readEntityRecord(QDataStream& stream, quint32 format_version);
 
-} // namespace smartCam
+} // namespace vectorPath

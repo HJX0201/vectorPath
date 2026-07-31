@@ -4,7 +4,7 @@
 #include <cmath>
 #include <vector>
 
-namespace smartCam
+namespace vectorPath
 {
 
 bool filletedPolylineEntity(const SEntityRecord& source, double radius, SEntityRecord& result)
@@ -118,4 +118,4 @@ bool filletedPolylineEntity(const SEntityRecord& source, double radius, SEntityR
     return true;
 }
 
-} // namespace smartCam
+} // namespace vectorPath

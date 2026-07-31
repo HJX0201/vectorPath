@@ -13,7 +13,7 @@
 #include <algorithm>
 #include <variant>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -455,8 +455,8 @@ void SSvgVectorImportTest::persistsAndExportsImportedLineEntities()
     QCOMPARE(export_result.value().exported_entity_count, std::size_t(1));
 }
 
-} // namespace smartCam
+} // namespace vectorPath
 
-QTEST_APPLESS_MAIN(smartCam::SSvgVectorImportTest)
+QTEST_APPLESS_MAIN(vectorPath::SSvgVectorImportTest)
 
 #include "s_svg_vector_import_test.moc"

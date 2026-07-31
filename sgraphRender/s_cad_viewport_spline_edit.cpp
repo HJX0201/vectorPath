@@ -8,7 +8,7 @@
 #include <cmath>
 #include <limits>
 
-namespace smartCam
+namespace vectorPath
 {
 namespace
 {
@@ -250,4 +250,4 @@ void SCadViewport::drawSplineEditPreview(QPainter& painter)
     }
 }
 
-} // namespace smartCam
+} // namespace vectorPath

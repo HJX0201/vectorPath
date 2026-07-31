@@ -7,7 +7,7 @@
 
 class QAction;
 
-namespace smartCam
+namespace vectorPath
 {
 
 struct SShortcutBinding
@@ -41,4 +41,4 @@ class SShortcutManager final
     QVector<SShortcutBinding> m_bindings;
 };
 
-} // namespace smartCam
+} // namespace vectorPath

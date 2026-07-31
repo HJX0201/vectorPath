@@ -4,9 +4,9 @@
 
 class QPainter;
 
-namespace smartCam
+namespace vectorPath
 {
 
 void drawDimensionIcon(QPainter& painter, SIconType icon_type, const QColor& accent_color);
 
-} // namespace smartCam
+} // namespace vectorPath

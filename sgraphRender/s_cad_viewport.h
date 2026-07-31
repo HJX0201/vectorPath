@@ -22,7 +22,7 @@ class QMouseEvent;
 class QPainter;
 class QWheelEvent;
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SCadDocument;
@@ -226,9 +226,9 @@ class SCadViewport final : public QOpenGLWidget, protected QOpenGLFunctions
                               std::size_t completed_motion_count, bool trace_visible);
     void clearSimulationOverlay();
   signals:
-    void cursorWorldPositionChanged(const smartCam::SPoint2d& world_position);
+    void cursorWorldPositionChanged(const vectorPath::SPoint2d& world_position);
     void commandMessage(const QString& message);
-    void toolModeChanged(smartCam::SToolMode tool_mode);
+    void toolModeChanged(vectorPath::SToolMode tool_mode);
     void selectedEntityChanged(quint64 entity_id);
     void selectionChanged(const QVector<quint64>& entity_ids);
     void selectionContextRequested(const QPoint& global_position);
@@ -237,7 +237,7 @@ class SCadViewport final : public QOpenGLWidget, protected QOpenGLFunctions
     void objectSnapModesChanged(bool endpoint_enabled, bool center_enabled);
     void orthoChanged(bool is_enabled);
     void gridSnapChanged(bool is_enabled);
-    void gripOperationChanged(smartCam::SGripOperation operation);
+    void gripOperationChanged(vectorPath::SGripOperation operation);
     void trackingChanged(bool is_enabled);
     void entityDisplayOptionsChanged(bool nodes_visible, bool directions_visible,
                                      bool sequence_visible);
@@ -434,4 +434,4 @@ class SCadViewport final : public QOpenGLWidget, protected QOpenGLFunctions
     bool m_is_simulation_trace_visible = true;
 };
 
-} // namespace smartCam
+} // namespace vectorPath

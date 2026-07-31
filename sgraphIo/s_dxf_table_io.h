@@ -8,7 +8,7 @@
 
 class QTextStream;
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SCadDocument;
@@ -18,4 +18,4 @@ QString readDxfCurrentLayer(const std::vector<SDxfPair>& pairs);
 void applyDxfLayerTable(SCadDocument& document, const std::vector<SLayerRecord>& layers,
                         const QString& current_layer_name);
 
-} // namespace smartCam
+} // namespace vectorPath

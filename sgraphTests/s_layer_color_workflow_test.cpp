@@ -4,7 +4,7 @@
 #include <QtTest>
 #include <algorithm>
 
-namespace smartCam
+namespace vectorPath
 {
 
 class SLayerColorWorkflowTest final : public QObject
@@ -105,7 +105,7 @@ void SLayerColorWorkflowTest::mergesSameColorLayersAtomically()
     QCOMPARE(document.entities().at(1).layer_name, QStringLiteral("SECOND"));
 }
 
-} // namespace smartCam
+} // namespace vectorPath
 
-QTEST_APPLESS_MAIN(smartCam::SLayerColorWorkflowTest)
+QTEST_APPLESS_MAIN(vectorPath::SLayerColorWorkflowTest)
 #include "s_layer_color_workflow_test.moc"

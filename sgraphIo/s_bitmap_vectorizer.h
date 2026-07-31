@@ -9,7 +9,7 @@
 #include <QtGlobal>
 #include <vector>
 
-namespace smartCam
+namespace vectorPath
 {
 
 struct SBitmapVectorSettings
@@ -58,4 +58,4 @@ QByteArray bitmapContoursToSvgData(
 SResult<QByteArray> bitmapToSvgData(const QImage& source,
                                     const SBitmapVectorSettings& settings);
 
-} // namespace smartCam
+} // namespace vectorPath

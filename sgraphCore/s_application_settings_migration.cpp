@@ -2,7 +2,7 @@
 
 #include <QSettings>
 
-namespace smartCam
+namespace vectorPath
 {
 
 int migrateMissingApplicationSettings(QSettings& legacy_settings, QSettings& current_settings)
@@ -34,4 +34,4 @@ int migrateMissingApplicationSettings(QSettings& legacy_settings, QSettings& cur
     return migrated_count;
 }
 
-} // namespace smartCam
+} // namespace vectorPath
