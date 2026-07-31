@@ -1,8 +1,9 @@
 # Changelog
 
-## 0.3.0-alpha.1 - 2026-07-31
+## 0.2.0-alpha.1 - 2026-07-31
 
-- 产品由 smartCam 完整改名为 vectorPath，统一窗口标题、C++ 命名空间、CMake 项目、
+- 产品由 smartGraphics 完整改名为 vectorPath（开发过程中曾使用 smartCam 中间名称），
+  统一窗口标题、C++ 命名空间、CMake 项目、
   `vectorPath.exe`、运行清单和发布包名称。
 - 新建原生文档默认使用 `.vectorpath`，继续兼容 `.smartcam`、`.smartcad`、
   `SMCAD001` magic、版本 24 清单和旧恢复/打印样式标识。
@@ -10,20 +11,8 @@
   `smartCadLearning/smartGraphics` 中缺失的设置，不覆盖已有 vectorPath 设置。
 - CMake 测试开关改为 `VECTORPATH_BUILD_TESTS`，旧 `SMARTCAM_BUILD_TESTS` 和
   `SMARTCAD_BUILD_TESTS` 保留一个版本的弃用兼容映射。
-- 增加 `.smartcam` 向后兼容和两代旧设置迁移优先级测试；发布 Windows x64
-  `v0.3.0-alpha.1` 预发布包。
-
-## 0.2.0-alpha.1 - 2026-07-31
-
-- 产品由 smartGraphics 完整改名为 smartCam，统一窗口标题、C++ 命名空间、CMake 项目、
-  `smartCam.exe`、运行清单和发布包名称。
-- 新建原生文档默认使用 `.smartcam`，继续兼容 `.smartcad`、`SMCAD001` magic、版本 24
-  清单和旧恢复/打印样式标识。
-- 首次启动时将 `smartCadLearning/smartGraphics` 中缺失的设置迁移到
-  `smartCamLearning/smartCam`，不覆盖已有新设置。
-- CMake 测试开关改为 `SMARTCAM_BUILD_TESTS`，旧 `SMARTCAD_BUILD_TESTS` 保留一个版本的
-  弃用兼容映射。
-- 增加设置迁移正常、幂等、空设置和写失败测试；64 位 Release 更新为 CTest 34/34 通过。
+- 增加设置迁移正常、幂等、空设置、写失败、`.smartcam` 向后兼容和
+  两代旧设置迁移优先级测试；发布 Windows x64 `v0.2.0-alpha.1` 预发布包。
 
 ## 0.1.0-alpha.1 - 2026-07-27
 

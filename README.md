@@ -4,7 +4,7 @@ vectorPath 是一个面向 Windows 的现代二维 CAD/CAM 学习与技术展示
 C++17、Qt 5.12.10、OpenGL、CMake 和 Ninja 开发。项目覆盖二维绘制与编辑、图层和标注、
 DWG/DXF/SVG/位图导入导出、刀路排序与仿真，以及可撤销的文档事务。
 
-> 当前版本：`0.3.0-alpha.1`。项目仍在持续开发，不宣称完整兼容 AutoCAD。
+> 当前版本：`0.2.0-alpha.1`。项目仍在持续开发，不宣称完整兼容 AutoCAD。
 
 ![vectorPath 位图矢量化结果界面](sgraphDocs/images/s_bitmap_vectorization_ui.png)
 

@@ -53,7 +53,7 @@ python sgraphBuildTools/s_build_32_debug.py --clean --jobs 8
 - `--jobs auto|N`：并行编译数量。
 - `--run`：通过测试后启动应用。
 - `--package`：生成便携 ZIP 和 SHA-256 文件；64 位 Release 包名为
-  `vectorPath-0.3.0-alpha.1-windows-x64.zip`。
+  `vectorPath-0.2.0-alpha.1-windows-x64.zip`。
 - `--no-test`：仅在明确不需要测试时使用。
 
 构建完成后脚本运行 CTest，并生成 `runtime_manifest.json`，记录运行文件的大小、架构、

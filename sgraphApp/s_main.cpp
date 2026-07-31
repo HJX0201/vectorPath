@@ -37,7 +37,7 @@ int main(int argument_count, char* argument_values[])
     vectorPath::migrateMissingApplicationSettings(smart_cad_settings, current_settings);
     QCoreApplication::setOrganizationName(QStringLiteral("vectorPathLearning"));
     QCoreApplication::setApplicationName(QStringLiteral("vectorPath"));
-    QCoreApplication::setApplicationVersion(QStringLiteral("0.3.0-alpha.1"));
+    QCoreApplication::setApplicationVersion(QStringLiteral("0.2.0-alpha.1"));
 
     QTranslator qt_translator;
     qt_translator.load(QStringLiteral("qt_zh_CN"),

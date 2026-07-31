@@ -17,7 +17,7 @@ import zipfile
 
 QT_VERSION = "5.12.10"
 PRODUCT_NAME = "vectorPath"
-PRODUCT_VERSION = "0.3.0-alpha.1"
+PRODUCT_VERSION = "0.2.0-alpha.1"
 RUNTIME_DIRECTORIES = (
     "iconengines",
     "imageformats",
