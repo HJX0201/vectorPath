@@ -6,7 +6,7 @@
 #include <QAction>
 #include <SARibbonPanel.h>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 void SCadMainWindow::configureDimensionPanel(SARibbonPanel* annotation_panel)
@@ -52,4 +52,4 @@ void SCadMainWindow::configureDimensionPanel(SARibbonPanel* annotation_panel)
     annotation_panel->addLargeAction(style_action);
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

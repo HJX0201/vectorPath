@@ -8,7 +8,7 @@ class QEvent;
 class QLineEdit;
 class QTextEdit;
 
-namespace smartGraphics
+namespace smartCam
 {
 
 class SCommandLineWidget final : public QWidget
@@ -36,4 +36,4 @@ class SCommandLineWidget final : public QWidget
     int m_history_index = 0;
 };
 
-} // namespace smartGraphics
+} // namespace smartCam

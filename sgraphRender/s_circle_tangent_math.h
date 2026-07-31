@@ -4,7 +4,7 @@
 #include <cmath>
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace detail
 {
@@ -103,4 +103,4 @@ inline void appendQuadraticRoots(double coefficient_a, double coefficient_b, dou
 }
 
 } // namespace detail
-} // namespace smartGraphics
+} // namespace smartCam

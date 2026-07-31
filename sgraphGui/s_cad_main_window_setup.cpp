@@ -19,7 +19,7 @@
 #include <QStatusBar>
 #include <QToolButton>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 void SCadMainWindow::createActions()
@@ -423,4 +423,4 @@ void SCadMainWindow::configureGripAction(QAction* grip_action)
             });
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

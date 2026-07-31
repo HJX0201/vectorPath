@@ -4,7 +4,7 @@
 
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 class SCadDocument;
@@ -33,4 +33,4 @@ SQuickEntityOperationResult applyQuickEntityOperation(
     SCadDocument& document, const std::vector<SEntityId>& selected_entity_ids,
     SQuickEntityOperation operation, const SPoint2d& operation_center);
 
-} // namespace smartGraphics
+} // namespace smartCam

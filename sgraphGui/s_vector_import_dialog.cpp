@@ -18,7 +18,7 @@
 #include <cmath>
 #include <variant>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -420,4 +420,4 @@ SVectorImportSettings SVectorImportDialog::settings() const
     return result;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

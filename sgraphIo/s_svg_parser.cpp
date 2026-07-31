@@ -12,7 +12,7 @@
 #include <cmath>
 #include <optional>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -563,4 +563,4 @@ SResult<SSvgVectorData> parseSvgVectorData(const QByteArray& svg_data)
     return SResult<SSvgVectorData>::success(std::move(result));
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

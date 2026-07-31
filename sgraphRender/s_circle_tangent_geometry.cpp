@@ -7,7 +7,7 @@
 #include <limits>
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -626,4 +626,4 @@ bool tangentCircleToThreeEntities(const std::array<SEntityRecord, 3>& sources,
     return has_result;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

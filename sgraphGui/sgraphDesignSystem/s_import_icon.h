@@ -4,10 +4,10 @@
 
 class QPainter;
 
-namespace smartGraphics
+namespace smartCam
 {
 
 bool drawImportIcon(QPainter& painter, SIconType icon_type,
                     const QColor& foreground, const QColor& accent);
 
-} // namespace smartGraphics
+} // namespace smartCam

@@ -10,7 +10,7 @@
 #include <exception>
 #include <unordered_set>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -363,4 +363,4 @@ SResult<SSvgDeduplicateReport> deduplicateSvgColorBlocks(
     }
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

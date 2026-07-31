@@ -6,7 +6,7 @@
 #include <QHash>
 #include <QtGlobal>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -90,4 +90,4 @@ SResult<SVectorDocumentImportReport> importVectorGeometry(
     return SResult<SVectorDocumentImportReport>::success(report);
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

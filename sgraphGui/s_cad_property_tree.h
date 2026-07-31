@@ -2,7 +2,7 @@
 
 class QTreeWidgetItem;
 
-namespace smartGraphics
+namespace smartCam
 {
 
 class SCadDocument;
@@ -12,4 +12,4 @@ struct SEntityRecord;
 QTreeWidgetItem* addEntityPropertyTree(QTreeWidgetItem* parent_item, const SEntityRecord& entity,
                                        const SCadDocument& document, const SDesignToken& tokens);
 
-} // namespace smartGraphics
+} // namespace smartCam

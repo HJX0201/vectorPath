@@ -7,10 +7,10 @@
 
 class QDataStream;
 
-namespace smartGraphics
+namespace smartCam
 {
 
 void writeEntityRecord(QDataStream& stream, const SEntityRecord& entity);
 SResult<SEntityRecord> readEntityRecord(QDataStream& stream, quint32 format_version);
 
-} // namespace smartGraphics
+} // namespace smartCam

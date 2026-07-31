@@ -8,7 +8,7 @@
 #include <cmath>
 #include <utility>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -178,4 +178,4 @@ void SCadViewport::completeStretch(const SPoint2d& destination)
     update();
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

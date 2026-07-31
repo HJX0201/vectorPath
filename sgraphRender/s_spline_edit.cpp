@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 bool splineControlPointEntity(const SEntityRecord& source, std::size_t control_point_index,
@@ -54,4 +54,4 @@ bool splinePolylineEntity(const SEntityRecord& source, int segment_count, SEntit
     return true;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

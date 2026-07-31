@@ -18,7 +18,7 @@
 #include <QVBoxLayout>
 #include <SARibbonPanel.h>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -237,4 +237,4 @@ bool SCadMainWindow::executeHatchCommand(const QString& command)
     return true;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

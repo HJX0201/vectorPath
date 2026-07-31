@@ -3,7 +3,7 @@
 #include <QPainter>
 #include <algorithm>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 SPoint2d SCadViewport::visibleWorldBottomLeft() const
@@ -72,4 +72,4 @@ void SCadViewport::drawSimulationOverlay(QPainter& painter)
     painter.restore();
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

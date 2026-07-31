@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Shared Windows build driver for smartGraphics."""
+"""Shared Windows build driver for smartCam."""
 
 from __future__ import annotations
 
@@ -16,6 +16,8 @@ import zipfile
 
 
 QT_VERSION = "5.12.10"
+PRODUCT_NAME = "smartCam"
+PRODUCT_VERSION = "0.2.0-alpha.1"
 RUNTIME_DIRECTORIES = (
     "iconengines",
     "imageformats",
@@ -210,7 +212,7 @@ def visual_studio_environment(bits: str) -> dict[str, str]:
 
 
 def executable_path(build_dir: Path) -> Path:
-    return build_dir / "smartGraphics.exe"
+    return build_dir / f"{PRODUCT_NAME}.exe"
 
 
 def sha256(path: Path) -> str:
@@ -225,7 +227,7 @@ def runtime_files(build_dir: Path) -> list[Path]:
     files: list[Path] = []
     for path in build_dir.iterdir():
         if path.is_file() and (
-            path.name == "smartGraphics.exe"
+            path.name == f"{PRODUCT_NAME}.exe"
             or path.suffix.lower() == ".dll"
             or path.name.lower().startswith("vc_redist.")
         ):
@@ -245,8 +247,8 @@ def file_origin(relative: Path) -> str:
         return "Qt Advanced Docking System 4.4.1"
     if relative.name.casefold().startswith("vc_redist"):
         return "Microsoft Visual C++ Runtime"
-    if relative.name == "smartGraphics.exe":
-        return "smartGraphics"
+    if relative.name == f"{PRODUCT_NAME}.exe":
+        return PRODUCT_NAME
     return f"Qt {QT_VERSION}"
 
 
@@ -296,7 +298,8 @@ def write_runtime_manifest(build_dir: Path, bits: str, configuration: str) -> Pa
     manifest.write_text(
         json.dumps(
             {
-                "product": "smartGraphics",
+                "product": PRODUCT_NAME,
+                "version": PRODUCT_VERSION,
                 "architecture": bits,
                 "configuration": configuration,
                 "qt_version": QT_VERSION,
@@ -313,7 +316,11 @@ def write_runtime_manifest(build_dir: Path, bits: str, configuration: str) -> Pa
 def create_package(build_dir: Path, bits: str, configuration: str) -> Path:
     destination = repo_root() / "dist"
     destination.mkdir(exist_ok=True)
-    archive = destination / f"smartGraphics-{bits}-{configuration.lower()}.zip"
+    architecture = "x64" if bits == "64" else "x86"
+    configuration_suffix = "" if configuration == "Release" else "-debug"
+    archive = destination / (
+        f"{PRODUCT_NAME}-{PRODUCT_VERSION}-windows-{architecture}{configuration_suffix}.zip"
+    )
     manifest = build_dir / "runtime_manifest.json"
     files = runtime_files(build_dir) + [manifest]
     with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as output:
@@ -325,7 +332,7 @@ def create_package(build_dir: Path, bits: str, configuration: str) -> Path:
 
 
 def parse_arguments() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="构建 smartGraphics")
+    parser = argparse.ArgumentParser(description="构建 smartCam")
     parser.add_argument("--jobs", default="auto", help="并行数，默认 auto")
     parser.add_argument("--qt-dir", help="显式指定 Qt 套件根目录")
     parser.add_argument("--clean", action="store_true", help="先删除对应输出目录")
@@ -365,7 +372,7 @@ def run_build(bits: str, configuration: str) -> int:
             f"-DCMAKE_MAKE_PROGRAM={ninja}",
             f"-DCMAKE_BUILD_TYPE={configuration}",
             f"-DCMAKE_PREFIX_PATH={qt_dir}",
-            f"-DSMARTCAD_BUILD_TESTS={tests}",
+            f"-DSMARTCAM_BUILD_TESTS={tests}",
         ],
         check=True,
         env=environment,

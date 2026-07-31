@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -126,4 +126,4 @@ bool arcFromCenterStartAngle(const SPoint2d& center, const SPoint2d& start_point
     return true;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

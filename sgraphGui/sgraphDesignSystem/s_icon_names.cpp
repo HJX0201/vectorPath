@@ -1,6 +1,6 @@
 #include "s_icon_provider.h"
 
-namespace smartGraphics
+namespace smartCam
 {
 
 QString SIconProvider::iconName(SIconType icon_type)
@@ -251,4 +251,4 @@ QString SIconProvider::iconName(SIconType icon_type)
     return QStringLiteral("unknown");
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

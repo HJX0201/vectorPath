@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -133,4 +133,4 @@ SResult<SLoadedDocumentStyles> readDocumentStyles(QDataStream& stream, quint32 f
     return SResult<SLoadedDocumentStyles>::success(std::move(loaded));
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

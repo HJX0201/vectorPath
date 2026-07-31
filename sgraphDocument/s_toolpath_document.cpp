@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <unordered_set>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 namespace
@@ -117,4 +117,4 @@ SToolpathDocumentSortResult sortDocumentToolpaths(
             static_cast<int>(sorted.reversed_entity_ids.size())};
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <limits>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -169,4 +169,4 @@ void SCadViewport::zoomExtents()
     update();
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

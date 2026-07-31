@@ -5,7 +5,7 @@
 
 #include <QPainter>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 SEntityRecord alignedEntity(const SEntityRecord& source, const SPoint2d& first_source_point,
@@ -121,4 +121,4 @@ void SCadViewport::drawAlignPreview(QPainter& painter)
     }
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

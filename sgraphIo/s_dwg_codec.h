@@ -2,7 +2,7 @@
 
 #include "s_i_file_codec.h"
 
-namespace smartGraphics
+namespace smartCam
 {
 
 class SDwgCodec final : public SIFileCodec
@@ -20,4 +20,4 @@ class SDwgCodec final : public SIFileCodec
     QString toolVersion() const;
 };
 
-} // namespace smartGraphics
+} // namespace smartCam

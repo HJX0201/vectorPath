@@ -7,7 +7,7 @@
 
 class QWidget;
 
-namespace smartGraphics
+namespace smartCam
 {
 
 class SDialog : public QDialog
@@ -49,4 +49,4 @@ class SDialogService final
         QMessageBox::StandardButtons buttons, QMessageBox::StandardButton default_button);
 };
 
-} // namespace smartGraphics
+} // namespace smartCam

@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <utility>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 void SCadViewport::setPendingMText(QString rich_text, double width, double height,
@@ -97,4 +97,4 @@ void SCadViewport::drawAnnotationPreview(QPainter& painter)
     drawEntityGeometry(painter, preview, QColor(92, 214, 255, 72));
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

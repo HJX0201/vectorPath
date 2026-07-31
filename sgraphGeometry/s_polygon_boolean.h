@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 enum class SPolygonBooleanOperation : std::uint8_t
@@ -25,4 +25,4 @@ SResult<SPolygonPaths> polygonBoolean(const SPolygonPaths& subject_paths,
                                       const SPolygonPaths& clip_paths,
                                       SPolygonBooleanOperation operation);
 
-} // namespace smartGraphics
+} // namespace smartCam

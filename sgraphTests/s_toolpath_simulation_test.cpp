@@ -5,7 +5,7 @@
 
 #include <QtTest>
 
-using namespace smartGraphics;
+using namespace smartCam;
 
 class SToolpathSimulationTest final : public QObject
 {

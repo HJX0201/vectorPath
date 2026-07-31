@@ -4,7 +4,7 @@
 
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 enum class SStandardShapeType
@@ -21,4 +21,4 @@ std::vector<SPoint2d> standardShapeVertices(SStandardShapeType shape_type,
                                             const SPoint2d& center,
                                             const SPoint2d& radius_point);
 
-} // namespace smartGraphics
+} // namespace smartCam

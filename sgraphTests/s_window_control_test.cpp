@@ -22,7 +22,7 @@
 #include <QtTest>
 #include <algorithm>
 
-using namespace smartGraphics;
+using namespace smartCam;
 
 namespace
 {
@@ -70,8 +70,8 @@ void SWindowControlTest::initTestCase()
     Q_INIT_RESOURCE(s_gui_resources);
     QSettings::setDefaultFormat(QSettings::IniFormat);
     QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, QDir::tempPath());
-    QCoreApplication::setOrganizationName(QStringLiteral("smartCadTests"));
-    QCoreApplication::setApplicationName(QStringLiteral("smartCadWindowControlTests"));
+    QCoreApplication::setOrganizationName(QStringLiteral("smartCamTests"));
+    QCoreApplication::setApplicationName(QStringLiteral("smartCamWindowControlTests"));
     QSettings().clear();
 }
 

@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -136,4 +136,4 @@ void SCadDocument::commitDimensionStyleChange(QString label,
     emitDocumentState();
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

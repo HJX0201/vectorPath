@@ -3,7 +3,7 @@
 #include "s_cad_workspace_widget.h"
 #include "s_command_line_widget.h"
 
-namespace smartGraphics
+namespace smartCam
 {
 
 bool SCadMainWindow::executeViewCommand(const QString& normalized_command)
@@ -20,4 +20,4 @@ bool SCadMainWindow::executeViewCommand(const QString& normalized_command)
     return false;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

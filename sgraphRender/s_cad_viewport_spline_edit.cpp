@@ -8,7 +8,7 @@
 #include <cmath>
 #include <limits>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -250,4 +250,4 @@ void SCadViewport::drawSplineEditPreview(QPainter& painter)
     }
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

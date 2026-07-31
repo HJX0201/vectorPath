@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 using SLayerId = std::uint64_t;
@@ -31,4 +31,4 @@ struct SLayerStateRecord
     QString current_layer_name;
 };
 
-} // namespace smartGraphics
+} // namespace smartCam

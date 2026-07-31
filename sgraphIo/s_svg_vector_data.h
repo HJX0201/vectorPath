@@ -6,7 +6,7 @@
 #include <QStringList>
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 enum class SVectorFillRule
@@ -38,4 +38,4 @@ struct SSvgVectorData
     QStringList warnings;
 };
 
-} // namespace smartGraphics
+} // namespace smartCam

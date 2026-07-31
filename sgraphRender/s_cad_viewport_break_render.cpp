@@ -3,7 +3,7 @@
 
 #include <QPainter>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 void SCadViewport::drawBreakPreview(QPainter& painter)
@@ -45,4 +45,4 @@ void SCadViewport::drawBreakPreview(QPainter& painter)
     painter.drawEllipse(worldToScreen(m_cursor_world), 3.5, 3.5);
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

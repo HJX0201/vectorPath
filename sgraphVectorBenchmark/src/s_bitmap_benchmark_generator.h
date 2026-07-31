@@ -5,10 +5,10 @@
 
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 SResult<std::vector<SBitmapBenchmarkCase>> generateBitmapBenchmarkCases(
     const SBitmapBenchmarkOptions& options);
 
-} // namespace smartGraphics
+} // namespace smartCam

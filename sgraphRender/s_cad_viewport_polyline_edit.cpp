@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -215,4 +215,4 @@ bool SCadViewport::handlePolylineEditKeyword(const QString& normalized_keyword)
     return true;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

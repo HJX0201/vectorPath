@@ -5,7 +5,7 @@
 class QAction;
 class QHBoxLayout;
 
-namespace smartGraphics
+namespace smartCam
 {
 
 class SSelectionContextBar final : public QFrame
@@ -21,4 +21,4 @@ class SSelectionContextBar final : public QFrame
     QHBoxLayout* m_layout = nullptr;
 };
 
-} // namespace smartGraphics
+} // namespace smartCam

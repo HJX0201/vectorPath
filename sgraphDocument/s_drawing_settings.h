@@ -3,7 +3,7 @@
 #include <QString>
 #include <optional>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 enum class SInsertionUnit
@@ -43,4 +43,4 @@ std::optional<SAngleFormat> angleFormatFromKey(const QString& key);
 QString formatLinearValue(double value, const SDrawingSettings& settings);
 QString formatAngleValue(double angle_degrees, const SDrawingSettings& settings);
 
-} // namespace smartGraphics
+} // namespace smartCam

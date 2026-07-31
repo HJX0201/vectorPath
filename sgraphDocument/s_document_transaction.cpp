@@ -6,7 +6,7 @@
 #include <cmath>
 #include <utility>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 SDocumentTransaction::SDocumentTransaction(SCadDocument& document, QString label)
@@ -443,4 +443,4 @@ void SDocumentTransaction::commit()
     m_is_committed = true;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

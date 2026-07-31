@@ -19,7 +19,7 @@
 #include <QVBoxLayout>
 #include <SARibbonPanel.h>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 void SCadMainWindow::configureAnnotationPanel(SARibbonPanel* annotation_panel)
@@ -215,4 +215,4 @@ bool SCadMainWindow::executeAnnotationCommand(const QString& command)
     return executeTextStyleCommand(simplified);
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

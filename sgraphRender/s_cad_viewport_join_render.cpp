@@ -4,7 +4,7 @@
 #include <QPainter>
 #include <algorithm>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 void SCadViewport::drawJoinPreview(QPainter& painter)
@@ -57,4 +57,4 @@ void SCadViewport::drawJoinPreview(QPainter& painter)
     }
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

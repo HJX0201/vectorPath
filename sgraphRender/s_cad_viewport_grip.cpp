@@ -8,7 +8,7 @@
 #include <cmath>
 #include <limits>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -590,4 +590,4 @@ void SCadViewport::drawGrips(QPainter& painter)
     painter.restore();
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

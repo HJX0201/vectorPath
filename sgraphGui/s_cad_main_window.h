@@ -22,7 +22,7 @@ class CDockManager;
 class CDockWidget;
 } // namespace ads
 
-namespace smartGraphics
+namespace smartCam
 {
 
 class SCadDocument;
@@ -193,4 +193,4 @@ class SCadMainWindow final : public SARibbonMainWindow
     std::vector<std::pair<std::uint8_t, QAction*>> m_tool_actions;
 };
 
-} // namespace smartGraphics
+} // namespace smartCam

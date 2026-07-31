@@ -10,7 +10,7 @@
 #include <cmath>
 #include <limits>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -557,4 +557,4 @@ std::optional<SObjectSnapResult> findObjectSnap(const std::vector<const SEntityR
     return best_result;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

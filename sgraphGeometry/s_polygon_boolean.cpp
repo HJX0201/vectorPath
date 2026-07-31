@@ -3,7 +3,7 @@
 #include <clipper2/clipper.h>
 #include <exception>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -118,4 +118,4 @@ SResult<SPolygonPaths> polygonBoolean(const SPolygonPaths& subject_paths,
     }
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

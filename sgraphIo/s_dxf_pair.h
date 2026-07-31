@@ -6,7 +6,7 @@
 
 class QTextStream;
 
-namespace smartGraphics
+namespace smartCam
 {
 
 struct SDxfPair
@@ -21,4 +21,4 @@ std::optional<double> findDxfDouble(const std::vector<SDxfPair>& pairs, int grou
 std::optional<QString> findDxfString(const std::vector<SDxfPair>& pairs, int group_code);
 std::vector<SDxfPair> readDxfPairs(QTextStream& stream, QString& error_message);
 
-} // namespace smartGraphics
+} // namespace smartCam

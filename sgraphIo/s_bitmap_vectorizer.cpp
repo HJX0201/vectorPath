@@ -4,7 +4,7 @@
 #include <QString>
 #include <QTextStream>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -74,4 +74,4 @@ SResult<QByteArray> bitmapToSvgData(const QImage& source,
     return SResult<QByteArray>::success(std::move(result.value().svg_data));
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

@@ -10,7 +10,7 @@
 #include <QPolygonF>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 QIcon SIconProvider::createIcon(SIconType icon_type, const QColor& foreground, const QColor& accent)
@@ -680,4 +680,4 @@ QIcon SIconProvider::createIcon(SIconType icon_type, const QColor& foreground, c
     return QIcon(pixmap);
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

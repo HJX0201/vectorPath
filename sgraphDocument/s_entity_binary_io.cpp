@@ -7,7 +7,7 @@
 #include <QDataStream>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -385,4 +385,4 @@ SResult<SEntityRecord> readEntityRecord(QDataStream& stream, quint32 format_vers
     return SResult<SEntityRecord>::success(std::move(entity));
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

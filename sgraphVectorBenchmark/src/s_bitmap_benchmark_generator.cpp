@@ -11,7 +11,7 @@
 #include <QRandomGenerator>
 #include <QSet>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -383,4 +383,4 @@ SResult<std::vector<SBitmapBenchmarkCase>> generateBitmapBenchmarkCases(
     return SResult<std::vector<SBitmapBenchmarkCase>>::success(std::move(cases));
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

@@ -12,7 +12,7 @@
 #include <QToolBar>
 #include <QtTest>
 
-using namespace smartGraphics;
+using namespace smartCam;
 
 class SWorkspacePersistenceTest final : public QObject
 {
@@ -30,8 +30,8 @@ void SWorkspacePersistenceTest::initTestCase()
     Q_INIT_RESOURCE(s_gui_resources);
     QSettings::setDefaultFormat(QSettings::IniFormat);
     QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, QDir::tempPath());
-    QCoreApplication::setOrganizationName(QStringLiteral("smartCadTests"));
-    QCoreApplication::setApplicationName(QStringLiteral("smartCadWorkspacePersistenceTests"));
+    QCoreApplication::setOrganizationName(QStringLiteral("smartCamTests"));
+    QCoreApplication::setApplicationName(QStringLiteral("smartCamWorkspacePersistenceTests"));
     QSettings().clear();
 }
 

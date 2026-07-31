@@ -8,7 +8,7 @@
 #include <QStringList>
 #include <algorithm>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 bool SCadMainWindow::executeGripCommand(const QString& normalized_command)
@@ -225,4 +225,4 @@ bool SCadMainWindow::executeArrayParameterCommand(const QString& normalized_comm
     return false;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

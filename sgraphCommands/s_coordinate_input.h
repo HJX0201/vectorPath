@@ -5,7 +5,7 @@
 #include <QString>
 #include <optional>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 enum class SCoordinateInputMode
@@ -28,4 +28,4 @@ SCoordinateInput parseCoordinateInput(const QString& text);
 std::optional<SPoint2d> resolveCoordinateInput(const SCoordinateInput& input,
                                                const std::optional<SPoint2d>& reference_point);
 
-} // namespace smartGraphics
+} // namespace smartCam

@@ -6,7 +6,7 @@
 #include <QPainter>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -542,4 +542,4 @@ void SCadViewport::drawArcConstructionPreview(QPainter& painter)
                     static_cast<int>(arc.start_angle * 16.0), static_cast<int>(span_angle * 16.0));
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

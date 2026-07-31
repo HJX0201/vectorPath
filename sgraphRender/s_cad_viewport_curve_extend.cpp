@@ -6,7 +6,7 @@
 #include <optional>
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -321,4 +321,4 @@ bool extendedEntity(const SEntityRecord& boundary_entity, const SEntityRecord& t
     return true;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

@@ -6,7 +6,7 @@
 #include <QSet>
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -186,4 +186,4 @@ SResult<SBitmapVectorResult> bitmapToVectorFloodFill(
     return SResult<SBitmapVectorResult>::success(std::move(result));
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

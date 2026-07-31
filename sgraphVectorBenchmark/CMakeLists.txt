@@ -33,7 +33,7 @@ set(SGRAPH_BENCHMARK_SMOKE_OUTPUT
 )
 
 add_test(
-    NAME smartCadBitmapVectorBenchmarkSmoke
+    NAME smartCamBitmapVectorBenchmarkSmoke
     COMMAND ${CMAKE_COMMAND} -E env
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$ENV{PATH}"
             "$<TARGET_FILE:smartBitmapVectorBenchmark>"
@@ -46,20 +46,20 @@ add_test(
 )
 
 set_tests_properties(
-    smartCadBitmapVectorBenchmarkSmoke
+    smartCamBitmapVectorBenchmarkSmoke
     PROPERTIES LABELS "bitmap_vector_benchmark"
 )
 
 add_test(
-    NAME smartCadBitmapBenchmarkOutputLayout
+    NAME smartCamBitmapBenchmarkOutputLayout
     COMMAND ${CMAKE_COMMAND}
             "-DOUTPUT_DIRECTORY=${SGRAPH_BENCHMARK_SMOKE_OUTPUT}"
             -P "${CMAKE_CURRENT_SOURCE_DIR}/tests/s_verify_output_layout.cmake"
 )
 
 set_tests_properties(
-    smartCadBitmapBenchmarkOutputLayout
+    smartCamBitmapBenchmarkOutputLayout
     PROPERTIES
-        DEPENDS smartCadBitmapVectorBenchmarkSmoke
+        DEPENDS smartCamBitmapVectorBenchmarkSmoke
         LABELS "bitmap_vector_benchmark"
 )

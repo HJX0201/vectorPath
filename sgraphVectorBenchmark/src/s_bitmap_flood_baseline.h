@@ -2,10 +2,10 @@
 
 #include "s_bitmap_vectorizer.h"
 
-namespace smartGraphics
+namespace smartCam
 {
 
 SResult<SBitmapVectorResult> bitmapToVectorFloodFill(
     const QImage& source, const SBitmapVectorSettings& settings);
 
-} // namespace smartGraphics
+} // namespace smartCam

@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <unordered_set>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -182,4 +182,4 @@ SQuickEntityOperationResult applyQuickEntityOperation(
     return result;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

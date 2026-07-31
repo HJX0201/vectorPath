@@ -1,6 +1,6 @@
 #include "s_geometry_types.h"
 
-namespace smartGraphics
+namespace smartCam
 {
 
 double distance(const SPoint2d& first_point, const SPoint2d& second_point) noexcept
@@ -15,4 +15,4 @@ QString formatPoint(const SPoint2d& point, int precision)
     return QStringLiteral("%1, %2").arg(point.x, 0, 'f', precision).arg(point.y, 0, 'f', precision);
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

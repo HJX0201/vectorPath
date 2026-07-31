@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <limits>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 void SCadViewport::setTrackingEnabled(bool is_enabled)
@@ -75,4 +75,4 @@ SCadViewport::trackingSnap(const SPoint2d& cursor, const std::optional<SPoint2d>
     return result;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

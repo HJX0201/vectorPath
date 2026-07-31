@@ -13,7 +13,7 @@
 #include <limits>
 #include <utility>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -520,4 +520,4 @@ void SCadViewport::drawPreview(QPainter& painter)
     }
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

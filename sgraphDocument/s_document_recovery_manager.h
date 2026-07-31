@@ -7,7 +7,7 @@
 #include <QTimer>
 #include <QVector>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 class SCadDocument;
@@ -55,4 +55,4 @@ class SDocumentRecoveryManager final : public QObject
     QString m_untitled_session_key;
 };
 
-} // namespace smartGraphics
+} // namespace smartCam

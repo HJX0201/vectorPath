@@ -1,3 +1,4 @@
+#include "s_application_settings_migration.h"
 #include "s_cad_main_window.h"
 #include "s_chinese_ui_translator.h"
 #include "s_theme_manager.h"
@@ -24,21 +25,27 @@ int main(int argument_count, char* argument_values[])
 
     QApplication application(argument_count, argument_values);
     Q_INIT_RESOURCE(s_gui_resources);
-    QCoreApplication::setOrganizationName(QStringLiteral("smartCadLearning"));
-    QCoreApplication::setApplicationName(QStringLiteral("smartGraphics"));
-    QCoreApplication::setApplicationVersion(QStringLiteral("0.1.0"));
+    QSettings legacy_settings(QSettings::NativeFormat, QSettings::UserScope,
+                              QStringLiteral("smartCadLearning"),
+                              QStringLiteral("smartGraphics"));
+    QSettings current_settings(QSettings::NativeFormat, QSettings::UserScope,
+                               QStringLiteral("smartCamLearning"), QStringLiteral("smartCam"));
+    smartCam::migrateMissingApplicationSettings(legacy_settings, current_settings);
+    QCoreApplication::setOrganizationName(QStringLiteral("smartCamLearning"));
+    QCoreApplication::setApplicationName(QStringLiteral("smartCam"));
+    QCoreApplication::setApplicationVersion(QStringLiteral("0.2.0-alpha.1"));
 
     QTranslator qt_translator;
     qt_translator.load(QStringLiteral("qt_zh_CN"),
                        QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     application.installTranslator(&qt_translator);
-    smartGraphics::SChineseUiTranslator ui_translator;
+    smartCam::SChineseUiTranslator ui_translator;
     application.installTranslator(&ui_translator);
 
-    smartGraphics::SThemeManager theme_manager;
-    theme_manager.applyTheme(smartGraphics::SThemeMode::Dark);
+    smartCam::SThemeManager theme_manager;
+    theme_manager.applyTheme(smartCam::SThemeMode::Dark);
 
-    smartGraphics::SCadMainWindow main_window(theme_manager);
+    smartCam::SCadMainWindow main_window(theme_manager);
     main_window.showMaximized();
     return application.exec();
 }

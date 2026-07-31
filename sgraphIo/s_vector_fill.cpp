@@ -5,7 +5,7 @@
 #include <cmath>
 #include <exception>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -428,4 +428,4 @@ SResult<SVectorImportGeometry> createVectorImportGeometry(
     return SResult<SVectorImportGeometry>::success(std::move(result));
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

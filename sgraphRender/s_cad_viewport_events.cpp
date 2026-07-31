@@ -8,7 +8,7 @@
 #include <QWheelEvent>
 #include <algorithm>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -320,4 +320,4 @@ void SCadViewport::keyPressEvent(QKeyEvent* event)
     QOpenGLWidget::keyPressEvent(event);
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -525,4 +525,4 @@ std::vector<SEntityRecord> explodedEntityParts(const SEntityRecord& source)
     return results;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

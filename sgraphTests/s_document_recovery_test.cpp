@@ -6,7 +6,7 @@
 #include <QTemporaryDir>
 #include <QtTest>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 class SDocumentRecoveryTest final : public QObject
@@ -81,7 +81,7 @@ void SDocumentRecoveryTest::namedDocumentKeepsActivePathAndModifiedState()
     QCOMPARE(manager.discardRecoveriesForSource(drawing_path), 1);
 }
 
-} // namespace smartGraphics
+} // namespace smartCam
 
-QTEST_MAIN(smartGraphics::SDocumentRecoveryTest)
+QTEST_MAIN(smartCam::SDocumentRecoveryTest)
 #include "s_document_recovery_test.moc"

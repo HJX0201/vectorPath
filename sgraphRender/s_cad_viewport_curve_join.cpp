@@ -4,7 +4,7 @@
 #include <cmath>
 #include <numeric>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -307,4 +307,4 @@ bool joinedEntity(const std::vector<SEntityRecord>& sources, double tolerance,
     return false;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

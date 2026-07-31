@@ -3,7 +3,7 @@
 #include <QPainter>
 #include <QPolygonF>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -87,4 +87,4 @@ void drawDimensionIcon(QPainter& painter, SIconType icon_type, const QColor& acc
     painter.restore();
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

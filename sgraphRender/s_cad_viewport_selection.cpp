@@ -18,7 +18,7 @@
 #include <limits>
 #include <utility>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -603,4 +603,4 @@ double SCadViewport::adaptiveGridSpacing() const
     return spacing;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -443,4 +443,4 @@ SEntityRecord mirroredEntity(const SEntityRecord& source, const SPoint2d& axis_s
     return result;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

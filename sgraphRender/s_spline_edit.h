@@ -4,7 +4,7 @@
 
 #include <cstddef>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 bool splineControlPointEntity(const SEntityRecord& source, std::size_t control_point_index,
@@ -12,4 +12,4 @@ bool splineControlPointEntity(const SEntityRecord& source, std::size_t control_p
 bool reversedSplineEntity(const SEntityRecord& source, SEntityRecord& result);
 bool splinePolylineEntity(const SEntityRecord& source, int segment_count, SEntityRecord& result);
 
-} // namespace smartGraphics
+} // namespace smartCam

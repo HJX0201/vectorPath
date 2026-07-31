@@ -5,7 +5,7 @@
 #include <limits>
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -265,4 +265,4 @@ bool chamferedEntities(const SEntityRecord& first_source, const SEntityRecord& s
     return true;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

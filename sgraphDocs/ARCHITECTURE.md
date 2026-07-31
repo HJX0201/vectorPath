@@ -1,6 +1,6 @@
 # 代码架构
 
-smartGraphics 使用分层 CMake 目标组织。依赖方向由基础数据、几何和文档逐步指向交互、
+smartCam 使用分层 CMake 目标组织。依赖方向由基础数据、几何和文档逐步指向交互、
 界面与应用入口，底层模块不依赖主窗口。
 
 ```text
@@ -32,7 +32,7 @@ sgraphCore
 
 ## 关键设计
 
-- 命名空间统一为 `smartGraphics`。
+- 命名空间统一为 `smartCam`。
 - 自研 C++ 文件使用 `s_` 前缀，每个 `.h/.cpp` 不超过 800 行。
 - 文档修改通过 `SDocumentTransaction` 提交，提供统一撤销/重做边界。
 - 视口只持有文档引用，几何计算尽量保持为可独立测试的纯函数。
@@ -45,3 +45,14 @@ sgraphCore
 当前重点是二维 CAD/CAM。三维建模、三维编辑和三维可视化明确不在当前范围。功能完成度
 以 `s_autocad_gap_matrix.yaml` 和 `s_smartcad_feature_inventory.yaml` 为准；仅有入口或
 占位界面的功能不得视为完成。
+
+完整产品品牌已改为 smartCam。下列旧名称属于兼容协议或稳定标识，不能作为普通技术债
+机械替换：
+
+- 旧 `.smartcad` 扩展名、`SMCAD001` 文件 magic、原生文件版本 24 和 manifest 中的
+  `smartCad` 兼容字段。
+- 首次启动读取的旧设置位置 `smartCadLearning/smartGraphics`，以及旧 `smartCad.stb`
+  打印样式名。
+- 已持久化的 Qt object name、状态栏样式选择器和 DXF XDATA 应用名 `SMARTCAD`。
+- 保留一个版本的 `SMARTCAD_BUILD_TESTS` 构建变量兼容映射。
+- CAD 功能目录中的稳定 `SMARTCAD.*` 功能 ID，以及历史版本记录和历史基准报告。

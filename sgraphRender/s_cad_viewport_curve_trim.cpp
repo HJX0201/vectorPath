@@ -6,7 +6,7 @@
 #include <cmath>
 #include <limits>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -621,4 +621,4 @@ void SCadViewport::drawTrimPreview(QPainter& painter)
     }
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

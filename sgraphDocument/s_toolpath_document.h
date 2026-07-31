@@ -4,7 +4,7 @@
 
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 class SCadDocument;
@@ -19,4 +19,4 @@ SToolpathDocumentSortResult sortDocumentToolpaths(
     SCadDocument& document, const std::vector<SEntityId>& selected_entity_ids,
     const SToolpathSortOptions& options);
 
-} // namespace smartGraphics
+} // namespace smartCam

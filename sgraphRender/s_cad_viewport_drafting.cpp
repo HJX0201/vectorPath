@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -91,4 +91,4 @@ double SCadViewport::gridRotation() const noexcept
     return m_grid_rotation;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

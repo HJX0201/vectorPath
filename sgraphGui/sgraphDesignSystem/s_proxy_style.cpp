@@ -3,7 +3,7 @@
 #include <QStyleFactory>
 #include <algorithm>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 SProxyStyle::SProxyStyle() : QProxyStyle(QStyleFactory::create(QStringLiteral("Fusion")))
@@ -49,4 +49,4 @@ QSize SProxyStyle::sizeFromContents(ContentsType type, const QStyleOption* optio
     return result;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

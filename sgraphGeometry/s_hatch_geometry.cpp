@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 bool pointInsidePolygon(const SPoint2d& point, const std::vector<SPoint2d>& polygon) noexcept
@@ -72,4 +72,4 @@ bool isHatchValid(const SHatchEntity& hatch) noexcept
                        });
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <utility>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -211,4 +211,4 @@ void SCadDocument::commitEntities(QString label, std::vector<SEntityRecord> adde
     emitDocumentState();
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

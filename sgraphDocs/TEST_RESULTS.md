@@ -2,14 +2,14 @@
 
 ## 自动测试
 
-2026-07-27，Windows、Qt 5.12.10：
+2026-07-31，Windows、Qt 5.12.10：
 
-- 64 位 Release：当前 CTest 33/33 通过。
-- 64 位 Debug：新增基准输出结构验收前的最近记录为 CTest 32/32 通过。
-- 32 位 Release：新增基准输出结构验收前的最近记录为 CTest 32/32 通过。
-- 32 位 Debug：新增基准输出结构验收前的最近记录为 CTest 32/32 通过。
+- 64 位 Release：CTest 34/34 通过。
+- 64 位 Debug：CTest 34/34 通过。
+- 32 位 Release：CTest 34/34 通过。
+- 32 位 Debug：CTest 34/34 通过。
 - 位图矢量化冒烟测试：20/20 通过。
-- `smartGraphics.exe`：四种构建配置均完成启动存活验证。
+- `smartCam.exe`：四种构建配置均完成启动存活验证。
 - Qt 运行库：由所选套件的 `windeployqt` 自动部署并生成 SHA-256 清单。
 
 四种构建配置均通过独立 Python 入口完成全新配置、编译、测试和运行库校验。

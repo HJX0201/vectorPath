@@ -7,7 +7,7 @@
 #include <iterator>
 #include <optional>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -185,4 +185,4 @@ void writeDxfHatch(QTextStream& stream, const SEntityRecord& entity)
     }
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

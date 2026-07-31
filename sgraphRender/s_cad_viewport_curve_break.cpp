@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -121,4 +121,4 @@ std::vector<SEntityRecord> brokenEntityParts(const SEntityRecord& source,
     return {};
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

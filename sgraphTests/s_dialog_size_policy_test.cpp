@@ -9,7 +9,7 @@
 #include <QTimer>
 #include <QtTest>
 
-using namespace smartGraphics;
+using namespace smartCam;
 
 class SDialogSizePolicyTest final : public QObject
 {

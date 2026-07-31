@@ -1,5 +1,5 @@
 schema_version: 1
-product: smartCad
+product: smartCam
 audited: 2026-07-25
 rules:
   implemented_requires: [callable_ui_or_command, working_domain_logic, undo_when_mutating]

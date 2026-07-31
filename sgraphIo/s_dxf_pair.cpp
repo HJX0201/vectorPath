@@ -2,7 +2,7 @@
 
 #include <QTextStream>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 void writeDxfPair(QTextStream& stream, int group_code, const QString& value)
@@ -73,4 +73,4 @@ std::vector<SDxfPair> readDxfPairs(QTextStream& stream, QString& error_message)
     return pairs;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

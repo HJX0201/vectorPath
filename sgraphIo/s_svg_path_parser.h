@@ -6,7 +6,7 @@
 #include <QString>
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 struct SSvgSubpath
@@ -17,4 +17,4 @@ struct SSvgSubpath
 
 SResult<std::vector<SSvgSubpath>> parseSvgPathData(const QString& path_data);
 
-} // namespace smartGraphics
+} // namespace smartCam

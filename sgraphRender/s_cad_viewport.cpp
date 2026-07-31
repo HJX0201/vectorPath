@@ -14,7 +14,7 @@
 #include <cmath>
 #include <utility>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 SCadViewport::SCadViewport(QWidget* parent) : QOpenGLWidget(parent)
@@ -696,4 +696,4 @@ std::optional<SPoint2d> SCadViewport::coordinateReferencePoint() const noexcept
     return m_first_point;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

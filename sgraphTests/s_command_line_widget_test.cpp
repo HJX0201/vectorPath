@@ -6,7 +6,7 @@
 #include <QSignalSpy>
 #include <QtTest>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 class SCommandLineWidgetTest final : public QObject
@@ -56,7 +56,7 @@ void SCommandLineWidgetTest::removedBlockCommandsAreNotAdvertised()
     QVERIFY(!entries.contains(QStringLiteral("WBLOCK")));
 }
 
-} // namespace smartGraphics
+} // namespace smartCam
 
-QTEST_MAIN(smartGraphics::SCommandLineWidgetTest)
+QTEST_MAIN(smartCam::SCommandLineWidgetTest)
 #include "s_command_line_widget_test.moc"

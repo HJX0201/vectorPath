@@ -9,7 +9,7 @@
 #include <QStyle>
 #include <QVBoxLayout>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -216,4 +216,4 @@ QMessageBox::StandardButton SDialogService::showMessage(
     return selected_button;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

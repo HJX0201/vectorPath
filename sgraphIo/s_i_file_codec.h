@@ -6,7 +6,7 @@
 #include <QString>
 #include <QStringList>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 class SCadDocument;
@@ -24,4 +24,4 @@ class SIFileCodec
                                                     const SCadDocument& document) const = 0;
 };
 
-} // namespace smartGraphics
+} // namespace smartCam

@@ -9,7 +9,7 @@
 #include <QToolBar>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -223,7 +223,7 @@ void SQuickEntityOperationTest::quickBarStaysInsideWorkspaceAndCommandsAreDiscov
     QVERIFY(entries.contains(QStringLiteral("SELCOLOR #37A6E6")));
 }
 
-} // namespace smartGraphics
+} // namespace smartCam
 
-QTEST_MAIN(smartGraphics::SQuickEntityOperationTest)
+QTEST_MAIN(smartCam::SQuickEntityOperationTest)
 #include "s_quick_entity_operation_test.moc"

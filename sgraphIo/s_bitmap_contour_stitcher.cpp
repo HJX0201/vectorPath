@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <tuple>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace bitmapVectorPrivate
 {
@@ -328,4 +328,4 @@ SResult<std::vector<SBitmapContour>> stitchSegments(
 }
 
 } // namespace bitmapVectorPrivate
-} // namespace smartGraphics
+} // namespace smartCam

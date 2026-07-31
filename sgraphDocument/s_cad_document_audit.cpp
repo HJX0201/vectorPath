@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -230,4 +230,4 @@ SDocumentAuditReport SCadDocument::audit(bool repair)
     return report;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

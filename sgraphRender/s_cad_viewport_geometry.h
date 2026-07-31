@@ -5,7 +5,7 @@
 #include <array>
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 bool calculateThreePointArc(const SPoint2d& first_point, const SPoint2d& second_point,
@@ -107,4 +107,4 @@ std::vector<SEntityRecord> pathArrayEntities(const std::vector<SEntityRecord>& s
                                              const SPoint2d& source_base_point, int item_count,
                                              bool align_to_path);
 
-} // namespace smartGraphics
+} // namespace smartCam

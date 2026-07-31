@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -175,4 +175,4 @@ bool isDimensionValid(const SLinearDimensionEntity& dimension) noexcept
     return pointDistance(dimension.first_point, dimension.second_point) > kGeometryTolerance;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

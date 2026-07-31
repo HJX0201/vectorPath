@@ -4,7 +4,7 @@
 
 #include <QString>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 class SCadDocument;
@@ -26,4 +26,4 @@ class SICadCommand
     virtual void cancel() = 0;
 };
 
-} // namespace smartGraphics
+} // namespace smartCam

@@ -5,7 +5,7 @@
 #include <QDataStream>
 #include <optional>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 void writeAssociativeArrayData(QDataStream& stream,
@@ -13,4 +13,4 @@ void writeAssociativeArrayData(QDataStream& stream,
 bool readAssociativeArrayData(QDataStream& stream, std::optional<SAssociativeArrayData>& array_data,
                               quint32 format_version);
 
-} // namespace smartGraphics
+} // namespace smartCam

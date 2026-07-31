@@ -13,7 +13,7 @@
 #include <QTreeWidget>
 #include <QtTest>
 
-using namespace smartGraphics;
+using namespace smartCam;
 
 class SShortcutManagerTest final : public QObject
 {
@@ -32,8 +32,8 @@ void SShortcutManagerTest::initTestCase()
     Q_INIT_RESOURCE(s_gui_resources);
     QSettings::setDefaultFormat(QSettings::IniFormat);
     QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, QDir::tempPath());
-    QCoreApplication::setOrganizationName(QStringLiteral("smartCadTests"));
-    QCoreApplication::setApplicationName(QStringLiteral("smartCadShortcutManagerTests"));
+    QCoreApplication::setOrganizationName(QStringLiteral("smartCamTests"));
+    QCoreApplication::setApplicationName(QStringLiteral("smartCamShortcutManagerTests"));
     QSettings().clear();
 }
 

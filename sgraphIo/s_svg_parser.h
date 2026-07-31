@@ -5,9 +5,9 @@
 
 #include <QByteArray>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 SResult<SSvgVectorData> parseSvgVectorData(const QByteArray& svg_data);
 
-} // namespace smartGraphics
+} // namespace smartCam

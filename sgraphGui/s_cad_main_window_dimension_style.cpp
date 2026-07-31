@@ -22,7 +22,7 @@
 #include <QVBoxLayout>
 #include <algorithm>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 void SCadMainWindow::showDimensionStyleManager()
@@ -287,4 +287,4 @@ bool SCadMainWindow::executeDimensionStyleCommand(const QString& command)
     return true;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

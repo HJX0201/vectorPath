@@ -4,7 +4,7 @@
 
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 enum class SToolpathHorizontalDirection
@@ -64,4 +64,4 @@ SToolpathSortResult sortToolpathEntities(const std::vector<SEntityRecord>& entit
 std::vector<SToolpathMotion> generateToolpathMotions(
     const std::vector<SEntityRecord>& entities, const SPoint2d& initial_position);
 
-} // namespace smartGraphics
+} // namespace smartCam

@@ -7,7 +7,7 @@
 #include <array>
 #include <unordered_set>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -191,4 +191,4 @@ void SToolpathSimulationController::updateTimerInterval()
     m_timer.setInterval(static_cast<int>(40.0 / speedMultiplier()));
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

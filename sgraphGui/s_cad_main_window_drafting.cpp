@@ -9,7 +9,7 @@
 #include <QStringList>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -266,4 +266,4 @@ bool SCadMainWindow::executeDraftingCommand(const QString& normalized_command)
     return false;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

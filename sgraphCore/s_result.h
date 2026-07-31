@@ -3,7 +3,7 @@
 #include <QString>
 #include <utility>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 template <typename TValue> class SResult
@@ -87,4 +87,4 @@ template <> class SResult<void>
     QString m_error_message;
 };
 
-} // namespace smartGraphics
+} // namespace smartCam

@@ -4,7 +4,7 @@
 #include <QSettings>
 #include <algorithm>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -181,4 +181,4 @@ void SShortcutManager::applySequence(SShortcutBinding& binding,
     }
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

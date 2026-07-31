@@ -15,12 +15,18 @@
 #include <QSettings>
 #include <QTimer>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
 
 constexpr int kWorkspaceStateVersion = 8;
+
+bool hasNativeDocumentSuffix(const QString& file_path)
+{
+    return file_path.endsWith(QStringLiteral(".smartcam"), Qt::CaseInsensitive)
+           || file_path.endsWith(QStringLiteral(".smartcad"), Qt::CaseInsensitive);
+}
 
 } // namespace
 
@@ -44,8 +50,8 @@ void SCadMainWindow::openDocument()
     const QString file_path =
         QFileDialog::getOpenFileName(
             this, tr("打开图形"), {},
-            tr("支持的图形 (*.smartcad *.dxf *.dwg *.svg *.png *.bmp *.jpg *.jpeg "
-               "*.tif *.tiff *.webp *.gif);;smartCad 图形 (*.smartcad);;"
+            tr("支持的图形 (*.smartcam *.smartcad *.dxf *.dwg *.svg *.png *.bmp *.jpg *.jpeg "
+               "*.tif *.tiff *.webp *.gif);;smartCam 图形 (*.smartcam *.smartcad);;"
                "DWG 图形 (*.dwg);;DXF 图形 (*.dxf);;SVG 矢量图 (*.svg);;"
                "位图 (*.png *.bmp *.jpg *.jpeg *.tif *.tiff *.webp *.gif);;"
                "所有文件 (*.*)"));
@@ -135,14 +141,15 @@ bool SCadMainWindow::saveDocument()
 bool SCadMainWindow::saveDocumentAs()
 {
     QString file_path = QFileDialog::getSaveFileName(
-        this, tr("保存 smartCad 图形"), m_document->filePath(), tr("smartCad 图形 (*.smartcad)"));
+        this, tr("保存 smartCam 图形"), m_document->filePath(),
+        tr("smartCam 图形 (*.smartcam);;兼容 smartCad 图形 (*.smartcad)"));
     if (file_path.isEmpty())
     {
         return false;
     }
-    if (!file_path.endsWith(QStringLiteral(".smartcad"), Qt::CaseInsensitive))
+    if (!hasNativeDocumentSuffix(file_path))
     {
-        file_path += QStringLiteral(".smartcad");
+        file_path += QStringLiteral(".smartcam");
     }
     const SResult<void> result = m_document->save(file_path);
     if (!result)
@@ -226,7 +233,7 @@ bool SCadMainWindow::maybeSave()
 
 void SCadMainWindow::updateWindowTitle()
 {
-    QString title = QStringLiteral("%1 — smartGraphics").arg(m_document->displayName());
+    QString title = QStringLiteral("%1 — smartCam").arg(m_document->displayName());
     if (m_document->isModified())
     {
         title.prepend(QLatin1Char('*'));
@@ -305,4 +312,4 @@ void SCadMainWindow::saveWorkspace()
     settings.sync();
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

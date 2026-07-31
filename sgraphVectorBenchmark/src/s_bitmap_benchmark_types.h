@@ -6,7 +6,7 @@
 #include <QtGlobal>
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 struct SBitmapBenchmarkCase
@@ -49,4 +49,4 @@ struct SBitmapBenchmarkOptions
     QString output_directory;
 };
 
-} // namespace smartGraphics
+} // namespace smartCam

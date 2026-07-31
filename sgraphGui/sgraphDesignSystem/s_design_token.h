@@ -2,7 +2,7 @@
 
 #include <QColor>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 struct SDesignToken
@@ -30,4 +30,4 @@ enum class SThemeMode
     HighContrast
 };
 
-} // namespace smartGraphics
+} // namespace smartCam

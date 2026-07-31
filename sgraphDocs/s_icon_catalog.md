@@ -1,4 +1,4 @@
-# smartGraphics 图标目录
+# smartCam 图标目录
 
 `SIconProvider` 使用 Qt 矢量绘制生成主题感知图标。图标会根据当前设计令牌自动使用前景色和强调色，并由 Qt 自动生成高 DPI 版本。
 

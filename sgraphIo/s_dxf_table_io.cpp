@@ -8,7 +8,7 @@
 #include <cmath>
 #include <utility>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -161,4 +161,4 @@ void applyDxfLayerTable(SCadDocument& document, const std::vector<SLayerRecord>&
     }
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

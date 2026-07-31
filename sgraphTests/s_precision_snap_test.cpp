@@ -7,7 +7,7 @@
 
 #include <QtTest>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 class SPrecisionSnapTest final : public QObject
@@ -161,7 +161,7 @@ void SPrecisionSnapTest::commandCompletionAndActiveKeywords()
     QCOMPARE(document.entities().size(), std::size_t(3));
 }
 
-} // namespace smartGraphics
+} // namespace smartCam
 
-QTEST_MAIN(smartGraphics::SPrecisionSnapTest)
+QTEST_MAIN(smartCam::SPrecisionSnapTest)
 #include "s_precision_snap_test.moc"

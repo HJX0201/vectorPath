@@ -7,7 +7,7 @@
 #include <QString>
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 enum class SPlotStyleTableType
@@ -54,4 +54,4 @@ class SPlotStyleTable final
     bool m_force_grayscale = false;
 };
 
-} // namespace smartGraphics
+} // namespace smartCam

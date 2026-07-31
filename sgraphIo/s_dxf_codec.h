@@ -2,7 +2,7 @@
 
 #include "s_i_file_codec.h"
 
-namespace smartGraphics
+namespace smartCam
 {
 
 class SDxfCodec final : public SIFileCodec
@@ -17,4 +17,4 @@ class SDxfCodec final : public SIFileCodec
                                             const SCadDocument& document) const override;
 };
 
-} // namespace smartGraphics
+} // namespace smartCam

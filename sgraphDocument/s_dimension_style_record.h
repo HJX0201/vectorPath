@@ -2,7 +2,7 @@
 
 #include <QString>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 struct SDimensionStyleRecord
@@ -19,4 +19,4 @@ struct SDimensionStyleRecord
     bool suppress_trailing_zeros = false;
 };
 
-} // namespace smartGraphics
+} // namespace smartCam

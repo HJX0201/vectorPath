@@ -3,7 +3,7 @@
 #include <QtTest>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 class SStandardShapeTest final : public QObject
@@ -46,7 +46,7 @@ void SStandardShapeTest::createsAlternatingStarRadii()
     }
 }
 
-} // namespace smartGraphics
+} // namespace smartCam
 
-QTEST_APPLESS_MAIN(smartGraphics::SStandardShapeTest)
+QTEST_APPLESS_MAIN(smartCam::SStandardShapeTest)
 #include "s_standard_shape_test.moc"

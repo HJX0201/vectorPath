@@ -4,7 +4,7 @@
 
 #include <QImage>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 struct SBitmapValidationResult
@@ -22,4 +22,4 @@ SBitmapValidationResult validateBitmapBenchmarkCase(
     const SBitmapVectorResult& run_serial,
     const SBitmapVectorResult& run_parallel);
 
-} // namespace smartGraphics
+} // namespace smartCam

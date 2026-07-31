@@ -18,7 +18,7 @@
 #include <algorithm>
 #include <functional>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 void SCadMainWindow::showTextStyleManager()
@@ -194,4 +194,4 @@ bool SCadMainWindow::executeTextStyleCommand(const QString& command)
     return true;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

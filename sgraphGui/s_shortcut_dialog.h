@@ -7,7 +7,7 @@ class QLineEdit;
 class QTreeWidget;
 class QTreeWidgetItem;
 
-namespace smartGraphics
+namespace smartCam
 {
 
 class SShortcutManager;
@@ -31,4 +31,4 @@ class SShortcutDialog final : public QDialog
     QKeySequenceEdit* m_sequence_edit = nullptr;
 };
 
-} // namespace smartGraphics
+} // namespace smartCam

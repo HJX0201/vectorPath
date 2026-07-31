@@ -1,6 +1,6 @@
 schema_version: 1
 baseline: autocad_2026_core
-implementation: smartCad
+implementation: smartCam
 audited: 2026-07-25
 meaning:
   complete: usable_end_to_end_and_tested

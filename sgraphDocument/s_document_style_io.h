@@ -9,7 +9,7 @@
 
 class QDataStream;
 
-namespace smartGraphics
+namespace smartCam
 {
 
 struct SLoadedDocumentStyles
@@ -26,4 +26,4 @@ void writeDocumentStyles(QDataStream& stream, const std::vector<STextStyleRecord
                          const QString& current_dimension_style);
 SResult<SLoadedDocumentStyles> readDocumentStyles(QDataStream& stream, quint32 format_version);
 
-} // namespace smartGraphics
+} // namespace smartCam

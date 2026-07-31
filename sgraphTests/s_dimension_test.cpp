@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 class SDimensionTest final : public QObject
@@ -251,7 +251,7 @@ void SDimensionTest::explodeAllDimensionTypes()
     QCOMPARE(document.entities().front().type, SEntityType::LinearDimension);
 }
 
-} // namespace smartGraphics
+} // namespace smartCam
 
-QTEST_MAIN(smartGraphics::SDimensionTest)
+QTEST_MAIN(smartCam::SDimensionTest)
 #include "s_dimension_test.moc"

@@ -13,7 +13,7 @@
 #include <algorithm>
 #include <utility>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -136,7 +136,7 @@ SResult<void> SCadDocument::load(const QString& file_path)
     char magic[8]{};
     if (stream.readRawData(magic, 8) != 8 || QByteArray(magic, 8) != QByteArray(kFileMagic, 8))
     {
-        return SResult<void>::failure(tr("不是有效的 smartCad 文件。"));
+        return SResult<void>::failure(tr("不是有效的 smartCam 文件。"));
     }
 
     quint32 manifest_size = 0;
@@ -155,7 +155,7 @@ SResult<void> SCadDocument::load(const QString& file_path)
     const int format_version = manifest_object.value(QStringLiteral("formatVersion")).toInt();
     if (format_version < 1 || format_version > static_cast<int>(kFileVersion))
     {
-        return SResult<void>::failure(tr("不支持此 smartCad 文件版本。"));
+        return SResult<void>::failure(tr("不支持此 smartCam 文件版本。"));
     }
 
     SDrawingSettings loaded_drawing_settings;
@@ -717,4 +717,4 @@ SResult<void> SCadDocument::load(const QString& file_path)
     return SResult<void>::success();
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

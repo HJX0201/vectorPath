@@ -10,7 +10,7 @@
 #include <cmath>
 #include <functional>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -224,4 +224,4 @@ void SCadViewport::drawHatchEntity(QPainter& painter, const SHatchEntity& source
     painter.restore();
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

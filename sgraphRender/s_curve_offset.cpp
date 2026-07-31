@@ -8,7 +8,7 @@
 #include <limits>
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -445,4 +445,4 @@ bool offsetCurveEntity(const SEntityRecord& source, const SPoint2d& through_poin
     return true;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

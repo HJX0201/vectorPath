@@ -5,7 +5,7 @@
 
 #include <cstddef>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 class SCadDocument;
@@ -19,4 +19,4 @@ struct SVectorDocumentImportReport
 SResult<SVectorDocumentImportReport> importVectorGeometry(
     SCadDocument& document, const SVectorImportGeometry& geometry);
 
-} // namespace smartGraphics
+} // namespace smartCam

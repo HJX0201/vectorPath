@@ -12,7 +12,7 @@
 #include <QSettings>
 #include <algorithm>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -294,4 +294,4 @@ SARibbonSystemToolButton#SACloseWindowButton:pressed { background:%4; }
     application->setStyleSheet(style_sheet + system_button_style);
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

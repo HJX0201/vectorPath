@@ -5,7 +5,7 @@
 #include <limits>
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -373,4 +373,4 @@ bool filletedEntities(const SEntityRecord& first_source, const SEntityRecord& se
     return false;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

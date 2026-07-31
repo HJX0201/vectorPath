@@ -10,7 +10,7 @@
 #include <variant>
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 using SEntityId = std::uint64_t;
@@ -206,4 +206,4 @@ struct SEntityRecord
     QString space_name;
 };
 
-} // namespace smartGraphics
+} // namespace smartCam

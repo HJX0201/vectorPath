@@ -1,6 +1,6 @@
 #include "s_cad_viewport.h"
 
-namespace smartGraphics
+namespace smartCam
 {
 
 void SCadViewport::setAppearance(const QColor& canvas_color, const QColor& grid_color,
@@ -13,4 +13,4 @@ void SCadViewport::setAppearance(const QColor& canvas_color, const QColor& grid_
     update();
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

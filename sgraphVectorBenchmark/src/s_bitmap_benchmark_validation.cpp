@@ -6,7 +6,7 @@
 #include <QMap>
 #include <algorithm>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -210,4 +210,4 @@ SBitmapValidationResult validateBitmapBenchmarkCase(
     return result;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

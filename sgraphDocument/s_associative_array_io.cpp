@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -423,4 +423,4 @@ bool readAssociativeArrayData(QDataStream& stream, std::optional<SAssociativeArr
     return true;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

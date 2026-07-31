@@ -4,7 +4,7 @@
 
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 SResult<QString> writeBitmapBenchmarkReport(
@@ -12,4 +12,4 @@ SResult<QString> writeBitmapBenchmarkReport(
     const std::vector<SBitmapBenchmarkCaseResult>& results,
     quint64 peak_working_set_bytes);
 
-} // namespace smartGraphics
+} // namespace smartCam

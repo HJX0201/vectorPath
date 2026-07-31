@@ -9,7 +9,7 @@
 #include <cmath>
 #include <utility>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 std::vector<SEntityRecord> polarArrayEntities(const std::vector<SEntityRecord>& sources,
@@ -150,4 +150,4 @@ void SCadViewport::drawPolarArrayPreview(QPainter& painter)
     }
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

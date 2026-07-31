@@ -4,9 +4,9 @@
 
 class QPainter;
 
-namespace smartGraphics
+namespace smartCam
 {
 
 void drawHatchIcon(QPainter& painter, SIconType icon_type, const QColor& accent_color);
 
-} // namespace smartGraphics
+} // namespace smartCam

@@ -2,7 +2,7 @@
 
 #include <QString>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 struct STextStyleRecord
@@ -16,4 +16,4 @@ struct STextStyleRecord
     bool is_italic = false;
 };
 
-} // namespace smartGraphics
+} // namespace smartCam

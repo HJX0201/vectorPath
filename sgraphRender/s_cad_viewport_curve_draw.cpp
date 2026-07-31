@@ -6,7 +6,7 @@
 #include <array>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 void SCadViewport::acceptEllipsePoint(const SPoint2d& world_point)
@@ -65,4 +65,4 @@ void SCadViewport::acceptSplinePoint(const SPoint2d& world_point)
     update();
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

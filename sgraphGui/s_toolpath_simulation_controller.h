@@ -7,7 +7,7 @@
 #include <QTimer>
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 class SCadDocument;
@@ -42,7 +42,7 @@ class SToolpathSimulationController final : public QObject
     bool isTraceVisible() const noexcept;
 
   signals:
-    void stateChanged(smartGraphics::SSimulationState state);
+    void stateChanged(smartCam::SSimulationState state);
     void speedChanged(double multiplier);
 
   private:
@@ -61,4 +61,4 @@ class SToolpathSimulationController final : public QObject
     SSimulationState m_state = SSimulationState::Stopped;
 };
 
-} // namespace smartGraphics
+} // namespace smartCam

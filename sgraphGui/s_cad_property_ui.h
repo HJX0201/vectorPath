@@ -7,7 +7,7 @@
 
 class QComboBox;
 
-namespace smartGraphics
+namespace smartCam
 {
 
 const QVector<double>& standardLineWidths();
@@ -16,4 +16,4 @@ void populateLineWidthCombo(QComboBox* combo_box, bool include_by_layer);
 QString propertyPanelStyle(const SDesignToken& tokens);
 QString propertyColorButtonStyle(const QColor& color, const SDesignToken& tokens);
 
-} // namespace smartGraphics
+} // namespace smartCam

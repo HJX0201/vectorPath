@@ -12,7 +12,7 @@
 #include <QSaveFile>
 #include <QTemporaryDir>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -25,8 +25,8 @@ QString bundledToolDirectory()
     {
         return deployed_directory;
     }
-#ifdef SMARTCAD_LIBREDWG_DIR
-    return QString::fromUtf8(SMARTCAD_LIBREDWG_DIR);
+#ifdef SMARTCAM_LIBREDWG_DIR
+    return QString::fromUtf8(SMARTCAM_LIBREDWG_DIR);
 #else
     return {};
 #endif
@@ -111,7 +111,7 @@ SResult<void> copyAtomically(const QString& source_path, const QString& target_p
 
 QString SDwgCodec::id() const
 {
-    return QStringLiteral("smartCad.dwg.libredwg");
+    return QStringLiteral("smartCam.dwg.libredwg");
 }
 
 QString SDwgCodec::displayName() const
@@ -233,4 +233,4 @@ SResult<SFileCompatibilityReport> SDwgCodec::write(const QString& file_path,
     return result;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

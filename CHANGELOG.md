@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.2.0-alpha.1 - 2026-07-31
+
+- 产品由 smartGraphics 完整改名为 smartCam，统一窗口标题、C++ 命名空间、CMake 项目、
+  `smartCam.exe`、运行清单和发布包名称。
+- 新建原生文档默认使用 `.smartcam`，继续兼容 `.smartcad`、`SMCAD001` magic、版本 24
+  清单和旧恢复/打印样式标识。
+- 首次启动时将 `smartCadLearning/smartGraphics` 中缺失的设置迁移到
+  `smartCamLearning/smartCam`，不覆盖已有新设置。
+- CMake 测试开关改为 `SMARTCAM_BUILD_TESTS`，旧 `SMARTCAD_BUILD_TESTS` 保留一个版本的
+  弃用兼容映射。
+- 增加设置迁移正常、幂等、空设置和写失败测试；64 位 Release 更新为 CTest 34/34 通过。
+
 ## 0.1.0-alpha.1 - 2026-07-27
 
 - 整理为 GitHub 可发布的 smartGraphics 项目结构。

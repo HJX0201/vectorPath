@@ -1,4 +1,4 @@
-# smartGraphics Source-Available Evaluation License 1.0
+# smartCam Source-Available Evaluation License 1.0
 
 Copyright © 2026 huangjiaxin. All rights reserved.
 

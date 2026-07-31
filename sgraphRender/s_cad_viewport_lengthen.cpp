@@ -6,7 +6,7 @@
 #include <QPainter>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -238,4 +238,4 @@ void SCadViewport::drawLengthenPreview(QPainter& painter)
     }
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

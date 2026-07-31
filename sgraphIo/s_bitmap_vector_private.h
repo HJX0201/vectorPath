@@ -5,7 +5,7 @@
 #include <QPoint>
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace bitmapVectorPrivate
 {
@@ -26,4 +26,4 @@ SResult<std::vector<SBitmapContour>> stitchSegments(
     std::vector<SBoundarySegment>& segments);
 
 } // namespace bitmapVectorPrivate
-} // namespace smartGraphics
+} // namespace smartCam

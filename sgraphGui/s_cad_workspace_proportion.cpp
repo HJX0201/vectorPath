@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <numeric>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -85,4 +85,4 @@ void SCadMainWindow::applyDefaultWorkspaceProportions()
     configureDockSplitters();
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

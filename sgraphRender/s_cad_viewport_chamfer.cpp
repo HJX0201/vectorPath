@@ -7,7 +7,7 @@
 #include <cmath>
 #include <utility>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -303,4 +303,4 @@ void SCadViewport::drawChamferPreview(QPainter& painter)
     drawEntityGeometry(painter, chamfer_result, QColor(105, 219, 142, 72));
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

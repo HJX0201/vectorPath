@@ -10,7 +10,7 @@
 
 class QTextStream;
 
-namespace smartGraphics
+namespace smartCam
 {
 
 SResult<SEntityRecord> readDxfEntity(const QString& entity_name,
@@ -18,4 +18,4 @@ SResult<SEntityRecord> readDxfEntity(const QString& entity_name,
 bool writeDxfEntity(QTextStream& stream, const SEntityRecord& entity,
                     SFileCompatibilityReport& report, bool count_entity = true);
 
-} // namespace smartGraphics
+} // namespace smartCam

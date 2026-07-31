@@ -5,7 +5,7 @@
 #include <QString>
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 double dimensionMeasurement(const SLinearDimensionEntity& dimension) noexcept;
@@ -15,4 +15,4 @@ QString dimensionDefaultText(const SLinearDimensionEntity& dimension, int linear
 std::vector<SPoint2d> dimensionReferencePoints(const SLinearDimensionEntity& dimension);
 bool isDimensionValid(const SLinearDimensionEntity& dimension) noexcept;
 
-} // namespace smartGraphics
+} // namespace smartCam

@@ -16,7 +16,7 @@
 #include <SARibbonBar.h>
 #include <SARibbonQuickAccessBar.h>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 void SCadMainWindow::showInterfaceSettings()
@@ -98,4 +98,4 @@ void SCadMainWindow::applyUiScale(int scale_percent)
     }
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

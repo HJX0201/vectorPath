@@ -14,7 +14,7 @@
 #include <SARibbonCategory.h>
 #include <SARibbonPanel.h>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -191,4 +191,4 @@ bool SCadMainWindow::executeSimulationCommand(const QString& normalized_command)
     return true;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

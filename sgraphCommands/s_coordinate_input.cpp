@@ -3,7 +3,7 @@
 #include <QStringList>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -95,4 +95,4 @@ std::optional<SPoint2d> resolveCoordinateInput(const SCoordinateInput& input,
                     reference_point->y + (input.first_value * std::sin(angle_radians))};
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

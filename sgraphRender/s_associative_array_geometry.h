@@ -4,7 +4,7 @@
 
 #include <vector>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 std::vector<SEntityRecord>
@@ -24,4 +24,4 @@ bool regenerateAssociativeArray(const std::vector<SEntityRecord>& document_entit
                                 std::vector<SEntityRecord>& results,
                                 std::vector<SEntityId>& existing_ids);
 
-} // namespace smartGraphics
+} // namespace smartCam

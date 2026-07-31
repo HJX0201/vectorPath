@@ -18,11 +18,29 @@ add_test(
             "$<TARGET_FILE:smartDocumentTests>"
 )
 
-add_executable(smartCadDwgCodecTests
+add_executable(smartCamApplicationSettingsMigrationTests
+    s_application_settings_migration_test.cpp
+)
+
+target_link_libraries(smartCamApplicationSettingsMigrationTests
+    PRIVATE
+        smartCore
+        Qt5::Core
+        Qt5::Test
+)
+
+add_test(
+    NAME smartCamApplicationSettingsMigrationTests
+    COMMAND ${CMAKE_COMMAND} -E env
+            "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$ENV{PATH}"
+            "$<TARGET_FILE:smartCamApplicationSettingsMigrationTests>"
+)
+
+add_executable(smartCamDwgCodecTests
     s_dwg_codec_test.cpp
 )
 
-target_link_libraries(smartCadDwgCodecTests
+target_link_libraries(smartCamDwgCodecTests
     PRIVATE
         smartDocument
         smartIo
@@ -32,10 +50,10 @@ target_link_libraries(smartCadDwgCodecTests
 )
 
 add_test(
-    NAME smartCadDwgCodecTests
+    NAME smartCamDwgCodecTests
     COMMAND ${CMAKE_COMMAND} -E env
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadDwgCodecTests>"
+            "$<TARGET_FILE:smartCamDwgCodecTests>"
 )
 
 add_executable(smartDocumentRecoveryTests
@@ -76,11 +94,11 @@ add_test(
             "$<TARGET_FILE:smartDocumentAuditTests>"
 )
 
-add_executable(smartCadViewportTests
+add_executable(smartCamViewportTests
     s_cad_viewport_test.cpp
 )
 
-target_link_libraries(smartCadViewportTests
+target_link_libraries(smartCamViewportTests
     PRIVATE
         smartRender
         smartDocument
@@ -92,18 +110,18 @@ target_link_libraries(smartCadViewportTests
 )
 
 add_test(
-    NAME smartCadViewportTests
+    NAME smartCamViewportTests
     COMMAND ${CMAKE_COMMAND} -E env
             "QT_QPA_PLATFORM=offscreen"
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadViewportTests>"
+            "$<TARGET_FILE:smartCamViewportTests>"
 )
 
-add_executable(smartCadCurveOffsetTests
+add_executable(smartCamCurveOffsetTests
     s_curve_offset_test.cpp
 )
 
-target_link_libraries(smartCadCurveOffsetTests
+target_link_libraries(smartCamCurveOffsetTests
     PRIVATE
         smartRender
         smartDocument
@@ -114,18 +132,18 @@ target_link_libraries(smartCadCurveOffsetTests
 )
 
 add_test(
-    NAME smartCadCurveOffsetTests
+    NAME smartCamCurveOffsetTests
     COMMAND ${CMAKE_COMMAND} -E env
             "QT_QPA_PLATFORM=offscreen"
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadCurveOffsetTests>"
+            "$<TARGET_FILE:smartCamCurveOffsetTests>"
 )
 
-add_executable(smartCadArrayOperationsTests
+add_executable(smartCamArrayOperationsTests
     s_array_operations_test.cpp
 )
 
-target_link_libraries(smartCadArrayOperationsTests
+target_link_libraries(smartCamArrayOperationsTests
     PRIVATE
         smartRender
         smartDocument
@@ -137,18 +155,18 @@ target_link_libraries(smartCadArrayOperationsTests
 )
 
 add_test(
-    NAME smartCadArrayOperationsTests
+    NAME smartCamArrayOperationsTests
     COMMAND ${CMAKE_COMMAND} -E env
             "QT_QPA_PLATFORM=offscreen"
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadArrayOperationsTests>"
+            "$<TARGET_FILE:smartCamArrayOperationsTests>"
 )
 
-add_executable(smartCadCurveFilletTests
+add_executable(smartCamCurveFilletTests
     s_curve_fillet_test.cpp
 )
 
-target_link_libraries(smartCadCurveFilletTests
+target_link_libraries(smartCamCurveFilletTests
     PRIVATE
         smartRender
         smartDocument
@@ -159,18 +177,18 @@ target_link_libraries(smartCadCurveFilletTests
 )
 
 add_test(
-    NAME smartCadCurveFilletTests
+    NAME smartCamCurveFilletTests
     COMMAND ${CMAKE_COMMAND} -E env
             "QT_QPA_PLATFORM=offscreen"
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadCurveFilletTests>"
+            "$<TARGET_FILE:smartCamCurveFilletTests>"
 )
 
-add_executable(smartCadSplineBlendTests
+add_executable(smartCamSplineBlendTests
     s_spline_blend_test.cpp
 )
 
-target_link_libraries(smartCadSplineBlendTests
+target_link_libraries(smartCamSplineBlendTests
     PRIVATE
         smartRender
         smartDocument
@@ -182,18 +200,18 @@ target_link_libraries(smartCadSplineBlendTests
 )
 
 add_test(
-    NAME smartCadSplineBlendTests
+    NAME smartCamSplineBlendTests
     COMMAND ${CMAKE_COMMAND} -E env
             "QT_QPA_PLATFORM=offscreen"
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadSplineBlendTests>"
+            "$<TARGET_FILE:smartCamSplineBlendTests>"
 )
 
-add_executable(smartCadSplineEditTests
+add_executable(smartCamSplineEditTests
     s_spline_edit_test.cpp
 )
 
-target_link_libraries(smartCadSplineEditTests
+target_link_libraries(smartCamSplineEditTests
     PRIVATE
         smartRender
         smartDocument
@@ -204,18 +222,18 @@ target_link_libraries(smartCadSplineEditTests
 )
 
 add_test(
-    NAME smartCadSplineEditTests
+    NAME smartCamSplineEditTests
     COMMAND ${CMAKE_COMMAND} -E env
             "QT_QPA_PLATFORM=offscreen"
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadSplineEditTests>"
+            "$<TARGET_FILE:smartCamSplineEditTests>"
 )
 
-add_executable(smartCadAnnotationTests
+add_executable(smartCamAnnotationTests
     s_annotation_test.cpp
 )
 
-target_link_libraries(smartCadAnnotationTests
+target_link_libraries(smartCamAnnotationTests
     PRIVATE
         smartRender
         smartDocument
@@ -227,18 +245,18 @@ target_link_libraries(smartCadAnnotationTests
 )
 
 add_test(
-    NAME smartCadAnnotationTests
+    NAME smartCamAnnotationTests
     COMMAND ${CMAKE_COMMAND} -E env
             "QT_QPA_PLATFORM=offscreen"
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadAnnotationTests>"
+            "$<TARGET_FILE:smartCamAnnotationTests>"
 )
 
-add_executable(smartCadDimensionTests
+add_executable(smartCamDimensionTests
     s_dimension_test.cpp
 )
 
-target_link_libraries(smartCadDimensionTests
+target_link_libraries(smartCamDimensionTests
     PRIVATE
         smartRender
         smartDocument
@@ -250,18 +268,18 @@ target_link_libraries(smartCadDimensionTests
 )
 
 add_test(
-    NAME smartCadDimensionTests
+    NAME smartCamDimensionTests
     COMMAND ${CMAKE_COMMAND} -E env
             "QT_QPA_PLATFORM=offscreen"
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadDimensionTests>"
+            "$<TARGET_FILE:smartCamDimensionTests>"
 )
 
-add_executable(smartCadHatchTests
+add_executable(smartCamHatchTests
     s_hatch_test.cpp
 )
 
-target_link_libraries(smartCadHatchTests
+target_link_libraries(smartCamHatchTests
     PRIVATE
         smartRender
         smartDocument
@@ -273,18 +291,18 @@ target_link_libraries(smartCadHatchTests
 )
 
 add_test(
-    NAME smartCadHatchTests
+    NAME smartCamHatchTests
     COMMAND ${CMAKE_COMMAND} -E env
             "QT_QPA_PLATFORM=offscreen"
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadHatchTests>"
+            "$<TARGET_FILE:smartCamHatchTests>"
 )
 
-add_executable(smartCadPolylineCornerTests
+add_executable(smartCamPolylineCornerTests
     s_polyline_corner_test.cpp
 )
 
-target_link_libraries(smartCadPolylineCornerTests
+target_link_libraries(smartCamPolylineCornerTests
     PRIVATE
         smartRender
         smartDocument
@@ -296,18 +314,18 @@ target_link_libraries(smartCadPolylineCornerTests
 )
 
 add_test(
-    NAME smartCadPolylineCornerTests
+    NAME smartCamPolylineCornerTests
     COMMAND ${CMAKE_COMMAND} -E env
             "QT_QPA_PLATFORM=offscreen"
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadPolylineCornerTests>"
+            "$<TARGET_FILE:smartCamPolylineCornerTests>"
 )
 
-add_executable(smartCadGripEditTests
+add_executable(smartCamGripEditTests
     s_grip_edit_test.cpp
 )
 
-target_link_libraries(smartCadGripEditTests
+target_link_libraries(smartCamGripEditTests
     PRIVATE
         smartRender
         smartDocument
@@ -318,18 +336,18 @@ target_link_libraries(smartCadGripEditTests
 )
 
 add_test(
-    NAME smartCadGripEditTests
+    NAME smartCamGripEditTests
     COMMAND ${CMAKE_COMMAND} -E env
             "QT_QPA_PLATFORM=offscreen"
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadGripEditTests>"
+            "$<TARGET_FILE:smartCamGripEditTests>"
 )
 
-add_executable(smartCadPrecisionSnapTests
+add_executable(smartCamPrecisionSnapTests
     s_precision_snap_test.cpp
 )
 
-target_link_libraries(smartCadPrecisionSnapTests
+target_link_libraries(smartCamPrecisionSnapTests
     PRIVATE
         smartRender
         Qt5::Core
@@ -337,18 +355,18 @@ target_link_libraries(smartCadPrecisionSnapTests
 )
 
 add_test(
-    NAME smartCadPrecisionSnapTests
+    NAME smartCamPrecisionSnapTests
     COMMAND ${CMAKE_COMMAND} -E env
             "QT_QPA_PLATFORM=offscreen"
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadPrecisionSnapTests>"
+            "$<TARGET_FILE:smartCamPrecisionSnapTests>"
 )
 
-add_executable(smartCadCommandLineWidgetTests
+add_executable(smartCamCommandLineWidgetTests
     s_command_line_widget_test.cpp
 )
 
-target_link_libraries(smartCadCommandLineWidgetTests
+target_link_libraries(smartCamCommandLineWidgetTests
     PRIVATE
         smartGui
         Qt5::Core
@@ -358,18 +376,18 @@ target_link_libraries(smartCadCommandLineWidgetTests
 )
 
 add_test(
-    NAME smartCadCommandLineWidgetTests
+    NAME smartCamCommandLineWidgetTests
     COMMAND ${CMAKE_COMMAND} -E env
             "QT_QPA_PLATFORM=offscreen"
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadCommandLineWidgetTests>"
+            "$<TARGET_FILE:smartCamCommandLineWidgetTests>"
 )
 
-add_executable(smartCadWindowControlTests
+add_executable(smartCamWindowControlTests
     s_window_control_test.cpp
 )
 
-target_link_libraries(smartCadWindowControlTests
+target_link_libraries(smartCamWindowControlTests
     PRIVATE
         smartGui
         Qt5::Core
@@ -379,18 +397,18 @@ target_link_libraries(smartCadWindowControlTests
 )
 
 add_test(
-    NAME smartCadWindowControlTests
+    NAME smartCamWindowControlTests
     COMMAND ${CMAKE_COMMAND} -E env
             "QT_QPA_PLATFORM=offscreen"
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadWindowControlTests>"
+            "$<TARGET_FILE:smartCamWindowControlTests>"
 )
 
-add_executable(smartCadWorkspacePersistenceTests
+add_executable(smartCamWorkspacePersistenceTests
     s_workspace_persistence_test.cpp
 )
 
-target_link_libraries(smartCadWorkspacePersistenceTests
+target_link_libraries(smartCamWorkspacePersistenceTests
     PRIVATE
         smartGui
         Qt5::Core
@@ -400,18 +418,18 @@ target_link_libraries(smartCadWorkspacePersistenceTests
 )
 
 add_test(
-    NAME smartCadWorkspacePersistenceTests
+    NAME smartCamWorkspacePersistenceTests
     COMMAND ${CMAKE_COMMAND} -E env
             "QT_QPA_PLATFORM=offscreen"
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadWorkspacePersistenceTests>"
+            "$<TARGET_FILE:smartCamWorkspacePersistenceTests>"
 )
 
-add_executable(smartCadEllipseTests
+add_executable(smartCamEllipseTests
     s_ellipse_test.cpp
 )
 
-target_link_libraries(smartCadEllipseTests
+target_link_libraries(smartCamEllipseTests
     PRIVATE
         smartRender
         smartDocument
@@ -423,18 +441,18 @@ target_link_libraries(smartCadEllipseTests
 )
 
 add_test(
-    NAME smartCadEllipseTests
+    NAME smartCamEllipseTests
     COMMAND ${CMAKE_COMMAND} -E env
             "QT_QPA_PLATFORM=offscreen"
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadEllipseTests>"
+            "$<TARGET_FILE:smartCamEllipseTests>"
 )
 
-add_executable(smartCadCurveConstructionTests
+add_executable(smartCamCurveConstructionTests
     s_curve_construction_test.cpp
 )
 
-target_link_libraries(smartCadCurveConstructionTests
+target_link_libraries(smartCamCurveConstructionTests
     PRIVATE
         smartRender
         smartDocument
@@ -445,18 +463,18 @@ target_link_libraries(smartCadCurveConstructionTests
 )
 
 add_test(
-    NAME smartCadCurveConstructionTests
+    NAME smartCamCurveConstructionTests
     COMMAND ${CMAKE_COMMAND} -E env
             "QT_QPA_PLATFORM=offscreen"
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadCurveConstructionTests>"
+            "$<TARGET_FILE:smartCamCurveConstructionTests>"
 )
 
-add_executable(smartCadShortcutManagerTests
+add_executable(smartCamShortcutManagerTests
     s_shortcut_manager_test.cpp
 )
 
-target_link_libraries(smartCadShortcutManagerTests
+target_link_libraries(smartCamShortcutManagerTests
     PRIVATE
         smartGui
         Qt5::Core
@@ -466,18 +484,18 @@ target_link_libraries(smartCadShortcutManagerTests
 )
 
 add_test(
-    NAME smartCadShortcutManagerTests
+    NAME smartCamShortcutManagerTests
     COMMAND ${CMAKE_COMMAND} -E env
             "QT_QPA_PLATFORM=offscreen"
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadShortcutManagerTests>"
+            "$<TARGET_FILE:smartCamShortcutManagerTests>"
 )
 
-add_executable(smartCadDialogSizePolicyTests
+add_executable(smartCamDialogSizePolicyTests
     s_dialog_size_policy_test.cpp
 )
 
-target_link_libraries(smartCadDialogSizePolicyTests
+target_link_libraries(smartCamDialogSizePolicyTests
     PRIVATE
         smartGui
         Qt5::Core
@@ -487,18 +505,18 @@ target_link_libraries(smartCadDialogSizePolicyTests
 )
 
 add_test(
-    NAME smartCadDialogSizePolicyTests
+    NAME smartCamDialogSizePolicyTests
     COMMAND ${CMAKE_COMMAND} -E env
             "QT_QPA_PLATFORM=offscreen"
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadDialogSizePolicyTests>"
+            "$<TARGET_FILE:smartCamDialogSizePolicyTests>"
 )
 
-add_executable(smartCadStandardShapeTests
+add_executable(smartCamStandardShapeTests
     s_standard_shape_test.cpp
 )
 
-target_link_libraries(smartCadStandardShapeTests
+target_link_libraries(smartCamStandardShapeTests
     PRIVATE
         smartGeometry
         Qt5::Core
@@ -506,17 +524,17 @@ target_link_libraries(smartCadStandardShapeTests
 )
 
 add_test(
-    NAME smartCadStandardShapeTests
+    NAME smartCamStandardShapeTests
     COMMAND ${CMAKE_COMMAND} -E env
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadStandardShapeTests>"
+            "$<TARGET_FILE:smartCamStandardShapeTests>"
 )
 
-add_executable(smartCadLayerColorWorkflowTests
+add_executable(smartCamLayerColorWorkflowTests
     s_layer_color_workflow_test.cpp
 )
 
-target_link_libraries(smartCadLayerColorWorkflowTests
+target_link_libraries(smartCamLayerColorWorkflowTests
     PRIVATE
         smartDocument
         Qt5::Core
@@ -525,17 +543,17 @@ target_link_libraries(smartCadLayerColorWorkflowTests
 )
 
 add_test(
-    NAME smartCadLayerColorWorkflowTests
+    NAME smartCamLayerColorWorkflowTests
     COMMAND ${CMAKE_COMMAND} -E env
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadLayerColorWorkflowTests>"
+            "$<TARGET_FILE:smartCamLayerColorWorkflowTests>"
 )
 
-add_executable(smartCadPolygonBooleanTests
+add_executable(smartCamPolygonBooleanTests
     s_polygon_boolean_test.cpp
 )
 
-target_link_libraries(smartCadPolygonBooleanTests
+target_link_libraries(smartCamPolygonBooleanTests
     PRIVATE
         smartGeometry
         Qt5::Core
@@ -543,17 +561,17 @@ target_link_libraries(smartCadPolygonBooleanTests
 )
 
 add_test(
-    NAME smartCadPolygonBooleanTests
+    NAME smartCamPolygonBooleanTests
     COMMAND ${CMAKE_COMMAND} -E env
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadPolygonBooleanTests>"
+            "$<TARGET_FILE:smartCamPolygonBooleanTests>"
 )
 
-add_executable(smartCadUiScaleTests
+add_executable(smartCamUiScaleTests
     s_ui_scale_test.cpp
 )
 
-target_link_libraries(smartCadUiScaleTests
+target_link_libraries(smartCamUiScaleTests
     PRIVATE
         smartGui
         Qt5::Core
@@ -563,18 +581,18 @@ target_link_libraries(smartCadUiScaleTests
 )
 
 add_test(
-    NAME smartCadUiScaleTests
+    NAME smartCamUiScaleTests
     COMMAND ${CMAKE_COMMAND} -E env
             "QT_QPA_PLATFORM=offscreen"
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadUiScaleTests>"
+            "$<TARGET_FILE:smartCamUiScaleTests>"
 )
 
-add_executable(smartCadToolpathSortTests
+add_executable(smartCamToolpathSortTests
     s_toolpath_sort_test.cpp
 )
 
-target_link_libraries(smartCadToolpathSortTests
+target_link_libraries(smartCamToolpathSortTests
     PRIVATE
         smartDocument
         smartIo
@@ -583,17 +601,17 @@ target_link_libraries(smartCadToolpathSortTests
 )
 
 add_test(
-    NAME smartCadToolpathSortTests
+    NAME smartCamToolpathSortTests
     COMMAND ${CMAKE_COMMAND} -E env
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadToolpathSortTests>"
+            "$<TARGET_FILE:smartCamToolpathSortTests>"
 )
 
-add_executable(smartCadToolpathSimulationTests
+add_executable(smartCamToolpathSimulationTests
     s_toolpath_simulation_test.cpp
 )
 
-target_link_libraries(smartCadToolpathSimulationTests
+target_link_libraries(smartCamToolpathSimulationTests
     PRIVATE
         smartGui
         Qt5::Core
@@ -603,18 +621,18 @@ target_link_libraries(smartCadToolpathSimulationTests
 )
 
 add_test(
-    NAME smartCadToolpathSimulationTests
+    NAME smartCamToolpathSimulationTests
     COMMAND ${CMAKE_COMMAND} -E env
             "QT_QPA_PLATFORM=offscreen"
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadToolpathSimulationTests>"
+            "$<TARGET_FILE:smartCamToolpathSimulationTests>"
 )
 
-add_executable(smartCadQuickEntityOperationTests
+add_executable(smartCamQuickEntityOperationTests
     s_quick_entity_operation_test.cpp
 )
 
-target_link_libraries(smartCadQuickEntityOperationTests
+target_link_libraries(smartCamQuickEntityOperationTests
     PRIVATE
         smartGui
         Qt5::Core
@@ -624,18 +642,18 @@ target_link_libraries(smartCadQuickEntityOperationTests
 )
 
 add_test(
-    NAME smartCadQuickEntityOperationTests
+    NAME smartCamQuickEntityOperationTests
     COMMAND ${CMAKE_COMMAND} -E env
             "QT_QPA_PLATFORM=offscreen"
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadQuickEntityOperationTests>"
+            "$<TARGET_FILE:smartCamQuickEntityOperationTests>"
 )
 
-add_executable(smartCadSvgVectorImportTests
+add_executable(smartCamSvgVectorImportTests
     s_svg_vector_import_test.cpp
 )
 
-target_link_libraries(smartCadSvgVectorImportTests
+target_link_libraries(smartCamSvgVectorImportTests
     PRIVATE
         smartDocument
         smartIo
@@ -645,8 +663,8 @@ target_link_libraries(smartCadSvgVectorImportTests
 )
 
 add_test(
-    NAME smartCadSvgVectorImportTests
+    NAME smartCamSvgVectorImportTests
     COMMAND ${CMAKE_COMMAND} -E env
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
-            "$<TARGET_FILE:smartCadSvgVectorImportTests>"
+            "$<TARGET_FILE:smartCamSvgVectorImportTests>"
 )

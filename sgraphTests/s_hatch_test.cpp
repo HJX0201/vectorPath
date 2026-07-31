@@ -7,7 +7,7 @@
 #include <QTemporaryDir>
 #include <QtTest>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 class SHatchTest final : public QObject
@@ -120,7 +120,7 @@ void SHatchTest::nativeAndDxfRoundTrip()
              SHatchFillType::Gradient);
 }
 
-} // namespace smartGraphics
+} // namespace smartCam
 
-QTEST_MAIN(smartGraphics::SHatchTest)
+QTEST_MAIN(smartCam::SHatchTest)
 #include "s_hatch_test.moc"

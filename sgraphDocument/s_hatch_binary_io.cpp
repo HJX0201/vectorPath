@@ -4,7 +4,7 @@
 
 #include <QDataStream>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -102,4 +102,4 @@ SResult<SHatchEntity> readHatchData(QDataStream& stream, quint32 format_version)
     return SResult<SHatchEntity>::success(std::move(hatch));
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

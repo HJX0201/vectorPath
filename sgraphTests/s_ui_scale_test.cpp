@@ -6,7 +6,7 @@
 #include <QtTest>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 class SUiScaleTest final : public QObject
@@ -23,7 +23,7 @@ void SUiScaleTest::persistsScaleAndUpdatesFont()
     QVERIFY(settings_directory.isValid());
     QSettings::setDefaultFormat(QSettings::IniFormat);
     QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, settings_directory.path());
-    QCoreApplication::setOrganizationName(QStringLiteral("smartCadTest"));
+    QCoreApplication::setOrganizationName(QStringLiteral("smartCamTest"));
     QCoreApplication::setApplicationName(QStringLiteral("uiScaleTest"));
 
     SThemeManager first_manager;
@@ -37,7 +37,7 @@ void SUiScaleTest::persistsScaleAndUpdatesFont()
     QVERIFY(restored_manager.setUiScalePercent(100));
 }
 
-} // namespace smartGraphics
+} // namespace smartCam
 
-QTEST_MAIN(smartGraphics::SUiScaleTest)
+QTEST_MAIN(smartCam::SUiScaleTest)
 #include "s_ui_scale_test.moc"

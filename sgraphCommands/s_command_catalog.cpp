@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 QStringList commandCompletionEntries()
@@ -224,4 +224,4 @@ QStringList commandCompletionsForPrefix(const QString& prefix)
     return matches;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

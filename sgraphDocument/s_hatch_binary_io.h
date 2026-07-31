@@ -5,10 +5,10 @@
 
 class QDataStream;
 
-namespace smartGraphics
+namespace smartCam
 {
 
 void writeHatchData(QDataStream& stream, const SHatchEntity& hatch);
 SResult<SHatchEntity> readHatchData(QDataStream& stream, quint32 format_version);
 
-} // namespace smartGraphics
+} // namespace smartCam

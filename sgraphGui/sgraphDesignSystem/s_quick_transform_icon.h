@@ -5,10 +5,10 @@
 class QColor;
 class QPainter;
 
-namespace smartGraphics
+namespace smartCam
 {
 
 void drawQuickTransformIcon(QPainter& painter, SIconType icon_type, const QColor& foreground,
                             const QColor& accent);
 
-} // namespace smartGraphics
+} // namespace smartCam

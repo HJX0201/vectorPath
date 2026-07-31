@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 namespace
 {
@@ -106,4 +106,4 @@ bool decurvedPolylineEntity(const SEntityRecord& source, SEntityRecord& result)
     return true;
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

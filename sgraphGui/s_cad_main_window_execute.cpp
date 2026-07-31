@@ -6,7 +6,7 @@
 #include "s_svg_document_operations.h"
 #include "s_theme_manager.h"
 
-namespace smartGraphics
+namespace smartCam
 {
 
 void SCadMainWindow::executeCommand(const QString& command)
@@ -396,4 +396,4 @@ void SCadMainWindow::executeCommand(const QString& command)
     }
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

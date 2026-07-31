@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 class SCadViewportTest final : public QObject
@@ -701,7 +701,7 @@ void SCadViewportTest::objectSnapGeometry()
     QCOMPARE(tangent->type, SObjectSnapType::Tangent);
 }
 
-} // namespace smartGraphics
+} // namespace smartCam
 
-QTEST_MAIN(smartGraphics::SCadViewportTest)
+QTEST_MAIN(smartCam::SCadViewportTest)
 #include "s_cad_viewport_test.moc"

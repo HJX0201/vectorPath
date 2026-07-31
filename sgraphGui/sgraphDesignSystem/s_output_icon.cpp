@@ -4,7 +4,7 @@
 
 #include <QPainter>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 void drawOutputIcon(QPainter& painter, SIconType icon_type, const QColor& accent_color)
@@ -60,4 +60,4 @@ void drawOutputIcon(QPainter& painter, SIconType icon_type, const QColor& accent
     }
 }
 
-} // namespace smartGraphics
+} // namespace smartCam

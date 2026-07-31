@@ -3,7 +3,7 @@
 #include <QLinearGradient>
 #include <QPainter>
 
-namespace smartGraphics
+namespace smartCam
 {
 
 void drawHatchIcon(QPainter& painter, SIconType icon_type, const QColor& accent_color)
@@ -44,4 +44,4 @@ void drawHatchIcon(QPainter& painter, SIconType icon_type, const QColor& accent_
     painter.restore();
 }
 
-} // namespace smartGraphics
+} // namespace smartCam
