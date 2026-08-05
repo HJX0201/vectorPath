@@ -84,6 +84,7 @@ python sgraphBuildTools/s_build_64_release.py --qt-dir C:\Qt\Qt5.12.10\5.12.10\m
 ## 文档
 
 - [完整代码架构与文件参考](sgraphDocs/CODEBASE_REFERENCE.md)
+- [位图矢量化详尽源码与调用关系](sgraphDocs/BITMAP_VECTORIZATION_SOURCE_REFERENCE.md)
 - [使用说明](sgraphDocs/USER_GUIDE.md)
 - [简版架构说明](sgraphDocs/ARCHITECTURE.md)
 - [完整编译工具链](sgraphDocs/BUILDING.md)
