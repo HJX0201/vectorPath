@@ -25,11 +25,15 @@ QString bundledToolDirectory()
     {
         return deployed_directory;
     }
-#ifdef VECTORPATH_LIBREDWG_DIR
-    return QString::fromUtf8(VECTORPATH_LIBREDWG_DIR);
-#else
+
+    const QString configured_directory = QProcessEnvironment::systemEnvironment().value(
+        QStringLiteral("VECTORPATH_LIBREDWG_DIR"));
+    if (!configured_directory.isEmpty() &&
+        QFileInfo::exists(QDir(configured_directory).filePath(QStringLiteral("dwgread.exe"))))
+    {
+        return QDir::cleanPath(configured_directory);
+    }
     return {};
-#endif
 }
 
 struct SProcessResult

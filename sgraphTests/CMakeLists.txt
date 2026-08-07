@@ -52,6 +52,7 @@ target_link_libraries(vectorPathDwgCodecTests
 add_test(
     NAME vectorPathDwgCodecTests
     COMMAND ${CMAKE_COMMAND} -E env
+            "VECTORPATH_LIBREDWG_DIR=${PROJECT_SOURCE_DIR}/sgraphThirdParty/libredwg-0.14-win64"
             "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$<TARGET_FILE_DIR:qtadvanceddocking-qt5>;$ENV{PATH}"
             "$<TARGET_FILE:vectorPathDwgCodecTests>"
 )
