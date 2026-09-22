@@ -18,7 +18,7 @@
 2. 可执行自动测试；
 3. `vp_autocad_gap_matrix.yaml` 与 `vp_smartcad_feature_inventory.yaml`；
 4. 本文和其他说明文档；
-5. 历史 Changelog、路线图和历史基准报告。
+5. 历史 Changelog、路线图和历史测量摘要。
 
 历史名称 `smartCad`、`smartCam`、`SMARTCAD_*`、`SMARTCAM_*` 可能承担文件、设置、资源、
 布局或构建兼容责任。本文会明确标注这类标识，不能仅凭品牌变化机械删除。
@@ -1147,7 +1147,11 @@ smartBitmapVectorBenchmark
 主要失败：源图为空、忽略背景后无前景、边压缩失败、轮廓无法闭合。界面应保留错误文本并不
 提交文档；后台化后还需增加取消和过期结果语义。
 
-## 26. 已记录的性能结果
+## 26. 已记录的历史性能结果
+
+以下为历史测量摘要。原固定图片、逐文件 HTML 与 manifest 已从仓库移除；当前生成器改用
+合成图案变体，不能仅凭相同种子完全复现旧输入和结果。这些数字不作为当前版本的验收结果，
+后续测量需通过保留的运行入口在本地重新生成样本与报告。
 
 ### 26.1 1000 文件相对均衡测试
 
@@ -1245,12 +1249,10 @@ CTest 保留 38 个原套件名称，每项以套件参数启动独立进程；Q
 | --- | --- | --- |
 | `sgraphVectorBenchmark/CMakeLists.txt` | 可选 `smartBitmapVectorBenchmark` | 仅桌面开启基准时构建；同时开启测试才注册 20 case smoke 与布局检查。 |
 | `sgraphVectorBenchmark/README.md` | 基准说明 | 运行参数、结果目录、正式/冒烟示例和口径。 |
-| `sgraphVectorBenchmark/fixtures/README.md` | fixture 说明 | 说明固定输入或夹具目录用途。 |
-| `sgraphVectorBenchmark/results/README.md` | 历史结果说明 | 约定日期序号目录、保留范围和不覆盖策略。 |
 | `sgraphVectorBenchmark/vp_run_benchmark.py` | Python 入口 | 解析常用参数、构建 Release x64 benchmark 并传递执行参数。 |
 | `src/vp_bitmap_benchmark_types.h` | 5 个基准结构 | case、算法摘要、case 结果、选项等共享数据模型。 |
 | `src/vp_bitmap_benchmark_generator.h` | 生成接口 | 声明固定种子图像/案例生成和断点复用。 |
-| `src/vp_bitmap_benchmark_generator.cpp` | 生成实现 | 按 case 索引确定图案/尺寸；有效现有 PNG 复用，缺失/损坏/尺寸错则重建。 |
+| `src/vp_bitmap_benchmark_generator.cpp` | 生成实现 | 按 case 索引与种子生成合成图案；有效本地 PNG 复用，缺失/损坏/尺寸错则重建，不读取固定图片。 |
 | `src/vp_bitmap_flood_baseline.h` | flood fill 接口 | 声明四邻域基线输出。 |
 | `src/vp_bitmap_flood_baseline.cpp` | 基线实现 | 用逐像素 flood fill 建组件轮廓，只供正确性和性能参照。 |
 | `src/vp_bitmap_benchmark_validation.h` | `VpBitmapValidationResult` | 声明轮廓哈希、单多线程和回栅格验证结果。 |
@@ -1283,6 +1285,7 @@ options/seed
 
 结果按日期和序号形成独立目录，例如 `20260728-1`；数据和报告同属本次运行，不使用长期共享
 `data/generated`。已有有效 PNG 可断点复用，但 manifest 必须记录本次真实输入与参数。
+样本、manifest 和 HTML 均仅在本地生成，整个结果目录由 Git 忽略，不再保存到仓库。
 
 ## 29. 构建脚本、CMake 和发布
 
@@ -1335,7 +1338,7 @@ Qt 5.12.10 且架构匹配，32 位应用是真正 x86；核心输出不包含�
 windeployqt 部署桌面所需 Qt DLL 和插件，App 构建复制 Qt ADS 和 LibreDWG 工具。
 便携包使用 `vectorPath-0.2.0-alpha.1-windows-x64.zip` 等名称；manifest 和哈希从最终文件
 生成。正式位图测量入口仍为 `sgraphVectorBenchmark/vp_run_benchmark.py`，内部通过统一
-构建入口开启性能目标；正式报告和固定样例继续保留。
+构建入口开启性能目标；仓库保留生成和验证代码，图片与报告只在本地生成，不随应用部署。
 
 ## 30. GitHub Actions
 
@@ -1809,8 +1812,6 @@ sgraphTests/vp_window_control_test.cpp
 sgraphTests/vp_workspace_persistence_test.cpp
 sgraphVectorBenchmark/CMakeLists.txt
 sgraphVectorBenchmark/README.md
-sgraphVectorBenchmark/fixtures/README.md
-sgraphVectorBenchmark/results/README.md
 sgraphVectorBenchmark/vp_run_benchmark.py
 sgraphVectorBenchmark/src/vp_bitmap_benchmark_generator.cpp
 sgraphVectorBenchmark/src/vp_bitmap_benchmark_generator.h

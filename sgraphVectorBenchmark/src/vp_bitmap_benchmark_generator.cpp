@@ -75,7 +75,7 @@ QString categoryForIndex(int index)
         QStringLiteral("大色块与色带"),   QStringLiteral("孔洞与嵌套"),
         QStringLiteral("分叉与汇合"),     QStringLiteral("细线与通道"),
         QStringLiteral("斜对角与棋盘格"), QStringLiteral("随机规则色块"),
-        QStringLiteral("离散同色色块"),   QStringLiteral("真实样例变体")};
+        QStringLiteral("离散同色色块"),   QStringLiteral("合成图案变体")};
     return categories[index % categories.size()];
 }
 
@@ -199,14 +199,13 @@ void drawDisconnected(QImage& image, QRandomGenerator& random)
     }
 }
 
-void drawSourceVariant(QImage& image, int index)
+void drawSyntheticVariant(QImage& image, QRandomGenerator& random, int index)
 {
-    const QImage source(QStringLiteral(SGRAPH_BENCHMARK_FIXTURE_DIR "/bitmap_vector_test.png"));
-    if (source.isNull())
-    {
-        drawBands(image, *QRandomGenerator::global());
-        return;
-    }
+    QImage source(320, 240, QImage::Format_ARGB32);
+    source.fill(palette().front());
+    drawBands(source, random);
+    drawRandomRectangles(source, random);
+    drawSplitMerge(source, random);
     QImage variant = source.scaled(image.size(), Qt::IgnoreAspectRatio, Qt::FastTransformation);
     if (index % 2 != 0)
     {
@@ -254,7 +253,7 @@ QImage generateImage(const QSize& size, const QString& category, quint32 seed, i
     }
     else
     {
-        drawSourceVariant(image, index);
+        drawSyntheticVariant(image, random, index);
     }
     return image;
 }

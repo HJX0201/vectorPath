@@ -134,7 +134,8 @@ flowchart TD
 | `tests/vp_verify_output_layout.cmake` | 成功输出只保留 manifest 与 HTML |
 | `sgraphTests/vp_svg_vector_import_test.cpp` | 4 个位图核心专项 Qt Test |
 
-辅助说明位于 benchmark 的 `README.md`、`fixtures/README.md`、`results/README.md`。
+运行和本地输出约定位于 benchmark 的 `README.md`。仓库仅保留运行入口、生成器和验证代码，
+不再提交固定图片、manifest 或 HTML，整个结果目录由 Git 忽略。
 
 ## 5. 文件级调用关系
 
@@ -846,7 +847,7 @@ smoke 使用 64–256 小图。正式模式按 index 分段：前 400 为 64–2
 
 ### 19.3 `categoryForIndex()`
 
-按 index 对 8 类取模：色带、嵌套、分叉汇合、细线、棋盘、随机矩形、离散同色和真实样例
+按 index 对 8 类取模：色带、嵌套、分叉汇合、细线、棋盘、随机矩形、离散同色和合成图案
 变体。分类是可重复的，不由随机数决定。
 
 ### 19.4 图案绘制函数
@@ -860,7 +861,7 @@ smoke 使用 64–256 小图。正式模式按 index 分段：前 400 为 64–2
 | `drawChecker()` | 两色棋盘格 | 大量斜对角接触和短游程 |
 | `drawRandomRectangles()` | 最多 256 个随机色矩形 | 遮挡、交界和多颜色 |
 | `drawDisconnected()` | 网格中留 inset 的同/异色色块 | 同色不连通组件 |
-| `drawSourceVariant()` | fixture 快速缩放并镜像 | 真实样例派生；fixture 缺失时回退色带 |
+| `drawSyntheticVariant()` | 按 case 种子生成 320×240 色带、矩形与分叉图案，再快速缩放并镜像 | 合成图案的多尺寸与方向变体；不读取外部图片 |
 
 这些函数使用 QPainter 填充整数矩形，不启用抗锯齿，避免生成不可控的插值颜色。
 
@@ -935,7 +936,7 @@ Windows 使用 `GetProcessMemoryInfo()` 读取 `PeakWorkingSetSize`；非 Window
 
 `removeTemporaryDirectory(output,name)` 在目录不存在时成功，否则 `removeRecursively()`；
 `removeTemporaryArtifacts()` 同时删除 `cases` 和 `failures`。当前成功运行结束后只保留 manifest
-和 HTML；如果清理失败，main 返回 3。
+和 HTML，均为 Git 忽略的本地输出；如果清理失败，main 返回 3。
 
 ### 20.6 `parseOptions()`
 
@@ -973,7 +974,7 @@ flowchart TD
     N --> O
     O --> P["HTML 报告 + 峰值工作集"]
     P --> Q["删除 cases/failures"]
-    Q --> R["保留 manifest + report"]
+    Q --> R["本地保留 manifest + report，不提交"]
 ```
 
 ## 22. Benchmark 正确性验证函数
@@ -1110,7 +1111,7 @@ VpResult<QString> writeBitmapBenchmarkReport(
 ### 25.3 Benchmark CMake
 
 `smartBitmapVectorBenchmark` 链接 smartIo、Qt Core/Gui/Concurrent；Windows 额外链接 Psapi。
-编译定义注入 fixture 和 benchmark root。项目仅在桌面开启 `VECTORPATH_BUILD_BENCHMARKS`
+编译定义注入 benchmark root，不依赖固定图片目录。项目仅在桌面开启 `VECTORPATH_BUILD_BENCHMARKS`
 时构建；同时开启 `VECTORPATH_BUILD_TESTS` 才注册以下 CTest：
 
 - `vectorPathBitmapVectorBenchmarkSmoke`：20 case、seed 20260727、2 线程、1 次、smoke；
@@ -1149,7 +1150,11 @@ VpResult<QString> writeBitmapBenchmarkReport(
 红色矩形中挖透明孔，worker=3；验证一个组件但存在外环和内环两个闭合轮廓，锁定 even-odd
 孔洞语义和闭环实现。
 
-## 27. 性能结果与正确口径
+## 27. 历史性能结果与正确口径
+
+以下为历史测量摘要。原固定图片、逐文件 HTML 与 manifest 已从仓库移除；当前生成器改用
+合成图案变体，输入分布已有变化，不能仅凭相同种子完全复现旧输入和结果。以下数字不作为
+当前版本的验收结果；新结果需通过保留的运行入口在本地重新生成和测量。
 
 ### 27.1 1000 文件相对均衡测试
 
@@ -1323,7 +1328,7 @@ void drawThinCorridors(QImage& image, QRandomGenerator& random);
 void drawChecker(QImage& image, QRandomGenerator& random);
 void drawRandomRectangles(QImage& image, QRandomGenerator& random);
 void drawDisconnected(QImage& image, QRandomGenerator& random);
-void drawSourceVariant(QImage& image, int index);
+void drawSyntheticVariant(QImage& image, QRandomGenerator& random, int index);
 QImage generateImage(
     const QSize& size, const QString& category,
     quint32 seed, int index);
@@ -1456,7 +1461,5 @@ def main() -> int
 
 - `sgraphTests/vp_svg_vector_import_test.cpp`
 - `sgraphVectorBenchmark/README.md`
-- `sgraphVectorBenchmark/fixtures/README.md`
-- `sgraphVectorBenchmark/results/README.md`
 
-其中 `vp_svg_vector_import_test.cpp` 还包含 SVG 导入的其他测试；本文只展开第 26 节列出的四个位图专项测试。`fixtures` 和 `results` 下的 README 用于解释样本及历史结果目录，不参与算法执行。
+其中 `vp_svg_vector_import_test.cpp` 还包含 SVG 导入的其他测试；本文只展开第 26 节列出的四个位图专项测试。样本生成和本地结果目录的约定统一记录在 benchmark 的 README 中。

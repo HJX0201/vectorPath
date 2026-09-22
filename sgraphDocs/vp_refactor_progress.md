@@ -38,7 +38,8 @@ python sgraphBuildTools/vp_build.py --core --test --config Debug
   `--core`、`--test`、`--benchmarks` 选择内容。
 - 38 个普通测试项目收拢为 `vectorPathCoreTests`、`vectorPathDesktopTests` 两个程序，
   CTest 仍按 38 个套件分进程运行；同时启用位图基准检查时为 40 项，无 Qt 模式为 4 项。
-- 固定基准样例和历史报告保留；性能项目通过 `--benchmarks` 按需构建，不作为默认应用依赖。
+- 基准运行入口、生成器和验证代码保留，固定图片及历史 HTML/manifest 已移除；样本和结果
+  仅本地生成并忽略。性能项目通过 `--benchmarks` 按需构建，不作为默认应用依赖。
 
 下面保留本轮项目收拢前的重构验证与性能记录，不能将其当作收拢后的新一次执行结果。
 

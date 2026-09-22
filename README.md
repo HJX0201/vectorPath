@@ -37,10 +37,12 @@ ID 分配、并查集、轮廓压缩和 SVG 输出保持串行。小于 1,048,57
 单线程以避免线程调度开销。稳定 ID、规范化和排序保证单线程与多线程可以生成完全相同的
 SVG 字节。
 
-### 优化效果
+### 历史优化测量
 
-基准程序与软件位图导入直接调用同一个 `bitmapToVectorResult()` 核心实现。固定种子
-`20260727`，在 64 位 Release 下使用 12 个自动线程，每种算法执行 3 次并取中位数：
+基准程序与软件位图导入直接调用同一个 `bitmapToVectorResult()` 核心实现。以下为历史测量：
+固定种子 `20260727`，在 64 位 Release 下使用 12 个自动线程，每种算法执行 3 次并取中位数。
+原固定图片、逐文件 HTML 和 manifest 已从仓库移除；当前生成器使用合成图案，输入分布已有
+变化，不能仅凭相同种子完全复现旧结果，也不将这些数值作为当前版本的验收结果。
 
 | 测试集 | 正确性 | 四邻域 flood fill | 游程单线程 | 游程多线程 | 相对 flood fill | 相对单线程 | 峰值工作集 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -52,8 +54,7 @@ SVG 字节。
 不能据此承诺所有图片都获得相同加速；小图、棋盘格和高度离散色块可能受固定开销影响。
 当前基准也没有设置单独的计时外预热轮次。
 
-- [1000 份基准完整报告](sgraphVectorBenchmark/results/20260727-1/bitmap_vector_benchmark_report.html)
-- [5000 份压力测试完整报告](sgraphVectorBenchmark/results/20260727-2/bitmap_vector_benchmark_report.html)
+- [生成样本与运行基准](sgraphVectorBenchmark/README.md)
 - [测试方法与结果说明](sgraphDocs/TEST_RESULTS.md)
 
 ## 快速构建
@@ -100,7 +101,8 @@ Qt 不在常用路径时可传 `--qt-dir C:\Qt\Qt5.12.10\5.12.10\msvc2017_64`，
 ## 仓库结构
 
 所有自研模块目录使用 `sgraph` 前缀；第三方源码与工具统一放在
-`sgraphThirdParty`。`build`、`dist`、自动生成的基准图片和本地 Qt SDK 均不会提交。
+`sgraphThirdParty`。`build`、`dist`、基准样本、全部本地基准结果和本地 Qt SDK 均不会提交。
+仓库保留基准运行入口、样本生成器和验证代码，图片、manifest 与 HTML 在运行时本地生成。
 
 ## 许可与状态
 

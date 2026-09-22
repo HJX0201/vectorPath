@@ -37,7 +37,7 @@ flowchart TD
 - `sgraphGui`：Ribbon、工作区、主题、对话框、主窗口和旧 QSettings 缺失键迁移。
 - `sgraphApp`：应用组装、Qt 配置、翻译和设置迁移调用。
 - `sgraphTests`：两个普通测试可执行程序，保留 38 个分进程 CTest 套件及可选集合基准。
-- `sgraphVectorBenchmark`：按需构建的位图生成器、基准和输出检查；历史报告与固定样例保留。
+- `sgraphVectorBenchmark`：按需构建的位图生成器、基准和输出检查；样本与报告仅本地生成，结果目录全部忽略。
 - `sgraphBuildTools`：一个 Python 构建入口和公共驱动，通过参数选择目标架构、配置与模式。
 - `sgraphThirdParty`：原样引入的第三方源码与运行组件。
 
@@ -71,4 +71,4 @@ flowchart TD
   `smartCadLearning/smartGraphics`，以及旧 `smartCam.stb`、`smartCad.stb` 打印样式名。
 - 已持久化的 Qt object name、状态栏样式选择器和 DXF XDATA 应用名 `SMARTCAD`。
 - 保留一个版本的 `SMARTCAM_BUILD_TESTS`、`SMARTCAD_BUILD_TESTS` 构建变量兼容映射。
-- CAD 功能目录中的稳定 `SMARTCAD.*` 功能 ID，以及历史版本记录和历史基准报告。
+- CAD 功能目录中的稳定 `SMARTCAD.*` 功能 ID，以及历史版本记录中的兼容标识。

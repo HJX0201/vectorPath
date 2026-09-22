@@ -20,7 +20,6 @@ target_link_libraries(smartBitmapVectorBenchmark
 )
 
 target_compile_definitions(smartBitmapVectorBenchmark PRIVATE
-    SGRAPH_BENCHMARK_FIXTURE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/fixtures"
     SGRAPH_BENCHMARK_ROOT="${CMAKE_CURRENT_SOURCE_DIR}"
 )
 

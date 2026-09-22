@@ -466,7 +466,8 @@ features:
                sgraphGui/sgraphDesignSystem/vp_import_icon.cpp,
                sgraphTests/vp_svg_vector_import_test.cpp,
                sgraphVectorBenchmark/src/vp_bitmap_vector_benchmark.cpp,
-               sgraphVectorBenchmark/results/20260727-2/bitmap_vector_benchmark_report.html,
+               sgraphVectorBenchmark/src/vp_bitmap_benchmark_generator.cpp,
+               sgraphVectorBenchmark/src/vp_bitmap_benchmark_validation.cpp,
                sgraphTests/vp_window_control_test.cpp]
     provides: [svg_shapes_and_complete_path_commands, nested_transform_and_viewbox,
                solid_color_and_alpha_layers, translucent_svg_color_block_view,

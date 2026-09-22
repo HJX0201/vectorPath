@@ -62,7 +62,8 @@ CTest 仍保留 38 个套件名称，以参数选择套件并为每项创建独�
 桌面模式同时使用 `--test --benchmarks` 时增加位图 smoke 和输出布局两项，共 40 项。
 `--core --benchmarks` 仅增加 ID 集合性能程序，不需要 Qt，也不会执行位图基准。
 正式位图测量仍可通过 `sgraphVectorBenchmark/vp_run_benchmark.py` 发起；它内部调用统一
-构建入口开启基准，使用固定样例和独立结果目录。
+构建入口开启基准，按固定种子生成合成样本并写入独立的本地结果目录。样本、manifest
+和 HTML 不再提交，整个结果目录由 Git 忽略。
 
 ## 桌面 Qt 自动查找
 
