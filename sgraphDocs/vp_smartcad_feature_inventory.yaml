@@ -1,0 +1,523 @@
+schema_version: 1
+product: vectorPath
+audited: 2026-07-25
+rules:
+  implemented_requires: [callable_ui_or_command, working_domain_logic, undo_when_mutating]
+  complete_requires: [implemented, persistence_when_applicable, automated_test]
+features:
+  - id: SMARTCAD.UI.DESIGN_SYSTEM
+    status: partial
+    evidence: [sgraphGui/sgraphDesignSystem/vp_theme_manager.cpp,
+               sgraphGui/sgraphDesignSystem/vp_icon_provider.cpp,
+               sgraphGui/sgraphDesignSystem/s_window_control_icon.cpp,
+               sgraphGui/vp_dialog_service.cpp,
+               sgraphGui/vp_cad_main_window_ui_scale.cpp,
+               sgraphApp/vp_chinese_ui_translator.cpp,
+               sgraphTests/vp_dialog_size_policy_test.cpp,
+               sgraphTests/vp_ui_scale_test.cpp]
+    provides: [light_theme, dark_theme, high_contrast, unified_theme_menu,
+               theme_icons, dedicated_ui_scale_icon, unified_window_control_icons,
+               qt_and_saribbon_chinese_translation, chinese_standard_dialog_buttons, high_dpi,
+               standard_dialog_minimum_size, input_dialog_minimum_size,
+               message_dialog_minimum_size, larger_existing_size_preservation,
+               persistent_100_to_200_percent_ui_scale, synchronized_font_and_icon_scale]
+    missing: [automated_coverage_for_unified_theme_menu_and_chinese_system_menu]
+  - id: SMARTCAD.UI.RIBBON_DOCKS
+    status: complete
+    evidence: [sgraphGui/vp_cad_main_window.cpp, sgraphGui/vp_cad_main_window_workspace.cpp,
+               sgraphTests/vp_workspace_persistence_test.cpp,
+               sgraphTests/vp_window_control_test.cpp,
+               sgraphTests/vp_toolpath_simulation_test.cpp]
+    provides: [task_grouped_ribbon, file_application_menu, vertical_drawing_toolbar,
+               locked_qtads_docks,
+               stacked_layer_and_properties_inspector, fixed_default_workspace,
+               resizable_locked_panel_splitters, persisted_splitter_layout,
+               reference_proportioned_workspace, all_ribbon_categories_large_actions,
+               uniformly_scaled_interface_icons, user_ordered_ribbon_categories,
+               duplicate_draw_modify_annotation_buttons_removed,
+               management_tools_in_help, window_controls_only_title_bar,
+               top_layer_category_removed]
+  - id: SMARTCAD.UI.COMMAND_LINE
+    status: complete
+    evidence: [sgraphCommands/vp_command_catalog.cpp, sgraphCommands/vp_coordinate_input.cpp,
+               sgraphGui/vp_command_line_widget.cpp,
+               sgraphGui/vp_cad_main_window_coordinate.cpp, sgraphRender/vp_cad_viewport.cpp,
+               sgraphRender/vp_cad_viewport_keyword.cpp,
+               sgraphTests/vp_precision_snap_test.cpp,
+               sgraphTests/vp_command_line_widget_test.cpp]
+    provides: [command_aliases, absolute_xy_input, relative_cartesian_input,
+               relative_polar_input, live_coordinate_preview, active_command_keywords,
+               popup_and_tab_completion, keyboard_history, history_view]
+  - id: SMARTCAD.UI.SHORTCUT_CUSTOMIZATION
+    status: complete
+    evidence: [sgraphGui/vp_shortcut_manager.cpp,
+               sgraphGui/vp_shortcut_dialog.cpp,
+               sgraphGui/vp_cad_main_window_shortcut.cpp,
+               sgraphDocs/vp_default_shortcuts.md,
+               sgraphTests/vp_shortcut_manager_test.cpp]
+    provides: [stable_command_ids, searchable_shortcut_editor, native_key_sequence_capture,
+               conflict_detection, per_command_clear, restore_all_defaults,
+               qsettings_persistence, duplicate_action_binding,
+               ribbon_entry, cui_shortcuts_keyboard_commands,
+               default_file_edit_selection_precision_panel_output_and_simulation_shortcuts]
+  - id: SMARTCAD.VIEW.NAVIGATION
+    status: complete
+    evidence: [sgraphRender/vp_cad_viewport.cpp,
+               sgraphRender/vp_cad_viewport_events.cpp,
+               sgraphGui/vp_cad_main_window_view.cpp]
+    provides: [wheel_zoom, pan, auto_zoom, autozoom_az_and_zoom_extents_ze_commands,
+               bottom_quick_bar_entry, dedicated_theme_icon]
+    note: view_history_named_views_and_manual_regeneration_removed_by_user_request
+  - id: SMARTCAD.DOCUMENT.TRANSACTIONS
+    status: complete
+    evidence: [sgraphDocument/vp_document_transaction.cpp, sgraphDocument/vp_cad_document.cpp]
+    provides: [stable_entity_id, undo, redo, atomic_entity_changes]
+  - id: SMARTCAD.FILE.NATIVE
+    status: complete
+    evidence: [sgraphDocument/vp_cad_document_io.cpp,
+               sgraphDocument/vp_associative_array_io.cpp]
+    provides: [smartcad_v23, stable_ids, layers, layer_freeze, named_layer_states,
+               layer_linetype_transparency, polyline_bulge, polyline_segment_widths,
+               cubic_spline, text_styles, dimension_styles, all_dimension_types, mtext,
+               multileader, associative_array_data,
+               drawing_units_and_angle_format,
+               all_current_entities, atomic_save]
+  - id: SMARTCAD.FILE.RECOVERY_AUDIT
+    status: complete
+    evidence: [sgraphDocument/vp_document_recovery_manager.cpp,
+               sgraphDocument/vp_cad_document_audit.cpp,
+               sgraphGui/vp_cad_main_window_recovery.cpp,
+               sgraphGui/vp_cad_main_window_audit.cpp,
+               sgraphTests/vp_document_recovery_test.cpp,
+               sgraphTests/vp_document_audit_test.cpp]
+    provides: [five_minute_autosave, atomic_recovery_copy, versioned_recovery_metadata,
+               recovery_manager, named_and_unnamed_document_restore, recovery_retention,
+               audit_check_and_repair, invalid_geometry_removal, polyline_record_repair,
+               source_style_repair, single_transaction_audit_undo, ribbon_and_commands]
+  - id: SMARTCAD.FILE.DXF
+    status: partial
+    evidence: [sgraphIo/vp_dxf_codec.cpp,
+               sgraphIo/vp_dxf_entity_io.cpp,
+               sgraphIo/vp_dxf_table_io.cpp,
+               sgraphTests/vp_spline_blend_test.cpp]
+    provides: [ascii_r2018, line, circle, arc, ellipse, lwpolyline, lwpolyline_bulge,
+               lwpolyline_start_end_width, text, mtext_plain_text_degradation,
+               dimension, hatch, cubic_spline,
+               full_layer_table, layer_true_color, layer_lineweight, layer_linetype,
+               layer_transparency, layer_visibility_freeze_lock_plot, current_layer]
+    missing: [multileader, blocks, attributes, layouts, unknown_record_roundtrip]
+  - id: SMARTCAD.FILE.DWG
+    status: partial
+    evidence: [sgraphIo/vp_dwg_codec.cpp,
+               sgraphIo/vp_dwg_dxf_adapter.cpp,
+               sgraphGui/vp_cad_main_window_file.cpp,
+               sgraphGui/vp_cad_main_window_execute.cpp,
+               sgraphGui/vp_cad_main_window_setup.cpp,
+               sgraphGui/sgraphDesignSystem/vp_icon_provider.cpp,
+               sgraphTests/vp_dwg_codec_test.cpp,
+               sgraphThirdParty/s_dependencies.md]
+    provides: [libredwg_0_14_external_process_isolation, dwg_import_via_dxf,
+               r2000_dwg_export, r2000_interchange_tables_and_object_handles,
+               line_circle_arc_lwpolyline_roundtrip, layer_table_and_true_color,
+               cubic_spline_roundtrip,
+               atomic_output, compatibility_warnings, ribbon_commands_and_theme_icon]
+    missing: [blocks, attributes, layouts, proxy_object_preservation, dynamic_blocks]
+  - id: SMARTCAD.ANNOTATION.TEXT_STYLE_LEADER
+    status: complete
+    evidence: [sgraphGeometry/vp_entity.h,
+               sgraphDocument/vp_cad_document_text_style.cpp,
+               sgraphDocument/vp_cad_document_io.cpp,
+               sgraphRender/vp_cad_viewport_annotation.cpp,
+               sgraphRender/vp_cad_viewport_entity_render.cpp,
+               sgraphGui/vp_cad_main_window_annotation.cpp,
+               sgraphGui/vp_cad_main_window_text_style.cpp,
+               sgraphTests/vp_annotation_test.cpp]
+    provides: [single_text_alignment, rich_mtext_editor, mtext_width_and_alignment,
+               text_style_add_update_delete_current, font_height_width_oblique_bold_italic,
+               three_point_multileader, arrow_and_text_preview, annotation_grips,
+               smartcad_v17_roundtrip, dxf_mtext, explicit_rich_text_and_mleader_degradation,
+               ribbon_commands_theme_icons, transaction_undo]
+  - id: SMARTCAD.DRAW.BASIC
+    status: complete
+    evidence: [sgraphRender/vp_cad_viewport_interaction.cpp,
+               sgraphRender/vp_cad_viewport_keyword.cpp,
+               sgraphRender/vp_cad_viewport_standard_shape.cpp,
+               sgraphRender/vp_polyline_geometry.cpp,
+               sgraphRender/vp_polyline_edit.cpp,
+               sgraphRender/vp_circle_tangent_geometry.cpp,
+               sgraphRender/vp_arc_construction_geometry.cpp,
+               sgraphRender/vp_cad_viewport_curve_construction.cpp,
+               sgraphRender/vp_cad_viewport_polyline_edit.cpp,
+               sgraphDocument/vp_document_transaction.cpp,
+               sgraphGeometry/vp_standard_shape.cpp,
+               sgraphTests/vp_standard_shape_test.cpp,
+               sgraphTests/vp_polyline_corner_test.cpp,
+               sgraphTests/vp_curve_construction_test.cpp]
+    provides: [line, circle, three_point_arc, ellipse_axis_endpoints,
+               cubic_spline_four_control_points, polyline, rectangle,
+               interactive_polyline_line_arc_modes, polyline_bulge_preview,
+               per_segment_tapered_polyline_width, world_space_width_preview,
+               pedit_open_close, pedit_constant_width, pedit_reverse,
+               pedit_decurve, pedit_width_preserving_join, pedit_undo,
+               ellipse_preview, ellipse_properties, ellipse_grips,
+               ellipse_snap_transform, ellipse_native_and_dxf,
+               spline_control_polygon_preview, spline_command_and_undo,
+               circle_center_radius, circle_center_diameter, circle_two_point,
+               circle_three_point, arc_three_point, arc_center_start_end,
+               arc_start_center_end, arc_start_center_angle, arc_center_start_angle,
+               arc_start_end_angle, arc_start_end_direction, arc_start_end_radius,
+               circle_ttr_line_circle_arc_pairs,
+               circle_ttt_three_lines, circle_ttt_line_circle_arc_combinations,
+               picked_side_tangent_solution,
+               tangent_circle_dynamic_preview, curve_method_ribbon_menus,
+               five_point_star, triangle, pentagon, hexagon, octagon, diamond,
+               standard_shape_dynamic_preview, standard_shape_ribbon_menu_and_commands]
+  - id: SMARTCAD.ANNOTATION.BASIC
+    status: partial
+    evidence: [sgraphRender/vp_cad_viewport_interaction.cpp, sgraphRender/vp_cad_viewport_render.cpp]
+    provides: [single_line_text, solid_boundary_hatch]
+    missing: [hatch_patterns]
+  - id: SMARTCAD.DIMENSION.TYPES_STYLE
+    status: complete
+    evidence: [sgraphGeometry/vp_dimension_geometry.cpp,
+               sgraphDocument/vp_cad_document_dimension_style.cpp,
+               sgraphDocument/vp_dimension_binary_io.cpp,
+               sgraphDocument/vp_document_style_io.cpp,
+               sgraphRender/vp_cad_viewport_dimension.cpp,
+               sgraphGui/vp_cad_main_window_dimension.cpp,
+               sgraphGui/vp_cad_main_window_dimension_style.cpp,
+               sgraphGui/sgraphDesignSystem/vp_dimension_icon.cpp,
+               sgraphIo/vp_dxf_codec.cpp,
+               sgraphTests/vp_dimension_test.cpp]
+    provides: [linear, aligned, angular, radius, diameter, arc_length, ordinate,
+               continuous_dynamic_preview, dedicated_theme_icons, ribbon_and_command_aliases,
+               dimension_style_add_update_delete_current, text_height, arrow_size, overall_scale,
+               measurement_scale, linear_and_angular_precision, prefix_suffix,
+               trailing_zero_suppression, selected_dimension_style_and_text_override,
+               grips_snap_selection_transform, transaction_undo_redo, smartcad_v19_roundtrip,
+               dxf_dimension_roundtrip]
+  - id: SMARTCAD.HATCH.PROFESSIONAL
+    status: complete
+    evidence: [sgraphGeometry/vp_hatch_geometry.cpp,
+               sgraphDocument/vp_hatch_binary_io.cpp,
+               sgraphRender/vp_cad_viewport_hatch.cpp,
+               sgraphGui/vp_cad_main_window_hatch.cpp,
+               sgraphGui/sgraphDesignSystem/vp_hatch_icon.cpp,
+               sgraphIo/vp_dxf_hatch_io.cpp,
+               sgraphTests/vp_hatch_test.cpp]
+    provides: [solid_fill, ansi31, ansi32, ansi37, cross_pattern, dot_pattern,
+               pattern_scale_angle, two_color_linear_gradient, automatic_island_detection,
+               odd_even_island_rendering, associative_boundary_reference,
+               live_boundary_preview, multi_selection_hatch_edit, property_tree,
+               transform_and_stretch, ribbon_and_commands, dedicated_theme_icons,
+               transaction_undo_redo, smartcad_v20_roundtrip, dxf_hatch_roundtrip]
+  - id: SMARTCAD.MODIFY.TRANSFORM
+    status: complete
+    evidence: [sgraphRender/vp_cad_viewport_transform.cpp,
+               sgraphRender/vp_cad_viewport_selection.cpp,
+               sgraphRender/vp_cad_viewport_align.cpp,
+               sgraphTests/vp_spline_blend_test.cpp]
+    provides: [move, copy, rotate, reference_scale, mirror_copy,
+               two_point_pair_align_translate_rotate_scale]
+  - id: SMARTCAD.MODIFY.RESHAPE
+    status: complete
+    evidence: [sgraphRender/vp_cad_viewport_stretch.cpp,
+               sgraphRender/vp_cad_viewport_interaction.cpp,
+               sgraphRender/vp_cad_viewport_grip.cpp,
+               sgraphTests/vp_cad_viewport_test.cpp,
+               sgraphTests/vp_grip_edit_test.cpp]
+    provides: [crossing_window_stretch, line_endpoint_stretch, polyline_vertex_stretch,
+               hatch_boundary_stretch, dimension_control_point_stretch,
+               interactive_grip_edit, curve_grip_edit, dynamic_line_arc_polyline_lengthen]
+  - id: SMARTCAD.MODIFY.GRIPS
+    status: complete
+    evidence: [sgraphRender/vp_cad_viewport_grip.cpp,
+               sgraphGui/vp_cad_main_window_setup.cpp,
+               sgraphGui/vp_cad_main_window_command.cpp,
+               sgraphCommands/vp_command_catalog.cpp,
+               sgraphTests/vp_grip_edit_test.cpp]
+    provides: [theme_grips, multi_entity_grip_transform, stretch, move, rotate, scale, mirror,
+               space_mode_cycle, dynamic_preview, single_transaction_undo, ribbon_modes,
+               command_aliases]
+  - id: SMARTCAD.MODIFY.TRIM_OFFSET
+    status: complete
+    evidence: [sgraphRender/vp_cad_viewport_geometry.cpp,
+               sgraphRender/vp_cad_viewport_curve_trim.cpp,
+               sgraphRender/vp_cad_viewport_curve_extend.cpp,
+               sgraphRender/vp_cad_viewport_interaction.cpp,
+               sgraphRender/vp_cad_viewport_extend_render.cpp]
+    provides: [line_line_trim, line_circle_arc_trim, circle_circle_arc_trim,
+               split_trim_results, open_and_closed_polyline_trim, finite_line_extend,
+               line_arc_and_open_polyline_extend, bulged_polyline_endpoint_extend,
+               line_circle_arc_boundaries,
+               line_circle_arc_offset, open_and_closed_polyline_offset,
+               bulge_controlled_approximation, adaptive_spline_offset,
+               self_intersection_cleanup, source_style_preservation,
+               dynamic_preview, single_transaction_undo]
+  - id: SMARTCAD.MODIFY.CUT_JOIN
+    status: complete
+    evidence: [sgraphRender/vp_cad_viewport_break_render.cpp,
+               sgraphRender/vp_cad_viewport_curve_break.cpp,
+               sgraphRender/vp_cad_viewport_curve_join.cpp,
+               sgraphRender/vp_cad_viewport_join_render.cpp,
+               sgraphRender/vp_cad_viewport_geometry.cpp]
+    provides: [two_point_line_break, circle_break_to_arc, two_point_arc_break,
+               open_closed_and_bulged_polyline_trim,
+               connected_line_join, closed_line_loop_join, line_and_open_polyline_join,
+               bulged_polyline_join, same_circle_arc_join, closed_arc_loop_to_circle]
+  - id: SMARTCAD.MODIFY.TOPOLOGY
+    status: complete
+    evidence: [sgraphRender/vp_cad_viewport_explode_render.cpp,
+               sgraphRender/vp_cad_viewport_polyline_edit.cpp,
+               sgraphRender/vp_polyline_edit.cpp,
+               sgraphRender/vp_cad_viewport_spline_edit.cpp,
+               sgraphRender/vp_spline_edit.cpp,
+               sgraphRender/vp_cad_viewport_interaction.cpp,
+               sgraphTests/vp_cad_viewport_test.cpp,
+               sgraphTests/vp_dimension_test.cpp,
+               sgraphTests/vp_polyline_corner_test.cpp,
+               sgraphTests/vp_spline_edit_test.cpp]
+    provides: [polyline_explode_to_lines_and_arcs, hatch_boundary_explode_to_lines,
+               pedit_multi_selection, pedit_open_close, pedit_width, pedit_reverse,
+               pedit_decurve, pedit_join, splinedit_control_point_move,
+               splinedit_reverse, splinedit_polyline_conversion, splinedit_dynamic_preview,
+               splinedit_single_transaction_undo, dimension_explode]
+  - id: SMARTCAD.MODIFY.POLYGON_BOOLEAN
+    status: complete
+    evidence: [sgraphGeometry/vp_polygon_boolean.cpp,
+               sgraphGui/vp_cad_main_window_boolean.cpp,
+               sgraphGui/vp_cad_main_window.cpp,
+               sgraphGui/sgraphDesignSystem/vp_shape_boolean_icon.cpp,
+               sgraphThirdParty/s_dependencies.md,
+               sgraphTests/vp_polygon_boolean_test.cpp,
+               sgraphTests/vp_window_control_test.cpp]
+    provides: [clipper2_2_0_1_adapter, closed_straight_polyline_union,
+               closed_straight_polyline_intersection, closed_straight_polyline_difference,
+               closed_straight_polyline_xor, reverse_difference_complement,
+               subject_selected_first, source_style_preservation,
+               single_transaction_undo, ribbon_commands_and_dedicated_theme_icons]
+  - id: SMARTCAD.MODIFY.CORNERS
+    status: complete
+    evidence: [sgraphRender/vp_cad_viewport_fillet.cpp,
+               sgraphRender/vp_cad_viewport_curve_fillet.cpp,
+               sgraphRender/vp_polyline_fillet.cpp,
+               sgraphRender/vp_polyline_geometry.cpp,
+               sgraphRender/vp_cad_viewport_chamfer.cpp,
+               sgraphRender/vp_cad_viewport_curve_chamfer.cpp,
+               sgraphRender/vp_cad_viewport_blend.cpp,
+               sgraphGeometry/vp_spline_geometry.cpp,
+               sgraphRender/vp_cad_viewport_interaction.cpp,
+               sgraphTests/vp_cad_viewport_test.cpp,
+               sgraphTests/vp_curve_fillet_test.cpp,
+               sgraphTests/vp_spline_blend_test.cpp,
+               sgraphTests/vp_polyline_corner_test.cpp]
+    provides: [picked_side_line_fillet, configurable_fillet_radius,
+               line_circle_arc_fillet, circle_arc_pair_fillet, whole_polyline_bulge_fillet,
+               picked_side_line_chamfer, whole_polyline_chamfer,
+               line_arc_and_arc_arc_chamfer, configurable_chamfer_distances,
+               tangent_continuous_cubic_spline_blend, spline_preview_grips_snap_transform,
+               spline_native_persistence]
+  - id: SMARTCAD.MODIFY.ARRAY
+    status: complete
+    evidence: [sgraphRender/vp_cad_viewport_array_rect.cpp,
+               sgraphRender/vp_cad_viewport_array_polar.cpp,
+               sgraphRender/vp_cad_viewport_array_path.cpp,
+               sgraphRender/vp_cad_viewport_array_edit.cpp,
+               sgraphRender/vp_associative_array_geometry.cpp,
+               sgraphDocument/vp_associative_array_io.cpp,
+               sgraphRender/vp_cad_viewport_interaction.cpp,
+               sgraphTests/vp_array_operations_test.cpp]
+    provides: [rectangular_array, multi_entity_source, configurable_rows_columns,
+               interactive_signed_spacing, polar_array, configurable_item_count,
+               signed_partial_or_full_fill_angle, line_and_polyline_path_array,
+               equal_arc_length_distribution, tangent_alignment,
+               associative_rectangular_polar_path_arrays, stable_array_id,
+               array_group_selection, arrayedit_regeneration, arrayedit_hover_preview,
+               native_v16_roundtrip, dxf_flattening_report]
+  - id: SMARTCAD.SELECT
+    status: partial
+    evidence: [sgraphRender/vp_cad_viewport_selection.cpp]
+    provides: [pick, additive_pick, window, crossing, select_all, delete]
+    missing: [lasso, fence, polygon, cycling, filters, named_selection_sets]
+  - id: SMARTCAD.PRECISION
+    status: partial
+    evidence: [sgraphRender/vp_cad_viewport_selection.cpp,
+               sgraphRender/vp_cad_viewport_drafting.cpp,
+               sgraphRender/vp_cad_viewport_render.cpp,
+               sgraphRender/vp_cad_viewport_entity_overlay.cpp,
+               sgraphRender/vp_object_snap.cpp,
+               sgraphDocument/vp_drawing_settings.cpp,
+               sgraphDocument/vp_cad_document_io.cpp,
+               sgraphGui/vp_cad_main_window_drafting.cpp,
+               sgraphGui/vp_cad_main_window_units.cpp,
+               sgraphTests/vp_precision_snap_test.cpp]
+    provides: [grid, configurable_grid_snap, ortho,
+               independent_grid_endpoint_and_true_entity_center_snap_modes,
+               endpoint_snap, circle_arc_and_ellipse_center_snap, snap_markers,
+               acquired_point_object_tracking, absolute_coordinates,
+               relative_cartesian_coordinates, relative_polar_coordinates,
+               persistent_snap_modes, persistent_node_direction_and_sequence_overlays,
+               visible_layer_overlay_filtering,
+               insertion_units, linear_precision, angle_formats, angular_precision]
+    note: polar_tracking_isometric_plane_and_unrequested_object_snap_types_removed_by_user_request
+    missing: [automated_coverage_for_new_snap_and_entity_overlay_modes]
+  - id: SMARTCAD.LAYERS
+    status: partial
+    evidence: [sgraphDocument/vp_cad_document.cpp,
+               sgraphDocument/vp_cad_document_color_layer.cpp,
+               sgraphGui/vp_cad_main_window_layer.cpp,
+               sgraphTests/vp_layer_color_workflow_test.cpp]
+    provides: [layer_list, delete_empty_layer, visibility_toggle, color_edit,
+               undoable_delete_layer_entities, autocad_compatible_lazy_defpoints,
+               duplicate_layer_colors, merge_same_color_layers,
+               atomic_merge_and_undo, protected_defpoints_semantics,
+               centered_order_color_code_swatch_count_visibility_table,
+               bottom_layer_action_bar, default_visible_layers]
+    missing: [filters, viewport_overrides]
+  - id: SMARTCAD.PROPERTIES
+    status: out_of_scope
+    evidence: [sgraphGui/vp_cad_property_tree.cpp, sgraphGui/vp_cad_property_ui.cpp,
+               sgraphGui/vp_cad_main_window_workspace.cpp,
+               sgraphDocument/vp_cad_document_color_layer.cpp,
+               sgraphTests/vp_layer_color_workflow_test.cpp]
+    note: user_removed_properties_panel
+    missing: [properties_panel]
+  - id: SMARTCAD.VIEW
+    status: partial
+    evidence: [sgraphRender/vp_cad_viewport.cpp, sgraphRender/vp_cad_viewport_render.cpp,
+               sgraphRender/vp_cad_viewport_events.cpp,
+               sgraphRender/vp_cad_viewport_entity_overlay.cpp,
+               sgraphGui/vp_cad_main_window_display.cpp]
+    provides: [wheel_zoom, pan, auto_zoom, model_space, persistent_paper_space,
+               paper_background, printable_area, node_display, machining_direction_display,
+               one_based_document_sequence_display]
+    missing: [named_views, model_multi_viewports, view_history]
+    note: named_views_view_history_and_manual_regeneration_removed_by_user_request
+  - id: SMARTCAD.LAYOUTS
+    status: partial
+    evidence: [sgraphDocument/s_layout_record.h,
+               sgraphDocument/s_layout_binary_io.cpp,
+               sgraphDocument/s_cad_document_layout.cpp,
+               sgraphDocument/vp_cad_document_io.cpp,
+               sgraphGui/vp_cad_workspace_widget.cpp,
+               sgraphGui/vp_cad_main_window_command.cpp,
+               sgraphTests/s_layout_test.cpp]
+    provides: [model_paper_space, entity_space_isolation, create_delete_rename_copy_layout,
+               model_layout_tilemode_commands, ribbon_actions, transactional_undo_redo,
+               smartcad_v22_roundtrip, paper_setup_record, layout_viewport_record,
+               viewport_scale_and_lock_persistence, mview_dynamic_rectangle_preview,
+               clipped_model_rendering, vpscale_and_vplock_commands, viewport_identifiers]
+    missing: [viewport_layer_overrides]
+  - id: SMARTCAD.OUTPUT
+    status: complete
+    evidence: [sgraphDocument/s_layout_record.h,
+               sgraphDocument/s_layout_binary_io.cpp,
+               sgraphDocument/vp_plot_style_table.cpp,
+               sgraphRender/s_cad_viewport_plot.cpp,
+               sgraphGui/s_plot_service.cpp,
+               sgraphGui/vp_cad_main_window_plot.cpp,
+               sgraphGui/sgraphDesignSystem/vp_output_icon.cpp,
+               sgraphTests/s_plot_test.cpp]
+    provides: [a0_a4_and_ansi_paper_presets, orientation, margins, plot_scale_record,
+               centered_and_lineweight_options, dynamic_page_preview, transactional_page_setup,
+               smartcad_v22_page_setup_roundtrip, vector_layout_rendering,
+               nonplottable_layer_filter, monochrome_and_grayscale_style_application,
+               compressed_ctb_stb_parser, color_dependent_aci_mapping,
+               named_stb_normal_style, plot_style_color_screening_and_lineweight_application,
+               atomic_plot_style_import, plot_style_manager,
+               print_preview, system_printer_output, pdf_output, multi_layout_pdf_publish,
+               pagesetup_plotstyle_stylesmanager_plot_print_preview_exportpdf_pdfout_publish_commands,
+               ribbon_actions_and_theme_icons]
+  - id: SMARTCAD.CAM.TOOLPATH_SIMULATION
+    status: complete
+    evidence: [sgraphGeometry/vp_toolpath.h,
+               sgraphGeometry/vp_toolpath.cpp,
+               sgraphDocument/vp_toolpath_document.cpp,
+               sgraphDocument/vp_cad_document_history.cpp,
+               sgraphDocument/vp_document_transaction.cpp,
+               sgraphRender/vp_cad_viewport_simulation.cpp,
+               sgraphGui/vp_toolpath_simulation_controller.cpp,
+               sgraphGui/vp_toolpath_sort_dialog.cpp,
+               sgraphGui/vp_cad_main_window_simulation.cpp,
+               sgraphGui/sgraphDesignSystem/vp_icon_provider.cpp,
+               sgraphIo/vp_dxf_entity_io.cpp,
+               sgraphTests/vp_toolpath_sort_test.cpp,
+               sgraphTests/vp_toolpath_simulation_test.cpp,
+               sgraphTests/vp_window_control_test.cpp]
+    provides: [selected_or_current_space_contours, line_circle_arc_polyline_ellipse_spline,
+               entity_start_point_row_scan, horizontal_and_vertical_sort_combinations,
+               diagonal_point_one_percent_row_tolerance, stable_equal_coordinate_order,
+               first_seen_layer_order, complete_layer_before_next_layer,
+               viewport_bottom_left_shortest_path, deferred_candidate_direction_reversal,
+               shortest_path_continues_from_previous_layer_end,
+               line_arc_open_polyline_spline_geometry_reversal,
+               selected_entity_position_preservation, atomic_order_and_geometry_undo_redo,
+               smartcad_v24_arc_direction_roundtrip, dxf_dwg_direction_degradation_report,
+               rapid_and_cutting_moves, dynamic_viewport_overlay,
+               tool_position_and_completed_trace, play_pause_stop_step, quarter_to_four_x_speed,
+               document_change_invalidation, non_mutating_simulation,
+               simulation_ribbon_between_annotation_and_view, linked_sort_controls,
+               single_sort_ribbon_action, modal_sort_options_dialog,
+               keyboard_shortcuts, command_aliases,
+               dedicated_theme_icons]
+    persistence: not_applicable_runtime_simulation
+    compatibility: unsupported_annotation_entities_reported_and_skipped
+  - id: SMARTCAD.IMPORT.SVG_BITMAP_VECTOR
+    status: complete
+    evidence: [sgraphIo/vp_svg_path_parser.cpp,
+               sgraphIo/vp_svg_parser.cpp,
+               sgraphIo/vp_vector_fill.cpp,
+               sgraphIo/vp_bitmap_vectorizer.cpp,
+               sgraphIo/vp_bitmap_run_vectorizer.cpp,
+               sgraphIo/vp_bitmap_contour_stitcher.cpp,
+               sgraphIo/vp_vector_document_import.cpp,
+               sgraphIo/vp_svg_document_operations.cpp,
+               sgraphDocument/vp_document_transaction.cpp,
+               sgraphRender/vp_cad_viewport_render.cpp,
+               sgraphGui/vp_vector_import_dialog.cpp,
+               sgraphGui/vp_cad_main_window_vector_import.cpp,
+               sgraphGui/sgraphDesignSystem/vp_import_icon.cpp,
+               sgraphTests/vp_svg_vector_import_test.cpp,
+               sgraphVectorBenchmark/src/vp_bitmap_vector_benchmark.cpp,
+               sgraphVectorBenchmark/results/20260727-2/bitmap_vector_benchmark_report.html,
+               sgraphTests/vp_window_control_test.cpp]
+    provides: [svg_shapes_and_complete_path_commands, nested_transform_and_viewbox,
+               solid_color_and_alpha_layers, translucent_svg_color_block_view,
+               open_and_closed_outline_import, import_without_automatic_line_fill,
+               independent_parallel_single_line_fill,
+               independent_polygon_inward_offset_fill,
+               fill_output_as_native_polyline_entities,
+               two_vertex_open_scan_polylines,
+               closed_offset_loop_polylines, preserved_native_polyline_outlines,
+               numeric_only_fill_spacing_input,
+               selection_scoped_single_color_block_fill,
+               svg_color_block_interior_click_selection,
+               translucent_source_color_selection_rendering,
+               entity_overlay_options_default_off_and_immediately_persisted,
+               upper_first_forward_layer_boolean_deduplication,
+               lower_first_reverse_layer_boolean_deduplication,
+               deduplication_removes_stale_fill_lines,
+               exact_rgba_four_connected_bitmap_regions, transparent_pixel_skip,
+               optional_exact_background_color_skip, lossless_collinear_pixel_edge_merge,
+               parallel_horizontal_color_runs, adjacent_row_rectangle_union,
+               deterministic_integer_endpoint_contour_stitching,
+               single_and_multi_thread_byte_identical_svg,
+               flood_fill_reference_and_5000_file_release_benchmark,
+               bitmap_to_svg_shared_pipeline, live_settings_preview,
+               scale_spacing_angle_and_outline_settings,
+               atomic_color_layer_and_entity_transaction, undo_redo,
+               smartcad_native_persistence, dxf_dwg_native_entity_compatibility,
+               ribbon_and_file_menu_actions, command_aliases, dedicated_theme_icons,
+               unsupported_svg_feature_warnings]
+    note: all_5000_generated_release_cases_passed_exact_raster_roundtrip_and_svg_reparse
+  - id: SMARTCAD.AUTOMATION
+    status: missing
+    evidence: [sgraphCommands/vp_i_cad_command.h]
+    provides: [command_interface_contract]
+    missing: [script_execution, autolisp, plugin_loader, cui, public_sdk]
+    note: script_and_plugin_entry_points_removed_by_user_request
+  - id: SMARTCAD.3D
+    status: out_of_scope
+    evidence: []
+    note: user_deferred_3d_upgrade
+    missing: [3d_entities, ucs, solids, surfaces, meshes, materials, rendering]

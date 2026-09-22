@@ -1,36 +1,36 @@
 add_library(smartIo STATIC
-    s_file_compatibility_report.h
-    s_i_file_codec.h
-    s_dxf_codec.h
-    s_dxf_codec.cpp
-    s_dxf_pair.h
-    s_dxf_pair.cpp
-    s_dxf_entity_io.h
-    s_dxf_entity_io.cpp
-    s_dxf_table_io.h
-    s_dxf_table_io.cpp
-    s_dwg_codec.h
-    s_dwg_codec.cpp
-    s_dwg_dxf_adapter.h
-    s_dwg_dxf_adapter.cpp
-    s_dxf_hatch_io.h
-    s_dxf_hatch_io.cpp
-    s_svg_path_parser.h
-    s_svg_path_parser.cpp
-    s_svg_vector_data.h
-    s_svg_parser.h
-    s_svg_parser.cpp
-    s_vector_fill.h
-    s_vector_fill.cpp
-    s_bitmap_vectorizer.h
-    s_bitmap_vector_private.h
-    s_bitmap_vectorizer.cpp
-    s_bitmap_contour_stitcher.cpp
-    s_bitmap_run_vectorizer.cpp
-    s_vector_document_import.h
-    s_vector_document_import.cpp
-    s_svg_document_operations.h
-    s_svg_document_operations.cpp
+    vp_file_compatibility_report.h
+    vp_i_file_codec.h
+    vp_dxf_codec.h
+    vp_dxf_codec.cpp
+    vp_dxf_pair.h
+    vp_dxf_pair.cpp
+    vp_dxf_entity_io.h
+    vp_dxf_entity_io.cpp
+    vp_dxf_table_io.h
+    vp_dxf_table_io.cpp
+    vp_dwg_codec.h
+    vp_dwg_codec.cpp
+    vp_dwg_dxf_adapter.h
+    vp_dwg_dxf_adapter.cpp
+    vp_dxf_hatch_io.h
+    vp_dxf_hatch_io.cpp
+    vp_svg_path_parser.h
+    vp_svg_path_parser.cpp
+    vp_svg_vector_data.h
+    vp_svg_parser.h
+    vp_svg_parser.cpp
+    vp_vector_fill.h
+    vp_vector_fill.cpp
+    vp_bitmap_vectorizer.h
+    vp_bitmap_vector_private.h
+    vp_bitmap_vectorizer.cpp
+    vp_bitmap_contour_stitcher.cpp
+    vp_bitmap_run_vectorizer.cpp
+    vp_vector_document_import.h
+    vp_vector_document_import.cpp
+    vp_svg_document_operations.h
+    vp_svg_document_operations.cpp
 )
 
 target_include_directories(smartIo PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
@@ -42,3 +42,4 @@ target_link_libraries(smartIo PUBLIC
     Qt5::Gui
     Qt5::Concurrent
 )
+target_link_libraries(smartIo PRIVATE Clipper2)

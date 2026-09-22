@@ -8,6 +8,20 @@ permissions:
   contents: read
 
 jobs:
+  core:
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        config: [Debug, Release]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Build and test without Qt
+        shell: pwsh
+        run: python sgraphBuildTools/vp_build_core.py --config ${{ matrix.config }} --jobs 4
+
   build:
     runs-on: windows-2022
     strategy:
@@ -37,5 +51,5 @@ jobs:
         shell: pwsh
         run: |
           $qtDir = (& qmake -query QT_INSTALL_PREFIX).Trim()
-          python "sgraphBuildTools/s_build_${{ matrix.bits }}_${{ matrix.config }}.py" `
+          python "sgraphBuildTools/vp_build_${{ matrix.bits }}_${{ matrix.config }}.py" `
             --qt-dir $qtDir --clean --jobs 4

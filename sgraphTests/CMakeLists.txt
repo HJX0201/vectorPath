@@ -1,5 +1,41 @@
+add_executable(vectorPathCoreResultTests vp_core_result_test.cpp)
+target_link_libraries(vectorPathCoreResultTests PRIVATE smartCore)
+add_test(NAME vectorPathCoreResultTests COMMAND vectorPathCoreResultTests)
+
+add_executable(vectorPathGeometryCoreTests vp_geometry_core_test.cpp)
+target_link_libraries(vectorPathGeometryCoreTests PRIVATE smartGeometryCore)
+add_test(NAME vectorPathGeometryCoreTests COMMAND vectorPathGeometryCoreTests)
+
+add_executable(vectorPathIdCollectionTests vp_id_collection_test.cpp)
+target_link_libraries(vectorPathIdCollectionTests PRIVATE smartCore)
+add_test(NAME vectorPathIdCollectionTests COMMAND vectorPathIdCollectionTests)
+
+# Opt-in measurement: timing is intentionally not a pass/fail CTest threshold.
+add_executable(vectorPathIdCollectionBenchmark EXCLUDE_FROM_ALL vp_id_collection_benchmark.cpp)
+target_link_libraries(vectorPathIdCollectionBenchmark PRIVATE smartCore)
+
+add_executable(vectorPathDraftingStateTests vp_drafting_state_test.cpp)
+target_link_libraries(vectorPathDraftingStateTests PRIVATE smartInteraction)
+add_test(NAME vectorPathDraftingStateTests COMMAND vectorPathDraftingStateTests)
+
+if(NOT VECTORPATH_BUILD_DESKTOP)
+    return()
+endif()
+
+add_executable(vectorPathQtAdapterTests vp_qt_adapter_test.cpp)
+target_link_libraries(vectorPathQtAdapterTests PRIVATE smartQtAdapters Qt5::Test)
+add_test(NAME vectorPathQtAdapterTests COMMAND ${CMAKE_COMMAND} -E env
+    "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$ENV{PATH}"
+    "$<TARGET_FILE:vectorPathQtAdapterTests>")
+
+add_executable(vectorPathDocumentHistoryTests vp_document_history_test.cpp)
+target_link_libraries(vectorPathDocumentHistoryTests PRIVATE smartDocument Qt5::Test)
+add_test(NAME vectorPathDocumentHistoryTests COMMAND ${CMAKE_COMMAND} -E env
+    "PATH=$<TARGET_FILE_DIR:Qt5::Core>;$ENV{PATH}"
+    "$<TARGET_FILE:vectorPathDocumentHistoryTests>")
+
 add_executable(smartDocumentTests
-    s_cad_document_test.cpp
+    vp_cad_document_test.cpp
 )
 
 target_link_libraries(smartDocumentTests
@@ -19,12 +55,12 @@ add_test(
 )
 
 add_executable(vectorPathApplicationSettingsMigrationTests
-    s_application_settings_migration_test.cpp
+    vp_application_settings_migration_test.cpp
 )
 
 target_link_libraries(vectorPathApplicationSettingsMigrationTests
     PRIVATE
-        smartCore
+        smartCore smartQtAdapters
         Qt5::Core
         Qt5::Test
 )
@@ -37,7 +73,7 @@ add_test(
 )
 
 add_executable(vectorPathDwgCodecTests
-    s_dwg_codec_test.cpp
+    vp_dwg_codec_test.cpp
 )
 
 target_link_libraries(vectorPathDwgCodecTests
@@ -58,7 +94,7 @@ add_test(
 )
 
 add_executable(smartDocumentRecoveryTests
-    s_document_recovery_test.cpp
+    vp_document_recovery_test.cpp
 )
 
 target_link_libraries(smartDocumentRecoveryTests
@@ -77,7 +113,7 @@ add_test(
 )
 
 add_executable(smartDocumentAuditTests
-    s_document_audit_test.cpp
+    vp_document_audit_test.cpp
 )
 
 target_link_libraries(smartDocumentAuditTests
@@ -96,7 +132,7 @@ add_test(
 )
 
 add_executable(vectorPathViewportTests
-    s_cad_viewport_test.cpp
+    vp_cad_viewport_test.cpp
 )
 
 target_link_libraries(vectorPathViewportTests
@@ -119,7 +155,7 @@ add_test(
 )
 
 add_executable(vectorPathCurveOffsetTests
-    s_curve_offset_test.cpp
+    vp_curve_offset_test.cpp
 )
 
 target_link_libraries(vectorPathCurveOffsetTests
@@ -141,7 +177,7 @@ add_test(
 )
 
 add_executable(vectorPathArrayOperationsTests
-    s_array_operations_test.cpp
+    vp_array_operations_test.cpp
 )
 
 target_link_libraries(vectorPathArrayOperationsTests
@@ -164,7 +200,7 @@ add_test(
 )
 
 add_executable(vectorPathCurveFilletTests
-    s_curve_fillet_test.cpp
+    vp_curve_fillet_test.cpp
 )
 
 target_link_libraries(vectorPathCurveFilletTests
@@ -186,7 +222,7 @@ add_test(
 )
 
 add_executable(vectorPathSplineBlendTests
-    s_spline_blend_test.cpp
+    vp_spline_blend_test.cpp
 )
 
 target_link_libraries(vectorPathSplineBlendTests
@@ -209,7 +245,7 @@ add_test(
 )
 
 add_executable(vectorPathSplineEditTests
-    s_spline_edit_test.cpp
+    vp_spline_edit_test.cpp
 )
 
 target_link_libraries(vectorPathSplineEditTests
@@ -231,7 +267,7 @@ add_test(
 )
 
 add_executable(vectorPathAnnotationTests
-    s_annotation_test.cpp
+    vp_annotation_test.cpp
 )
 
 target_link_libraries(vectorPathAnnotationTests
@@ -254,7 +290,7 @@ add_test(
 )
 
 add_executable(vectorPathDimensionTests
-    s_dimension_test.cpp
+    vp_dimension_test.cpp
 )
 
 target_link_libraries(vectorPathDimensionTests
@@ -277,7 +313,7 @@ add_test(
 )
 
 add_executable(vectorPathHatchTests
-    s_hatch_test.cpp
+    vp_hatch_test.cpp
 )
 
 target_link_libraries(vectorPathHatchTests
@@ -300,7 +336,7 @@ add_test(
 )
 
 add_executable(vectorPathPolylineCornerTests
-    s_polyline_corner_test.cpp
+    vp_polyline_corner_test.cpp
 )
 
 target_link_libraries(vectorPathPolylineCornerTests
@@ -323,7 +359,7 @@ add_test(
 )
 
 add_executable(vectorPathGripEditTests
-    s_grip_edit_test.cpp
+    vp_grip_edit_test.cpp
 )
 
 target_link_libraries(vectorPathGripEditTests
@@ -345,7 +381,7 @@ add_test(
 )
 
 add_executable(vectorPathPrecisionSnapTests
-    s_precision_snap_test.cpp
+    vp_precision_snap_test.cpp
 )
 
 target_link_libraries(vectorPathPrecisionSnapTests
@@ -364,7 +400,7 @@ add_test(
 )
 
 add_executable(vectorPathCommandLineWidgetTests
-    s_command_line_widget_test.cpp
+    vp_command_line_widget_test.cpp
 )
 
 target_link_libraries(vectorPathCommandLineWidgetTests
@@ -385,7 +421,7 @@ add_test(
 )
 
 add_executable(vectorPathWindowControlTests
-    s_window_control_test.cpp
+    vp_window_control_test.cpp
 )
 
 target_link_libraries(vectorPathWindowControlTests
@@ -406,7 +442,7 @@ add_test(
 )
 
 add_executable(vectorPathWorkspacePersistenceTests
-    s_workspace_persistence_test.cpp
+    vp_workspace_persistence_test.cpp
 )
 
 target_link_libraries(vectorPathWorkspacePersistenceTests
@@ -427,7 +463,7 @@ add_test(
 )
 
 add_executable(vectorPathEllipseTests
-    s_ellipse_test.cpp
+    vp_ellipse_test.cpp
 )
 
 target_link_libraries(vectorPathEllipseTests
@@ -450,7 +486,7 @@ add_test(
 )
 
 add_executable(vectorPathCurveConstructionTests
-    s_curve_construction_test.cpp
+    vp_curve_construction_test.cpp
 )
 
 target_link_libraries(vectorPathCurveConstructionTests
@@ -472,7 +508,7 @@ add_test(
 )
 
 add_executable(vectorPathShortcutManagerTests
-    s_shortcut_manager_test.cpp
+    vp_shortcut_manager_test.cpp
 )
 
 target_link_libraries(vectorPathShortcutManagerTests
@@ -493,7 +529,7 @@ add_test(
 )
 
 add_executable(vectorPathDialogSizePolicyTests
-    s_dialog_size_policy_test.cpp
+    vp_dialog_size_policy_test.cpp
 )
 
 target_link_libraries(vectorPathDialogSizePolicyTests
@@ -514,12 +550,12 @@ add_test(
 )
 
 add_executable(vectorPathStandardShapeTests
-    s_standard_shape_test.cpp
+    vp_standard_shape_test.cpp
 )
 
 target_link_libraries(vectorPathStandardShapeTests
     PRIVATE
-        smartGeometry
+        smartGeometry smartQtAdapters
         Qt5::Core
         Qt5::Test
 )
@@ -532,7 +568,7 @@ add_test(
 )
 
 add_executable(vectorPathLayerColorWorkflowTests
-    s_layer_color_workflow_test.cpp
+    vp_layer_color_workflow_test.cpp
 )
 
 target_link_libraries(vectorPathLayerColorWorkflowTests
@@ -551,12 +587,12 @@ add_test(
 )
 
 add_executable(vectorPathPolygonBooleanTests
-    s_polygon_boolean_test.cpp
+    vp_polygon_boolean_test.cpp
 )
 
 target_link_libraries(vectorPathPolygonBooleanTests
     PRIVATE
-        smartGeometry
+        smartGeometry smartQtAdapters
         Qt5::Core
         Qt5::Test
 )
@@ -569,7 +605,7 @@ add_test(
 )
 
 add_executable(vectorPathUiScaleTests
-    s_ui_scale_test.cpp
+    vp_ui_scale_test.cpp
 )
 
 target_link_libraries(vectorPathUiScaleTests
@@ -590,7 +626,7 @@ add_test(
 )
 
 add_executable(vectorPathToolpathSortTests
-    s_toolpath_sort_test.cpp
+    vp_toolpath_sort_test.cpp
 )
 
 target_link_libraries(vectorPathToolpathSortTests
@@ -609,7 +645,7 @@ add_test(
 )
 
 add_executable(vectorPathToolpathSimulationTests
-    s_toolpath_simulation_test.cpp
+    vp_toolpath_simulation_test.cpp
 )
 
 target_link_libraries(vectorPathToolpathSimulationTests
@@ -630,7 +666,7 @@ add_test(
 )
 
 add_executable(vectorPathQuickEntityOperationTests
-    s_quick_entity_operation_test.cpp
+    vp_quick_entity_operation_test.cpp
 )
 
 target_link_libraries(vectorPathQuickEntityOperationTests
@@ -651,7 +687,7 @@ add_test(
 )
 
 add_executable(vectorPathSvgVectorImportTests
-    s_svg_vector_import_test.cpp
+    vp_svg_vector_import_test.cpp
 )
 
 target_link_libraries(vectorPathSvgVectorImportTests

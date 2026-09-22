@@ -1,9 +1,0 @@
-<RCC>
-    <qresource prefix="/smartcad/themes">
-        <file alias="s_theme_dark.json">sgraphDesignSystem/s_theme_dark.json</file>
-        <file alias="s_theme_light.json">sgraphDesignSystem/s_theme_light.json</file>
-        <file alias="s_theme_high_contrast.json">sgraphDesignSystem/s_theme_high_contrast.json</file>
-        <file alias="s_design_metrics.json">sgraphDesignSystem/s_design_metrics.json</file>
-    </qresource>
-</RCC>
-

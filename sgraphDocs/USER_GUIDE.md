@@ -30,7 +30,7 @@ LibreDWG 所需运行文件放在同一目录树中。
 - `SIMULATE` / `SIM`：刀路仿真。
 - `TPSORT ...`：刀路排序。
 
-完整快捷键见 `s_default_shortcuts.md`。
+完整快捷键见 `vp_default_shortcuts.md`。
 
 ## 位图矢量化
 

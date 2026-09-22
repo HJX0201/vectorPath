@@ -1,0 +1,43 @@
+#include "vp_theme_manager.h"
+
+#include <QApplication>
+#include <QSettings>
+#include <QTemporaryDir>
+#include <QtTest>
+#include <cmath>
+
+namespace Vp
+{
+
+class VpUiScaleTest final : public QObject
+{
+    Q_OBJECT
+
+  private slots:
+    void persistsScaleAndUpdatesFont();
+};
+
+void VpUiScaleTest::persistsScaleAndUpdatesFont()
+{
+    QTemporaryDir settings_directory;
+    QVERIFY(settings_directory.isValid());
+    QSettings::setDefaultFormat(QSettings::IniFormat);
+    QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, settings_directory.path());
+    QCoreApplication::setOrganizationName(QStringLiteral("vectorPathTest"));
+    QCoreApplication::setApplicationName(QStringLiteral("uiScaleTest"));
+
+    VpThemeManager first_manager;
+    QVERIFY(first_manager.setUiScalePercent(150));
+    QCOMPARE(first_manager.uiScalePercent(), 150);
+    QVERIFY(std::abs(QApplication::font().pointSizeF() - 13.5) < 0.01);
+
+    VpThemeManager restored_manager;
+    QCOMPARE(restored_manager.uiScalePercent(), 150);
+    QVERIFY(std::abs(QApplication::font().pointSizeF() - 13.5) < 0.01);
+    QVERIFY(restored_manager.setUiScalePercent(100));
+}
+
+} // namespace Vp
+
+QTEST_MAIN(Vp::VpUiScaleTest)
+#include "vp_ui_scale_test.moc"

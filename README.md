@@ -6,7 +6,7 @@ DWG/DXF/SVG/位图导入导出、刀路排序与仿真，以及可撤销的文�
 
 > 当前版本：`0.2.0-alpha.1`。项目仍在持续开发，不宣称完整兼容 AutoCAD。
 
-![vectorPath 位图矢量化结果界面](sgraphDocs/images/s_bitmap_vectorization_ui.png)
+![vectorPath 位图矢量化结果界面](sgraphDocs/images/vp_bitmap_vectorization_ui.png)
 
 > 位图经颜色分区和轮廓提取后转换为可编辑矢量实体，并按颜色组织到图层中。
 
@@ -62,20 +62,20 @@ SVG 字节。
 CMake、Ninja 和 Python 3，然后运行：
 
 ```powershell
-python sgraphBuildTools/s_build_64_release.py --clean
+python sgraphBuildTools/vp_build_64_release.py --clean
 ```
 
 脚本会自动查找 Qt、激活 Visual Studio 编译环境、编译和运行测试，并使用所找到 Qt 的
 `windeployqt` 把运行所需 DLL 和插件复制到 `build/64/Release`。32 位入口：
 
 ```powershell
-python sgraphBuildTools/s_build_32_release.py --clean
+python sgraphBuildTools/vp_build_32_release.py --clean
 ```
 
 如果 Qt 不在常用路径，可显式指定：
 
 ```powershell
-python sgraphBuildTools/s_build_64_release.py --qt-dir C:\Qt\Qt5.12.10\5.12.10\msvc2017_64
+python sgraphBuildTools/vp_build_64_release.py --qt-dir C:\Qt\Qt5.12.10\5.12.10\msvc2017_64
 ```
 
 也可设置 `SGRAPH_QT64_DIR`、`SGRAPH_QT32_DIR` 或 `QTDIR`。详细说明见
@@ -89,8 +89,8 @@ python sgraphBuildTools/s_build_64_release.py --qt-dir C:\Qt\Qt5.12.10\5.12.10\m
 - [简版架构说明](sgraphDocs/ARCHITECTURE.md)
 - [完整编译工具链](sgraphDocs/BUILDING.md)
 - [测试结果](sgraphDocs/TEST_RESULTS.md)
-- [实现状态](sgraphDocs/s_implementation_status.md)
-- [默认快捷键](sgraphDocs/s_default_shortcuts.md)
+- [实现状态](sgraphDocs/vp_implementation_status.md)
+- [默认快捷键](sgraphDocs/vp_default_shortcuts.md)
 - [第三方组件与许可证](THIRD_PARTY_NOTICES.md)
 
 ## 仓库结构

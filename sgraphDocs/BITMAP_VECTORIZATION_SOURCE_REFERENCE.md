@@ -93,7 +93,7 @@ max(A.begin_x, B.begin_x) < min(A.end_x, B.end_x)
 flowchart TD
     A["QImage 输入"] --> B["校验并转换 ARGB32"]
     B --> C["确定背景色和 worker 数"]
-    C --> D["并行：逐行提取 SColorRun"]
+    C --> D["并行：逐行提取 VpColorRun"]
     D --> E["串行：按行稳定分配 run_id"]
     E --> F["并行：相邻行 connectRows"]
     F --> G["串行：并查集合并 joins"]
@@ -103,7 +103,7 @@ flowchart TD
     J --> K["stitchSegments 闭合轮廓"]
     K --> L["simplify + canonicalize + sort"]
     L --> M["bitmapContoursToSvgData"]
-    M --> N["SBitmapVectorResult"]
+    M --> N["VpBitmapVectorResult"]
 ```
 
 ## 4. 全部相关文件及职责
@@ -112,27 +112,27 @@ flowchart TD
 
 | 文件 | 主要内容 | 上游/下游 |
 | --- | --- | --- |
-| `sgraphIo/s_bitmap_vectorizer.h` | 公共设置、指标、轮廓、结果和 3 个 API | GUI/测试/基准调用；实现分布在 3 个 cpp |
-| `sgraphIo/s_bitmap_vector_private.h` | `SBoundarySegment`、压缩和闭环内部接口 | run vectorizer、flood baseline、stitcher |
-| `sgraphIo/s_bitmap_run_vectorizer.cpp` | 游程、并行、连接、并查集、边生成和总控 | 调用 contour stitcher 与 SVG writer |
-| `sgraphIo/s_bitmap_contour_stitcher.cpp` | 边方向、压缩、闭环、简化和规范化 | 接收原始边，输出 `SBitmapContour` |
-| `sgraphIo/s_bitmap_vectorizer.cpp` | 颜色格式、SVG 序列化和 QByteArray 包装 | 接收规范轮廓，输出稳定 SVG |
+| `sgraphIo/vp_bitmap_vectorizer.h` | 公共设置、指标、轮廓、结果和 3 个 API | GUI/测试/基准调用；实现分布在 3 个 cpp |
+| `sgraphIo/vp_bitmap_vector_private.h` | `VpBoundarySegment`、压缩和闭环内部接口 | run vectorizer、flood baseline、stitcher |
+| `sgraphIo/vp_bitmap_run_vectorizer.cpp` | 游程、并行、连接、并查集、边生成和总控 | 调用 contour stitcher 与 SVG writer |
+| `sgraphIo/vp_bitmap_contour_stitcher.cpp` | 边方向、压缩、闭环、简化和规范化 | 接收原始边，输出 `VpBitmapContour` |
+| `sgraphIo/vp_bitmap_vectorizer.cpp` | 颜色格式、SVG 序列化和 QByteArray 包装 | 接收规范轮廓，输出稳定 SVG |
 | `sgraphIo/CMakeLists.txt` | 将以上源文件编入 `smartIo`，链接 Qt Concurrent | 根 CMake、smartGui、benchmark |
 
 ### 4.2 Benchmark 与专项测试
 
 | 文件 | 主要内容 |
 | --- | --- |
-| `sgraphVectorBenchmark/src/s_bitmap_benchmark_types.h` | case、算法摘要、case 结果、运行选项 |
-| `s_bitmap_benchmark_generator.h/.cpp` | 固定种子图片生成、断点复用和 manifest |
-| `s_bitmap_flood_baseline.h/.cpp` | 四邻域逐像素 flood fill 参照实现 |
-| `s_bitmap_benchmark_validation.h/.cpp` | 轮廓哈希、SVG 验证、回栅格逐像素比较 |
-| `s_bitmap_benchmark_report.h/.cpp` | 聚合、分位数和 HTML 报告 |
-| `s_bitmap_vector_benchmark.cpp` | 三算法轮换执行、中位数、峰值工作集、失败产物和退出码 |
-| `sgraphVectorBenchmark/s_run_benchmark.py` | Release x64 构建和 benchmark 启动入口 |
+| `sgraphVectorBenchmark/src/vp_bitmap_benchmark_types.h` | case、算法摘要、case 结果、运行选项 |
+| `vp_bitmap_benchmark_generator.h/.cpp` | 固定种子图片生成、断点复用和 manifest |
+| `vp_bitmap_flood_baseline.h/.cpp` | 四邻域逐像素 flood fill 参照实现 |
+| `vp_bitmap_benchmark_validation.h/.cpp` | 轮廓哈希、SVG 验证、回栅格逐像素比较 |
+| `vp_bitmap_benchmark_report.h/.cpp` | 聚合、分位数和 HTML 报告 |
+| `vp_bitmap_vector_benchmark.cpp` | 三算法轮换执行、中位数、峰值工作集、失败产物和退出码 |
+| `sgraphVectorBenchmark/vp_run_benchmark.py` | Release x64 构建和 benchmark 启动入口 |
 | `sgraphVectorBenchmark/CMakeLists.txt` | benchmark target、smoke 和布局 CTest |
-| `tests/s_verify_output_layout.cmake` | 成功输出只保留 manifest 与 HTML |
-| `sgraphTests/s_svg_vector_import_test.cpp` | 4 个位图核心专项 Qt Test |
+| `tests/vp_verify_output_layout.cmake` | 成功输出只保留 manifest 与 HTML |
+| `sgraphTests/vp_svg_vector_import_test.cpp` | 4 个位图核心专项 Qt Test |
 
 辅助说明位于 benchmark 的 `README.md`、`fixtures/README.md`、`results/README.md`。
 
@@ -140,14 +140,14 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    GUI["GUI 调用边界"] --> API["s_bitmap_vectorizer.h"]
+    GUI["GUI 调用边界"] --> API["vp_bitmap_vectorizer.h"]
     Tests["专项 Qt Test"] --> API
     Bench["benchmark main"] --> API
     Bench --> Flood["flood baseline"]
-    API --> Run["s_bitmap_run_vectorizer.cpp"]
-    Run --> Private["s_bitmap_vector_private.h"]
-    Run --> Stitch["s_bitmap_contour_stitcher.cpp"]
-    Run --> Svg["s_bitmap_vectorizer.cpp"]
+    API --> Run["vp_bitmap_run_vectorizer.cpp"]
+    Run --> Private["vp_bitmap_vector_private.h"]
+    Run --> Stitch["vp_bitmap_contour_stitcher.cpp"]
+    Run --> Svg["vp_bitmap_vectorizer.cpp"]
     Flood --> Private
     Flood --> Stitch
     Bench --> Gen["generator"]
@@ -159,10 +159,10 @@ flowchart LR
 
 ### 6.1 公共结构
 
-#### `SBitmapVectorSettings`
+#### `VpBitmapVectorSettings`
 
 ```cpp
-struct SBitmapVectorSettings
+struct VpBitmapVectorSettings
 {
     bool ignore_background = true;
     QColor background_color;
@@ -176,17 +176,17 @@ struct SBitmapVectorSettings
 | `background_color` | 有效时优先使用；无效时使用左上角像素 | `bitmapToVectorResult()`、flood baseline |
 | `worker_count` | 大于 0 为显式线程数；0 为自动 | `requestedWorkerCount()` |
 
-#### `SBitmapVectorMetrics`
+#### `VpBitmapVectorMetrics`
 
 记录像素、游程、组件、压缩后线段、轮廓数量；scan/connection/stitch/total 纳秒；核心工作
 容器估算字节、SVG 字节和实际 worker 数。`estimated_working_bytes` 不是完整进程峰值工作集。
 
-#### `SBitmapContour`
+#### `VpBitmapContour`
 
 `color` 是原始 QRgb；`block_id` 是并查集组件根；`points` 是不重复终点的闭合多边形顶点序列，
 闭合由 SVG `Z` 表示，不在 vector 尾部重复首点。
 
-#### `SBitmapVectorResult`
+#### `VpBitmapVectorResult`
 
 同时返回 `svg_data`、可供验证/导入复用的 `contours` 和 `metrics`。
 
@@ -194,38 +194,38 @@ struct SBitmapVectorSettings
 
 | 类型 | 字段和作用 | 生命周期 |
 | --- | --- | --- |
-| `SColorRun` | row、begin/end、color、run_id、foreground | 提取后到边生成结束 |
-| `SRowConnection` | joins 与水平 boundary segments | 每个行边界一个，连接阶段到汇集结束 |
-| `SDisjointSet` | parent、8 位 rank | join 合并到 block_id 解析 |
-| `SBoundarySegment` | start、end、color、owner_id、block_id | 原始边、压缩边、闭环输入 |
-| `SNormalizedSegment` | block/color/direction/fixed/low/high | 只在压缩函数内部 |
+| `VpColorRun` | row、begin/end、color、run_id、foreground | 提取后到边生成结束 |
+| `VpRowConnection` | joins 与水平 boundary segments | 每个行边界一个，连接阶段到汇集结束 |
+| `VpDisjointSet` | parent、8 位 rank | join 合并到 block_id 解析 |
+| `VpBoundarySegment` | start、end、color、owner_id、block_id | 原始边、压缩边、闭环输入 |
+| `VpNormalizedSegment` | block/color/direction/fixed/low/high | 只在压缩函数内部 |
 
 ### 6.3 Benchmark 结构
 
 | 类型 | 作用 |
 | --- | --- |
-| `SBitmapBenchmarkCase` | id、类别、尺寸、case seed、颜色数、PNG 路径 |
-| `SBitmapAlgorithmSummary` | 成功、错误、中位毫秒、轮廓 hash、metrics |
-| `SBitmapBenchmarkCaseResult` | 一个 case 的 flood/serial/parallel 和验证结果 |
-| `SBitmapBenchmarkOptions` | case 数、总 seed、线程、重复、smoke、输出目录 |
-| `SBitmapValidationResult` | 是否通过、错误、三类 hash 和 difference 图 |
-| `SMeasuredResult` | benchmark 内部：summary 加一次保留的完整结果 |
+| `VpBitmapBenchmarkCase` | id、类别、尺寸、case seed、颜色数、PNG 路径 |
+| `VpBitmapAlgorithmSummary` | 成功、错误、中位毫秒、轮廓 hash、metrics |
+| `VpBitmapBenchmarkCaseResult` | 一个 case 的 flood/serial/parallel 和验证结果 |
+| `VpBitmapBenchmarkOptions` | case 数、总 seed、线程、重复、smoke、输出目录 |
+| `VpBitmapValidationResult` | 是否通过、错误、三类 hash 和 difference 图 |
+| `VpMeasuredResult` | benchmark 内部：summary 加一次保留的完整结果 |
 
 ## 7. 数据流关系图
 
 ```mermaid
 flowchart LR
-    Image["QImage"] --> Rows["vector<vector<SColorRun>>"]
-    Rows --> Connections["vector<SRowConnection>"]
-    Connections --> DS["SDisjointSet"]
-    Rows --> Raw["raw SBoundarySegment"]
+    Image["QImage"] --> Rows["vector<vector<VpColorRun>>"]
+    Rows --> Connections["vector<VpRowConnection>"]
+    Connections --> DS["VpDisjointSet"]
+    Rows --> Raw["raw VpBoundarySegment"]
     Connections --> Raw
     DS --> Raw
-    Raw --> Compressed["compressed SBoundarySegment"]
-    Compressed --> Contours["vector<SBitmapContour>"]
+    Raw --> Compressed["compressed VpBoundarySegment"]
+    Compressed --> Contours["vector<VpBitmapContour>"]
     Contours --> SVG["QByteArray SVG"]
-    Contours --> Metrics["SBitmapVectorMetrics"]
-    SVG --> Result["SBitmapVectorResult"]
+    Contours --> Metrics["VpBitmapVectorMetrics"]
+    SVG --> Result["VpBitmapVectorResult"]
     Metrics --> Result
 ```
 
@@ -240,7 +240,7 @@ flowchart TD
     E --> F["effectiveColor"]
     B --> G["parallelRanges: boundaries"]
     G --> H["connectRows"]
-    B --> I["SDisjointSet::unite/find"]
+    B --> I["VpDisjointSet::unite/find"]
     B --> J["compressSegments"]
     J --> K["normalizeSegment"]
     K --> L["segmentDirection"]
@@ -262,7 +262,7 @@ flowchart TD
 QString svgColor(QRgb color)
 ```
 
-- **文件/可见性**：`s_bitmap_vectorizer.cpp`，匿名命名空间，只在本翻译单元可见。
+- **文件/可见性**：`vp_bitmap_vectorizer.cpp`，匿名命名空间，只在本翻译单元可见。
 - **调用者**：`bitmapContoursToSvgData()`。
 - **输入输出**：QRgb → 大写 `#RRGGBB`；alpha 由另一属性输出。
 - **实现**：分别用 `qRed/qGreen/qBlue` 取分量，以宽度 2、基数 16、零补齐格式化。
@@ -274,7 +274,7 @@ QString svgColor(QRgb color)
 
 ```cpp
 QByteArray bitmapContoursToSvgData(
-    int width, int height, const std::vector<SBitmapContour>& contours);
+    int width, int height, const std::vector<VpBitmapContour>& contours);
 ```
 
 - **调用者**：`bitmapToVectorResult()`；flood baseline 也用它生成参照 SVG。
@@ -303,8 +303,8 @@ stitch 阶段拒绝这类退化轮廓。
 ### 9.3 `bitmapToSvgData()`
 
 ```cpp
-SResult<QByteArray> bitmapToSvgData(
-    const QImage& source, const SBitmapVectorSettings& settings);
+VpResult<QByteArray> bitmapToSvgData(
+    const QImage& source, const VpBitmapVectorSettings& settings);
 ```
 
 - **调用者**：GUI 边界、专项测试。
@@ -315,16 +315,16 @@ SResult<QByteArray> bitmapToSvgData(
 
 ## 10. 游程和并查集函数源码解析
 
-### 10.1 `SDisjointSet::SDisjointSet()`
+### 10.1 `VpDisjointSet::VpDisjointSet()`
 
 ```cpp
-explicit SDisjointSet(int size);
+explicit VpDisjointSet(int size);
 ```
 
 初始化 `m_parent` 为 `[0,1,...,size-1]`，rank 全为 0。size 等于前景游程数且已验证大于 0。
 时间/空间均 O(R)。对象只在调用线程访问，不需要锁。
 
-### 10.2 `SDisjointSet::find()`
+### 10.2 `VpDisjointSet::find()`
 
 ```cpp
 int find(int value);
@@ -346,7 +346,7 @@ while (m_parent[static_cast<std::size_t>(value)] != value)
 - **后置条件**：返回根并压缩查询路径。
 - **复杂度**：摊销 O(α(R))。
 
-### 10.3 `SDisjointSet::unite()`
+### 10.3 `VpDisjointSet::unite()`
 
 ```cpp
 void unite(int first, int second);
@@ -359,7 +359,7 @@ void unite(int first, int second);
 
 ```cpp
 QRgb effectiveColor(QRgb color, QRgb background,
-                    const SBitmapVectorSettings& settings);
+                    const VpBitmapVectorSettings& settings);
 ```
 
 透明像素或被忽略的精确背景色返回 0，其他颜色原样返回。调用者是 `extractRowRuns()`。
@@ -368,9 +368,9 @@ QRgb effectiveColor(QRgb color, QRgb background,
 ### 10.5 `extractRowRuns()`
 
 ```cpp
-std::vector<SColorRun> extractRowRuns(
+std::vector<VpColorRun> extractRowRuns(
     const QImage& image, int row, QRgb background,
-    const SBitmapVectorSettings& settings);
+    const VpBitmapVectorSettings& settings);
 ```
 
 - **调用者**：第一轮 `parallelRanges()` 的分片 lambda。
@@ -396,7 +396,7 @@ if (x == image.width() || next_color != color)
 
 ```cpp
 int requestedWorkerCount(const QImage& image,
-                         const SBitmapVectorSettings& settings);
+                         const VpBitmapVectorSettings& settings);
 ```
 
 显式 `worker_count > 0` 时返回至少 1；自动模式计算 `width*height`，小于
@@ -426,9 +426,9 @@ operation 本身线程安全；两个实际调用都让分片写入互不重叠�
 ### 10.8 `connectRows()`
 
 ```cpp
-void connectRows(const std::vector<SColorRun>& upper,
-                 const std::vector<SColorRun>& lower,
-                 int boundary_y, SRowConnection& result);
+void connectRows(const std::vector<VpColorRun>& upper,
+                 const std::vector<VpColorRun>& lower,
+                 int boundary_y, VpRowConnection& result);
 ```
 
 双指针同时扫描两行排序游程。每轮计算交集 `[begin_x,end_x)`。严格重叠且前景同色时添加
@@ -484,8 +484,8 @@ flowchart TD
 ## 12. `bitmapToVectorResult()` 逐阶段源码解析
 
 ```cpp
-SResult<SBitmapVectorResult> bitmapToVectorResult(
-    const QImage& source, const SBitmapVectorSettings& settings);
+VpResult<VpBitmapVectorResult> bitmapToVectorResult(
+    const QImage& source, const VpBitmapVectorSettings& settings);
 ```
 
 这是正式算法总入口。调用者包括 `bitmapToSvgData()`、专项测试和 benchmark 的 serial/parallel
@@ -504,9 +504,9 @@ SResult<SBitmapVectorResult> bitmapToVectorResult(
 
 ```cpp
 int next_run_id = 0;
-for (std::vector<SColorRun>& row : rows)
+for (std::vector<VpColorRun>& row : rows)
 {
-    for (SColorRun& run : row)
+    for (VpColorRun& run : row)
     {
         if (run.is_foreground)
         {
@@ -593,7 +593,7 @@ flowchart LR
 ### 14.1 `segmentDirection()`
 
 ```cpp
-int segmentDirection(const SBoundarySegment& segment);
+int segmentDirection(const VpBoundarySegment& segment);
 ```
 
 以 `end-start` 映射方向：x>0 为 0（右），y>0 为 1（下），x<0 为 2（左），否则为 3（上）。
@@ -620,7 +620,7 @@ outgoing QHash。O(1)，无冲突地表示一对 32 位整数。
 ### 14.4 `normalizeSegment()`
 
 ```cpp
-SNormalizedSegment normalizeSegment(const SBoundarySegment& segment);
+VpNormalizedSegment normalizeSegment(const VpBoundarySegment& segment);
 ```
 
 把有向边转为可排序的 block/color/direction/fixed/low/high。水平边 fixed=y，范围取 x；竖边
@@ -629,7 +629,7 @@ fixed=x，范围取 y。low/high 消除端点大小差异，但 direction 单独
 ### 14.5 `restoreSegment()`
 
 ```cpp
-SBoundarySegment restoreSegment(const SNormalizedSegment& segment);
+VpBoundarySegment restoreSegment(const VpNormalizedSegment& segment);
 ```
 
 按 direction 把 fixed/low/high 还原为有向 QPoint；owner_id 置 -1，保留 block_id 和颜色。
@@ -638,8 +638,8 @@ normalize/restore 在合法轴对齐边上互为逆操作。
 ### 14.6 `compressSegments()`
 
 ```cpp
-SResult<std::vector<SBoundarySegment>> compressSegments(
-    const std::vector<SBoundarySegment>& source);
+VpResult<std::vector<VpBoundarySegment>> compressSegments(
+    const std::vector<VpBoundarySegment>& source);
 ```
 
 实现步骤：
@@ -688,8 +688,8 @@ void canonicalizeLoop(std::vector<QPoint>& points);
 ### 15.3 `stitchSegments()`
 
 ```cpp
-SResult<std::vector<SBitmapContour>> stitchSegments(
-    std::vector<SBoundarySegment>& segments);
+VpResult<std::vector<VpBitmapContour>> stitchSegments(
+    std::vector<VpBoundarySegment>& segments);
 ```
 
 前置条件：segments 已由 compress 按 block 分组和排序。函数为每个 block 建立
@@ -703,7 +703,7 @@ outgoing，以 `turnPriority()` 选唯一最优。无候选或最优并列都失
 ```cpp
 if (best_index < 0 || has_tie)
 {
-    return SResult<std::vector<SBitmapContour>>::failure(
+    return VpResult<std::vector<VpBitmapContour>>::failure(
         QStringLiteral("位图轮廓存在开放端点或无法消解的分支。"));
 }
 ```
@@ -797,7 +797,7 @@ benchmark 翻译单元，不与正式版本链接冲突。
 ### 18.2 `appendBoundary()`
 
 ```cpp
-void appendBoundary(std::vector<SBoundarySegment>& edges,
+void appendBoundary(std::vector<VpBoundarySegment>& edges,
                     int x, int y, int direction,
                     QRgb color, int component);
 ```
@@ -808,8 +808,8 @@ block_id 都直接使用 flood component。O(1)。
 ### 18.3 `bitmapToVectorFloodFill()`
 
 ```cpp
-SResult<SBitmapVectorResult> bitmapToVectorFloodFill(
-    const QImage& source, const SBitmapVectorSettings& settings);
+VpResult<VpBitmapVectorResult> bitmapToVectorFloodFill(
+    const QImage& source, const VpBitmapVectorSettings& settings);
 ```
 
 逐像素 labels 初始 -1，背景标 -2，前景组件标非负 ID。每发现未访问前景像素，用 vector 加
@@ -886,8 +886,8 @@ size/category/seed/index 产生相同像素。
 ### 19.8 `generateBitmapBenchmarkCases()`
 
 ```cpp
-SResult<std::vector<SBitmapBenchmarkCase>> generateBitmapBenchmarkCases(
-    const SBitmapBenchmarkOptions& options);
+VpResult<std::vector<VpBitmapBenchmarkCase>> generateBitmapBenchmarkCases(
+    const VpBitmapBenchmarkOptions& options);
 ```
 
 创建 output/cases；为每个 index 派生 case seed、尺寸和类别。若目标 PNG 已存在，则加载并检查
@@ -901,9 +901,9 @@ manifest。目录或 PNG/manifest 写失败返回中文错误。
 ### 20.1 `measure()`
 
 ```cpp
-SMeasuredResult measure(
+VpMeasuredResult measure(
     int repetitions,
-    const std::function<SResult<SBitmapVectorResult>()>& operation);
+    const std::function<VpResult<VpBitmapVectorResult>()>& operation);
 ```
 
 每次用 QElapsedTimer 包围完整 operation，失败立即返回错误。保存所有毫秒并排序，取
@@ -954,7 +954,7 @@ parallel(N/auto) 设置；按 case index 轮换算法执行顺序；每种算法
 
 ```mermaid
 flowchart TD
-    A["s_run_benchmark.py"] --> B["构建 Release x64 target"]
+    A["vp_run_benchmark.py"] --> B["构建 Release x64 target"]
     B --> C["benchmark main / parseOptions"]
     C --> D["日期序号结果目录"]
     D --> E["生成或复用 cases + manifest"]
@@ -981,7 +981,7 @@ flowchart TD
 ### 22.1 `contourHash()`
 
 ```cpp
-QByteArray contourHash(const std::vector<SBitmapContour>& contours);
+QByteArray contourHash(const std::vector<VpBitmapContour>& contours);
 ```
 
 每条轮廓编码为 `color: x,y;...`，先对轮廓条目字节排序，再用 SHA-256 串联并以 `|` 分隔。
@@ -991,7 +991,7 @@ QByteArray contourHash(const std::vector<SBitmapContour>& contours);
 
 ```cpp
 QImage rasterize(int width, int height,
-                 const std::vector<SBitmapContour>& contours);
+                 const std::vector<VpBitmapContour>& contours);
 ```
 
 按颜色分组，收集每条垂直边与每个 scanline 的交点 x；每行排序后两两配对，使用 even-odd
@@ -1018,10 +1018,10 @@ bool compareImage(const QImage& source, const QImage& actual,
 ### 22.5 `validateBitmapBenchmarkCase()`
 
 ```cpp
-SBitmapValidationResult validateBitmapBenchmarkCase(
-    const QImage& source, const SBitmapVectorResult& flood_fill,
-    const SBitmapVectorResult& run_serial,
-    const SBitmapVectorResult& run_parallel);
+VpBitmapValidationResult validateBitmapBenchmarkCase(
+    const QImage& source, const VpBitmapVectorResult& flood_fill,
+    const VpBitmapVectorResult& run_serial,
+    const VpBitmapVectorResult& run_parallel);
 ```
 
 验证顺序采用 fail-fast：
@@ -1059,7 +1059,7 @@ flowchart LR
 
 ## 24. HTML 报告全部函数
 
-### 24.1 `SAggregate`
+### 24.1 `VpAggregate`
 
 内部结构按类别累计 count、passed、flood_ms、serial_ms 和 parallel_ms。
 
@@ -1084,9 +1084,9 @@ flowchart LR
 ### 24.4 `writeBitmapBenchmarkReport()`
 
 ```cpp
-SResult<QString> writeBitmapBenchmarkReport(
-    const SBitmapBenchmarkOptions& options,
-    const std::vector<SBitmapBenchmarkCaseResult>& results,
+VpResult<QString> writeBitmapBenchmarkReport(
+    const VpBitmapBenchmarkOptions& options,
+    const std::vector<VpBitmapBenchmarkCaseResult>& results,
     quint64 peak_working_set_bytes);
 ```
 
@@ -1096,12 +1096,12 @@ SResult<QString> writeBitmapBenchmarkReport(
 
 ## 25. Python、CMake 与输出布局
 
-### 25.1 `s_run_benchmark.py::parse_arguments()`
+### 25.1 `vp_run_benchmark.py::parse_arguments()`
 
 声明 cases、seed、threads、repetitions、output 等脚本参数。脚本参数再转发给 C++ benchmark，
 避免用户手工定位可执行文件。
 
-### 25.2 `s_run_benchmark.py::main()`
+### 25.2 `vp_run_benchmark.py::main()`
 
 定位仓库根，调用 64 位 Release 构建脚本构建 benchmark，再启动生成的可执行文件并返回其
 退出码。subprocess 使用 `check=True` 的构建步骤失败会直接终止。
@@ -1114,7 +1114,7 @@ SResult<QString> writeBitmapBenchmarkReport(
 - `vectorPathBitmapVectorBenchmarkSmoke`：20 case、seed 20260727、2 线程、1 次、smoke；
 - `vectorPathBitmapBenchmarkOutputLayout`：依赖 smoke，检查最终目录。
 
-### 25.4 `s_verify_output_layout.cmake`
+### 25.4 `vp_verify_output_layout.cmake`
 
 要求 manifest 和 HTML 存在；cases 和 failures 不存在；顶层条目排序后必须恰好为这两个文件。
 任一不满足 `FATAL_ERROR`。
@@ -1124,7 +1124,7 @@ SResult<QString> writeBitmapBenchmarkReport(
 
 ## 26. 专项 Qt Test
 
-位图专项位于 `SSvgVectorImportTest`：
+位图专项位于 `VpSvgVectorImportTest`：
 
 ### 26.1 `vectorizesSolidBitmapAsOneRegion()`
 
@@ -1260,51 +1260,51 @@ SResult<QString> writeBitmapBenchmarkReport(
 ### 33.1 正式核心
 
 ```cpp
-// s_bitmap_vectorizer.cpp / .h
+// vp_bitmap_vectorizer.cpp / .h
 QString svgColor(QRgb color);
 QByteArray bitmapContoursToSvgData(
     int width, int height,
-    const std::vector<SBitmapContour>& contours);
-SResult<QByteArray> bitmapToSvgData(
+    const std::vector<VpBitmapContour>& contours);
+VpResult<QByteArray> bitmapToSvgData(
     const QImage& source,
-    const SBitmapVectorSettings& settings);
+    const VpBitmapVectorSettings& settings);
 
-// s_bitmap_run_vectorizer.cpp
-SDisjointSet::SDisjointSet(int size);
-int SDisjointSet::find(int value);
-void SDisjointSet::unite(int first, int second);
+// vp_bitmap_run_vectorizer.cpp
+VpDisjointSet::VpDisjointSet(int size);
+int VpDisjointSet::find(int value);
+void VpDisjointSet::unite(int first, int second);
 QRgb effectiveColor(
     QRgb color, QRgb background,
-    const SBitmapVectorSettings& settings);
-std::vector<SColorRun> extractRowRuns(
+    const VpBitmapVectorSettings& settings);
+std::vector<VpColorRun> extractRowRuns(
     const QImage& image, int row, QRgb background,
-    const SBitmapVectorSettings& settings);
+    const VpBitmapVectorSettings& settings);
 int requestedWorkerCount(
     const QImage& image,
-    const SBitmapVectorSettings& settings);
+    const VpBitmapVectorSettings& settings);
 void parallelRanges(
     int item_count, int worker_count,
     const std::function<void(int, int)>& operation);
 void connectRows(
-    const std::vector<SColorRun>& upper,
-    const std::vector<SColorRun>& lower,
-    int boundary_y, SRowConnection& result);
-SResult<SBitmapVectorResult> bitmapToVectorResult(
+    const std::vector<VpColorRun>& upper,
+    const std::vector<VpColorRun>& lower,
+    int boundary_y, VpRowConnection& result);
+VpResult<VpBitmapVectorResult> bitmapToVectorResult(
     const QImage& source,
-    const SBitmapVectorSettings& settings);
+    const VpBitmapVectorSettings& settings);
 
-// s_bitmap_contour_stitcher.cpp / private header
-int segmentDirection(const SBoundarySegment& segment);
+// vp_bitmap_contour_stitcher.cpp / private header
+int segmentDirection(const VpBoundarySegment& segment);
 int turnPriority(int previous_direction, int next_direction);
 quint64 pointKey(const QPoint& point);
-SNormalizedSegment normalizeSegment(const SBoundarySegment& segment);
-SBoundarySegment restoreSegment(const SNormalizedSegment& segment);
+VpNormalizedSegment normalizeSegment(const VpBoundarySegment& segment);
+VpBoundarySegment restoreSegment(const VpNormalizedSegment& segment);
 std::vector<QPoint> simplifyLoop(const std::vector<QPoint>& source);
 void canonicalizeLoop(std::vector<QPoint>& points);
-SResult<std::vector<SBoundarySegment>> compressSegments(
-    const std::vector<SBoundarySegment>& source);
-SResult<std::vector<SBitmapContour>> stitchSegments(
-    std::vector<SBoundarySegment>& segments);
+VpResult<std::vector<VpBoundarySegment>> compressSegments(
+    const std::vector<VpBoundarySegment>& source);
+VpResult<std::vector<VpBitmapContour>> stitchSegments(
+    std::vector<VpBoundarySegment>& segments);
 ```
 
 ### 33.2 生成器与 flood baseline
@@ -1327,40 +1327,40 @@ QImage generateImage(
 int colorCount(const QImage& image);
 bool writeManifest(
     const QString& output_directory,
-    const std::vector<SBitmapBenchmarkCase>& cases,
-    const SBitmapBenchmarkOptions& options);
-SResult<std::vector<SBitmapBenchmarkCase>> generateBitmapBenchmarkCases(
-    const SBitmapBenchmarkOptions& options);
+    const std::vector<VpBitmapBenchmarkCase>& cases,
+    const VpBitmapBenchmarkOptions& options);
+VpResult<std::vector<VpBitmapBenchmarkCase>> generateBitmapBenchmarkCases(
+    const VpBitmapBenchmarkOptions& options);
 
 QRgb effectiveColor(
     QRgb color, QRgb background,
-    const SBitmapVectorSettings& settings);
+    const VpBitmapVectorSettings& settings);
 void appendBoundary(
-    std::vector<bitmapVectorPrivate::SBoundarySegment>& edges,
+    std::vector<bitmapVectorPrivate::VpBoundarySegment>& edges,
     int x, int y, int direction, QRgb color, int component);
-SResult<SBitmapVectorResult> bitmapToVectorFloodFill(
+VpResult<VpBitmapVectorResult> bitmapToVectorFloodFill(
     const QImage& source,
-    const SBitmapVectorSettings& settings);
+    const VpBitmapVectorSettings& settings);
 ```
 
 ### 33.3 验证和报告
 
 ```cpp
-QByteArray contourHash(const std::vector<SBitmapContour>& contours);
+QByteArray contourHash(const std::vector<VpBitmapContour>& contours);
 QImage rasterize(
     int width, int height,
-    const std::vector<SBitmapContour>& contours);
+    const std::vector<VpBitmapContour>& contours);
 bool compareImage(
     const QImage& source, const QImage& actual,
     QImage* difference);
 QString validateSvg(
-    const SBitmapVectorResult& result,
+    const VpBitmapVectorResult& result,
     const QString& algorithm);
-SBitmapValidationResult validateBitmapBenchmarkCase(
+VpBitmapValidationResult validateBitmapBenchmarkCase(
     const QImage& source,
-    const SBitmapVectorResult& flood_fill,
-    const SBitmapVectorResult& run_serial,
-    const SBitmapVectorResult& run_parallel);
+    const VpBitmapVectorResult& flood_fill,
+    const VpBitmapVectorResult& run_serial,
+    const VpBitmapVectorResult& run_parallel);
 
 QString escapeHtml(QString value);
 QString milliseconds(double value);
@@ -1372,33 +1372,33 @@ void writeSummaryCards(
     quint64 peak_bytes);
 void writeCategoryTable(
     QTextStream& stream,
-    const QMap<QString, SAggregate>& categories);
+    const QMap<QString, VpAggregate>& categories);
 void writeWorstTable(
     QTextStream& stream, QString title,
-    std::vector<const SBitmapBenchmarkCaseResult*> values,
+    std::vector<const VpBitmapBenchmarkCaseResult*> values,
     bool by_regression);
 void writeAllRows(
     QTextStream& stream,
-    const std::vector<SBitmapBenchmarkCaseResult>& results);
-SResult<QString> writeBitmapBenchmarkReport(
-    const SBitmapBenchmarkOptions& options,
-    const std::vector<SBitmapBenchmarkCaseResult>& results,
+    const std::vector<VpBitmapBenchmarkCaseResult>& results);
+VpResult<QString> writeBitmapBenchmarkReport(
+    const VpBitmapBenchmarkOptions& options,
+    const std::vector<VpBitmapBenchmarkCaseResult>& results,
     quint64 peak_working_set_bytes);
 ```
 
 ### 33.4 Benchmark 主程序、Python 和专项测试
 
 ```cpp
-SMeasuredResult measure(
+VpMeasuredResult measure(
     int repetitions,
-    const std::function<SResult<SBitmapVectorResult>()>& operation);
+    const std::function<VpResult<VpBitmapVectorResult>()>& operation);
 void saveFailureArtifacts(
-    const SBitmapBenchmarkOptions& options,
-    const SBitmapBenchmarkCase& test_case,
+    const VpBitmapBenchmarkOptions& options,
+    const VpBitmapBenchmarkCase& test_case,
     const QImage& source,
-    const SMeasuredResult& flood_fill,
-    const SMeasuredResult& run_serial,
-    const SMeasuredResult& run_parallel,
+    const VpMeasuredResult& flood_fill,
+    const VpMeasuredResult& run_serial,
+    const VpMeasuredResult& run_parallel,
     const QImage& difference);
 quint64 peakWorkingSet();
 QString nextResultDirectory();
@@ -1406,13 +1406,13 @@ bool removeTemporaryDirectory(
     const QString& output_directory,
     const QString& directory_name);
 bool removeTemporaryArtifacts(const QString& output_directory);
-SBitmapBenchmarkOptions parseOptions(QCoreApplication& application);
+VpBitmapBenchmarkOptions parseOptions(QCoreApplication& application);
 int main(int argc, char* argv[]);
 
-void SSvgVectorImportTest::vectorizesSolidBitmapAsOneRegion();
-void SSvgVectorImportTest::keepsDiagonalPixelsAsSeparateContours();
-void SSvgVectorImportTest::vectorizesSplitMergeRunsWithSameParallelResult();
-void SSvgVectorImportTest::vectorizesHoleAsTwoClosedContours();
+void VpSvgVectorImportTest::vectorizesSolidBitmapAsOneRegion();
+void VpSvgVectorImportTest::keepsDiagonalPixelsAsSeparateContours();
+void VpSvgVectorImportTest::vectorizesSplitMergeRunsWithSameParallelResult();
+void VpSvgVectorImportTest::vectorizesHoleAsTwoClosedContours();
 ```
 
 ```python
@@ -1427,33 +1427,33 @@ def main() -> int
 ### 34.1 生产算法与构建登记
 
 - `sgraphIo/CMakeLists.txt`
-- `sgraphIo/s_bitmap_vectorizer.h`
-- `sgraphIo/s_bitmap_vector_private.h`
-- `sgraphIo/s_bitmap_vectorizer.cpp`
-- `sgraphIo/s_bitmap_run_vectorizer.cpp`
-- `sgraphIo/s_bitmap_contour_stitcher.cpp`
+- `sgraphIo/vp_bitmap_vectorizer.h`
+- `sgraphIo/vp_bitmap_vector_private.h`
+- `sgraphIo/vp_bitmap_vectorizer.cpp`
+- `sgraphIo/vp_bitmap_run_vectorizer.cpp`
+- `sgraphIo/vp_bitmap_contour_stitcher.cpp`
 
 ### 34.2 Benchmark 类型、实现与运行入口
 
 - `sgraphVectorBenchmark/CMakeLists.txt`
-- `sgraphVectorBenchmark/s_run_benchmark.py`
-- `sgraphVectorBenchmark/src/s_bitmap_benchmark_types.h`
-- `sgraphVectorBenchmark/src/s_bitmap_benchmark_generator.h`
-- `sgraphVectorBenchmark/src/s_bitmap_benchmark_generator.cpp`
-- `sgraphVectorBenchmark/src/s_bitmap_flood_baseline.h`
-- `sgraphVectorBenchmark/src/s_bitmap_flood_baseline.cpp`
-- `sgraphVectorBenchmark/src/s_bitmap_benchmark_validation.h`
-- `sgraphVectorBenchmark/src/s_bitmap_benchmark_validation.cpp`
-- `sgraphVectorBenchmark/src/s_bitmap_benchmark_report.h`
-- `sgraphVectorBenchmark/src/s_bitmap_benchmark_report.cpp`
-- `sgraphVectorBenchmark/src/s_bitmap_vector_benchmark.cpp`
-- `sgraphVectorBenchmark/tests/s_verify_output_layout.cmake`
+- `sgraphVectorBenchmark/vp_run_benchmark.py`
+- `sgraphVectorBenchmark/src/vp_bitmap_benchmark_types.h`
+- `sgraphVectorBenchmark/src/vp_bitmap_benchmark_generator.h`
+- `sgraphVectorBenchmark/src/vp_bitmap_benchmark_generator.cpp`
+- `sgraphVectorBenchmark/src/vp_bitmap_flood_baseline.h`
+- `sgraphVectorBenchmark/src/vp_bitmap_flood_baseline.cpp`
+- `sgraphVectorBenchmark/src/vp_bitmap_benchmark_validation.h`
+- `sgraphVectorBenchmark/src/vp_bitmap_benchmark_validation.cpp`
+- `sgraphVectorBenchmark/src/vp_bitmap_benchmark_report.h`
+- `sgraphVectorBenchmark/src/vp_bitmap_benchmark_report.cpp`
+- `sgraphVectorBenchmark/src/vp_bitmap_vector_benchmark.cpp`
+- `sgraphVectorBenchmark/tests/vp_verify_output_layout.cmake`
 
 ### 34.3 专项测试与辅助资料
 
-- `sgraphTests/s_svg_vector_import_test.cpp`
+- `sgraphTests/vp_svg_vector_import_test.cpp`
 - `sgraphVectorBenchmark/README.md`
 - `sgraphVectorBenchmark/fixtures/README.md`
 - `sgraphVectorBenchmark/results/README.md`
 
-其中 `s_svg_vector_import_test.cpp` 还包含 SVG 导入的其他测试；本文只展开第 26 节列出的四个位图专项测试。`fixtures` 和 `results` 下的 README 用于解释样本及历史结果目录，不参与算法执行。
+其中 `vp_svg_vector_import_test.cpp` 还包含 SVG 导入的其他测试；本文只展开第 26 节列出的四个位图专项测试。`fixtures` 和 `results` 下的 README 用于解释样本及历史结果目录，不参与算法执行。

@@ -1,7 +1,7 @@
 add_executable(vectorPath WIN32
-    s_main.cpp
-    s_chinese_ui_translator.cpp
-    s_chinese_ui_translator.h
+    vp_main.cpp
+    vp_chinese_ui_translator.cpp
+    vp_chinese_ui_translator.h
 )
 
 target_link_libraries(vectorPath PRIVATE smartGui Qt5::Core Qt5::Gui Qt5::Widgets)

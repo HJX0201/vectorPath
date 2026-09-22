@@ -1,22 +1,38 @@
-add_library(smartGeometry STATIC
-    s_geometry_types.h
-    s_geometry_types.cpp
-    s_standard_shape.h
-    s_standard_shape.cpp
-    s_polygon_boolean.h
-    s_polygon_boolean.cpp
-    s_entity.h
-    s_dimension_geometry.h
-    s_dimension_geometry.cpp
-    s_hatch_geometry.h
-    s_hatch_geometry.cpp
-    s_spline_geometry.h
-    s_spline_geometry.cpp
-    s_ellipse_geometry.h
-    s_ellipse_geometry.cpp
-    s_toolpath.h
-    s_toolpath.cpp
+add_library(smartGeometryCore STATIC
+    vp_geometry_types.h
+    vp_geometry_types.cpp
+    vp_curve_entities.h
+    vp_standard_shape.h
+    vp_standard_shape.cpp
+    vp_polygon_boolean.h
+    vp_polygon_boolean.cpp
+    vp_polygon_geometry.h
+    vp_polygon_geometry.cpp
+    vp_spline_geometry.h
+    vp_spline_geometry.cpp
+    vp_ellipse_geometry.h
+    vp_ellipse_geometry.cpp
 )
 
-target_include_directories(smartGeometry PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(smartGeometry PUBLIC smartCore Clipper2 Qt5::Core Qt5::Gui)
+target_include_directories(smartGeometryCore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(smartGeometryCore PUBLIC smartCore PRIVATE Clipper2)
+set_target_properties(smartGeometryCore PROPERTIES
+    AUTOMOC OFF
+    AUTORCC OFF
+    AUTOUIC OFF
+)
+
+if(VECTORPATH_BUILD_DESKTOP)
+    add_library(smartGeometry STATIC
+        vp_entity.h
+        vp_dimension_geometry.h
+        vp_dimension_geometry.cpp
+        vp_hatch_geometry.h
+        vp_hatch_geometry.cpp
+        vp_toolpath.h
+        vp_toolpath.cpp
+    )
+
+    target_include_directories(smartGeometry PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+    target_link_libraries(smartGeometry PUBLIC smartGeometryCore Qt5::Core Qt5::Gui)
+endif()

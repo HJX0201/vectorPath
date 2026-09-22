@@ -9,16 +9,16 @@
 - 修改已有文件前后都必须检查行数；不得提交任何超过 800 行的自研头文件或源文件。
 - 文件达到约 700 行时，应按单一职责提前拆分，避免后续修改再次越界。
 - 禁止通过压缩排版、同一行放置多个语句、删除必要注释等方式规避限制。
-- 拆分不得改变现有公共接口或运行行为；新增实现文件必须使用 `s_` 前缀，并加入所属
+- 拆分不得改变现有公共接口或运行行为；新增实现文件必须使用 `vp_` 前缀，并加入所属
   模块的 `CMakeLists.txt`。
 
 ## 基础约定
 
-- 使用 C++17 和 Qt 5.12.10，遵循 `sgraphDocs/s_coding_style.md`。
+- 使用 C++17 和 Qt 5.12.10，遵循 `sgraphDocs/vp_coding_style.md`。
 - 控制语句、函数、类型和命名空间的左大括号必须另起一行，禁止 `if (...) {` 等行尾
   左大括号写法；修改代码时必须检查涉及的全部自研 C++ 文件。
-- 自研目录使用 `sgraph` 前缀；文件使用 `s_` 加小写下划线。
-- 类型使用大写 `S` 前缀，接口使用 `SI` 前缀。
+- 自研目录使用 `sgraph` 前缀；文件使用 `vp_` 加小写下划线。
+- 命名空间统一使用 `Vp`；类型使用 `Vp` 前缀，接口使用 `VpI` 前缀。
 - 局部变量和参数使用小写下划线；私有成员使用 `m_` 加小写下划线。
 - 每次修改自研 C++ 代码后，必须立即编译并启动应用验证，不得积累多个未编译的变更。
 - 所有新功能必须编写自动测试，测试覆盖核心逻辑、边界条件和错误路径；未通过测试的
@@ -37,10 +37,10 @@
 - P3 三维升级当前由用户明确暂停；`ACAD.3D.MODEL`、`ACAD.3D.EDIT` 和
   `ACAD.3D.VISUALIZE` 必须保持 `out_of_scope`，不得占用二维功能实施排期，除非用户后续
   明确恢复三维范围。
-- 实现或评审 CAD 功能前，先读取 `sgraphDocs/s_autocad_2026_feature_catalog.yaml` 和
-  `sgraphDocs/s_autocad_gap_matrix.yaml`，使用稳定功能 ID 确认范围与依赖。
-- 当前实现证据记录在 `sgraphDocs/s_smartcad_feature_inventory.yaml`；Ribbon 占位按钮、
+- 实现或评审 CAD 功能前，先读取 `sgraphDocs/vp_autocad_2026_feature_catalog.yaml` 和
+  `sgraphDocs/vp_autocad_gap_matrix.yaml`，使用稳定功能 ID 确认范围与依赖。
+- 当前实现证据记录在 `sgraphDocs/vp_smartcad_feature_inventory.yaml`；Ribbon 占位按钮、
   空停靠面板和仅有接口声明的功能只能标记为 `stub`，不得标记为已完成。
 - 每个新增或补全的 CAD 功能必须同时具备主题自适应图标、Ribbon 入口、命令及别名、
-  动态预览、基于 `SDocumentTransaction` 的撤销重做、持久化或兼容性处理、自动测试，
+  动态预览、基于 `VpDocumentTransaction` 的撤销重做、持久化或兼容性处理、自动测试，
   并同步更新功能目录、差距矩阵和实现证据；缺少其中任一项不得标记为 `complete`。

@@ -1,7 +1,7 @@
 # vectorPath 完整代码架构与文件参考
 
 > 适用版本：`v0.2.0-alpha.1`<br>
-> 源码核对日期：2026-08-05<br>
+> 原始全量核对日期：2026-08-05；核心边界、构建与文件路径更新：2026-09-22<br>
 > 技术栈：C++17、Qt 5.12.10、CMake、Ninja、QOpenGLWidget、QPainter<br>
 > 读者：项目维护者、功能开发者、测试人员、代码评审者和需要系统理解项目的学习者
 
@@ -16,7 +16,7 @@
 
 1. 当前源码和 `CMakeLists.txt`；
 2. 可执行自动测试；
-3. `s_autocad_gap_matrix.yaml` 与 `s_smartcad_feature_inventory.yaml`；
+3. `vp_autocad_gap_matrix.yaml` 与 `vp_smartcad_feature_inventory.yaml`；
 4. 本文和其他说明文档；
 5. 历史 Changelog、路线图和历史基准报告。
 
@@ -38,7 +38,7 @@ vectorPath 是 Windows 二维 CAD/CAM 学习与技术展示项目。它覆盖二
 - `ACAD.3D.MODEL`、`ACAD.3D.EDIT`、`ACAD.3D.VISUALIZE` 保持 `out_of_scope`；
 - 不是完整 AutoCAD 数据库或完整 DWG 兼容实现；
 - 实体主要由 QPainter 绘制，不是完整 GPU/VBO 批渲染管线；
-- `SCadDocument` 不是线程安全对象；
+- `VpCadDocument` 不是线程安全对象；
 - 位图算法内部并行不等于界面异步；
 - DWG 通过同步 LibreDWG 子进程转换，默认最长等待 120 秒；
 - DXF 导入还不是完整原子操作；
@@ -46,23 +46,25 @@ vectorPath 是 Windows 二维 CAD/CAM 学习与技术展示项目。它覆盖二
 - 项目采用 source-available 许可，不能直接称为 OSI 开源软件。
 
 自研 `.h/.cpp` 每个最多 800 个物理行，约 700 行应提前按职责拆分；左大括号另起一行；
-自研目录使用 `sgraph` 前缀，新文件使用 `s_` 前缀。
+自研目录使用 `sgraph` 前缀，新文件使用 `vp_` 前缀。
 
 ## 2. 仓库总目录关系
 
 ```text
 vectorPath/
 ├─ sgraphApp/              进程入口、翻译和应用启动
-├─ sgraphCore/             通用结果类型与设置迁移
-├─ sgraphGeometry/         几何值类型、实体、算法和刀路模型
+├─ sgraphCore/             纯 C++ 结果类型与 ID 集合辅助函数
+├─ sgraphGeometry/         纯 GeometryCore 与仍含 Qt 的实体/算法聚合
+├─ sgraphQtAdapters/       文本、点、错误显示和设置迁移的 Qt 边界
+├─ sgraphInteraction/      纯 C++ 栅格、正交和追踪状态
 ├─ sgraphDocument/         文档、事务、历史、样式、持久化、恢复
 ├─ sgraphCommands/         命令接口、命令目录和坐标解析
 ├─ sgraphIo/               DXF/DWG/SVG/位图编解码与兼容报告
 ├─ sgraphRender/           视口、绘制、捕捉、选择和交互状态
 ├─ sgraphGui/              主窗口、Ribbon、停靠面板、对话框、主题
-├─ sgraphTests/            32 个日常 CTest 源文件
+├─ sgraphTests/            纯核心与 Qt 单元、集成测试
 ├─ sgraphVectorBenchmark/  位图基准、正确性验证和报告
-├─ sgraphBuildTools/       四配置 Python 构建、部署和打包
+├─ sgraphBuildTools/       桌面四配置与无 Qt 核心构建、部署和打包
 ├─ sgraphThirdParty/       SARibbon、Qt ADS、Clipper2、LibreDWG 等
 ├─ sgraphDocs/             用户、开发、测试和功能证据文档
 ├─ .github/                CI、Issue 和 PR 模板
@@ -78,7 +80,13 @@ vectorPath/
 
 ```mermaid
 flowchart LR
-    Core["smartCore"] --> Geometry["smartGeometry"]
+    Core["smartCore（纯 C++）"] --> GeometryCore["smartGeometryCore（纯 C++）"]
+    GeometryCore --> Geometry["smartGeometry（Qt 聚合）"]
+    GeometryCore --> Interaction["smartInteraction（纯 C++）"]
+    GeometryCore --> Adapters["smartQtAdapters（Qt）"]
+    Core --> Adapters
+    Adapters --> Document["smartDocument"]
+    Interaction --> Render["smartRender"]
     Core --> Document["smartDocument"]
     Geometry --> Document
     Geometry --> Commands["smartCommands"]
@@ -96,60 +104,67 @@ flowchart LR
     Io --> Gui
     Render --> Gui
     Gui --> App["vectorPath.exe"]
-    Clipper2["Clipper2"] --> Geometry
+    Clipper2["Clipper2（私有算法依赖）"] --> GeometryCore
     Ribbon["SARibbon 2.9.0"] --> Gui
     ADS["Qt ADS 4.4.1"] --> Gui
 ```
 
+图中箭头由被依赖目标指向使用者。`smartGeometryCore` 仅编译一份纯算法，桌面聚合 PUBLIC
+链接复用；Qt 适配层和辅助绘图状态层依赖核心，核心不反向包含它们。
+
+`VECTORPATH_BUILD_DESKTOP` 默认 `ON`；关闭后不查找 Qt，只构建 Core、GeometryCore、
+Interaction、Clipper2 和相应纯测试。文本与颜色实体、Document、命令以及完整编辑交互仍
+依赖 Qt，原重构计划尚未全部完成。
+
 基础层不应依赖 GUI；Geometry 不持有文档；Document 不依赖视口；IO 通过文档公开接口或
-中间值结构工作。当前 `SCadViewport` 和 `SCadMainWindow` 在运行时仍承担较多命令编排，
+中间值结构工作。当前 `VpCadViewport` 和 `VpCadMainWindow` 在运行时仍承担较多命令编排，
 这是已知职责集中点，不应通过增加反向编译依赖继续扩大。
 
 ## 4. 功能与模块映射
 
 | 功能 | 入口/编排 | 核心实现 | 状态所有者 | 持久化/测试 |
 | --- | --- | --- | --- | --- |
-| 应用启动 | `sgraphApp/s_main.cpp` | Qt 属性、翻译、主题 | `QApplication`、主窗口 | 设置迁移测试 |
-| 绘图与编辑 | Ribbon/命令行/视口事件 | Geometry + Render | `SCadViewport` 临时状态、Document 最终状态 | 视口/几何测试 |
-| 文档事务 | GUI/Render 确认操作 | `SDocumentTransaction` | `SCadDocument` | 文档测试 |
-| 撤销重做 | 主窗口 Action | `SCadDocument` 历史栈 | Document | 文档/功能测试 |
+| 应用启动 | `sgraphApp/vp_main.cpp` | Qt 属性、翻译、主题 | `QApplication`、主窗口 | 设置迁移测试 |
+| 绘图与编辑 | Ribbon/命令行/视口事件 | Geometry + Render | `VpCadViewport` 临时状态、Document 最终状态 | 视口/几何测试 |
+| 文档事务 | GUI/Render 确认操作 | `VpDocumentTransaction` | `VpCadDocument` | 文档测试 |
+| 撤销重做 | 主窗口 Action | `VpCadDocument` 历史栈 | Document | 文档/功能测试 |
 | 图层与样式 | 停靠面板/对话框 | Document 分拆实现 | Document | 图层、标注测试 |
 | 原生文件 | 打开/保存命令 | Document 二进制 IO | Document | 文档/恢复测试 |
-| DXF | 文件菜单 | `SDxfCodec` 及分拆读写器 | 临时解析数据、Document | DWG/DXF 间接测试 |
-| DWG | 文件菜单 | `SDwgCodec` + LibreDWG + DXF | 子进程、临时目录 | DWG codec 测试 |
+| DXF | 文件菜单 | `VpDxfCodec` 及分拆读写器 | 临时解析数据、Document | DWG/DXF 间接测试 |
+| DWG | 文件菜单 | `VpDwgCodec` + LibreDWG + DXF | 子进程、临时目录 | DWG codec 测试 |
 | SVG | 文件菜单/导入对话框 | SVG Parser + Vector Import | 中间矢量数据、Document | SVG 导入测试 |
-| 位图 | `SVectorImportDialog` | `bitmapToVectorResult()` | QImage、中间轮廓、Document | SVG/位图测试、基准 |
+| 位图 | `VpVectorImportDialog` | `bitmapToVectorResult()` | QImage、中间轮廓、Document | SVG/位图测试、基准 |
 | 刀路 | 排序对话框/仿真控制器 | Geometry + Document + Render | Document、仿真控制器 | 刀路测试 |
-| 主题图标 | 主题设置/Action | Design System | `SThemeManager` | UI/人工视觉验收 |
+| 主题图标 | 主题设置/Action | Design System | `VpThemeManager` | UI/人工视觉验收 |
 | 构建发布 | Python 入口 | CMake/Ninja/windeployqt | build/dist | CTest、manifest/hash |
 
 ## 5. 运行时对象所有权
 
 ```mermaid
 flowchart TD
-    QApplication --> Theme["SThemeManager（main 栈对象）"]
-    Theme --> Window["SCadMainWindow（main 栈对象）"]
-    Window --> Document["unique_ptr<SCadDocument>"]
-    Window --> Recovery["unique_ptr<SDocumentRecoveryManager>"]
-    Window --> Shortcuts["unique_ptr<SShortcutManager>"]
-    Window --> Simulation["unique_ptr<SToolpathSimulationController>"]
+    QApplication --> Theme["VpThemeManager（main 栈对象）"]
+    Theme --> Window["VpCadMainWindow（main 栈对象）"]
+    Window --> Document["unique_ptr<VpCadDocument>"]
+    Window --> Recovery["unique_ptr<VpDocumentRecoveryManager>"]
+    Window --> Shortcuts["unique_ptr<VpShortcutManager>"]
+    Window --> Simulation["unique_ptr<VpToolpathSimulationController>"]
     Window --> DockManager["ads::CDockManager"]
-    DockManager --> Workspace["SCadWorkspaceWidget"]
-    Workspace --> Viewport["SCadViewport"]
+    DockManager --> Workspace["VpCadWorkspaceWidget"]
+    Workspace --> Viewport["VpCadViewport"]
     Viewport -. QPointer .-> Document
-    Window --> CommandLine["SCommandLineWidget"]
+    Window --> CommandLine["VpCommandLineWidget"]
 ```
 
 Qt 父子对象树负责大部分 QWidget 生命周期；主窗口用 `unique_ptr` 明确拥有非直接父子管理的
-核心对象。视口用 `QPointer<SCadDocument>` 观察文档，文档销毁后指针自动置空。事务用
-`unique_ptr<SDocumentTransaction>` 返回，只有显式 `commit()` 才生效。
+核心对象。视口用 `QPointer<VpCadDocument>` 观察文档，文档销毁后指针自动置空。事务用
+`unique_ptr<VpDocumentTransaction>` 返回，只有显式 `commit()` 才生效。
 
 ## 6. 线程、进程和状态边界
 
 | 对象/任务 | 执行位置 | 约束 |
 | --- | --- | --- |
 | QWidget、主窗口、视口 | GUI 线程 | 不得从后台线程调用 QWidget API |
-| `SCadDocument` | 创建它的 GUI 线程 | 非线程安全；后台任务不得直接修改 |
+| `VpCadDocument` | 创建它的 GUI 线程 | 非线程安全；后台任务不得直接修改 |
 | 位图逐行提取/相邻行连接 | 局部 `QThreadPool` | 只写固定分片；汇合后串行编号和归并 |
 | 位图 ID/并查集/闭环/SVG | 调用线程 | 当前 GUI 调用时可能阻塞界面 |
 | LibreDWG | `QProcess` 子进程 | 同步等待；失败、超时和输出需转为兼容报告 |
@@ -174,11 +189,11 @@ Qt 父子对象树负责大部分 QWidget 生命周期；主窗口用 `unique_pt
 | 文件 | 类型/入口 | 作用、关系与边界 |
 | --- | --- | --- |
 | `sgraphApp/CMakeLists.txt` | `vectorPath` target | 声明主程序源文件和 `smartGui` 依赖；构建后复制翻译、Qt ADS、LibreDWG，并调用 windeployqt。 |
-| `sgraphApp/s_main.cpp` | `main()` | 设置高 DPI/OpenGL 属性，创建 QApplication，迁移设置，安装翻译，应用主题，最大化主窗口并进入事件循环。 |
-| `sgraphApp/s_chinese_ui_translator.h` | `SChineseUiTranslator` | 项目内中文 UI 翻译器接口，继承 QTranslator。 |
-| `sgraphApp/s_chinese_ui_translator.cpp` | 翻译实现 | 根据上下文和源字符串返回中文文本；由 `main()` 安装到 QApplication。 |
+| `sgraphApp/vp_main.cpp` | `main()` | 设置高 DPI/OpenGL 属性，创建 QApplication，迁移设置，安装翻译，应用主题，最大化主窗口并进入事件循环。 |
+| `sgraphApp/vp_chinese_ui_translator.h` | `VpChineseUiTranslator` | 项目内中文 UI 翻译器接口，继承 QTranslator。 |
+| `sgraphApp/vp_chinese_ui_translator.cpp` | 翻译实现 | 根据上下文和源字符串返回中文文本；由 `main()` 安装到 QApplication。 |
 
-### 7.3 `SChineseUiTranslator`
+### 7.3 `VpChineseUiTranslator`
 
 - **职责**：为第三方或项目中未使用 `.qm` 覆盖的固定 UI 字符串提供运行时中文映射。
 - **所有权**：`main()` 栈对象；安装到 QApplication 后在事件循环期间保持存活。
@@ -189,91 +204,118 @@ Qt 父子对象树负责大部分 QWidget 生命周期；主窗口用 `unique_pt
 
 1. 在 QApplication 构造前启用高 DPI、高 DPI pixmap 和共享 OpenGL 上下文；
 2. 请求 OpenGL 3.3 Core Profile、4 倍采样；
-3. 创建 QApplication 并初始化 `s_gui_resources`；
+3. 创建 QApplication 并初始化 `vp_gui_resources`；
 4. 将旧设置中缺失键迁移到 `vectorPathLearning/vectorPath`；
 5. 设置组织名、应用名和 `0.2.0-alpha.1` 运行版本；
-6. 安装 Qt 中文翻译和 `SChineseUiTranslator`；
-7. 创建并应用 `SThemeManager` 深色主题；
-8. 创建 `SCadMainWindow`，最大化显示并进入事件循环。
+6. 安装 Qt 中文翻译和 `VpChineseUiTranslator`；
+7. 创建并应用 `VpThemeManager` 深色主题；
+8. 创建 `VpCadMainWindow`，最大化显示并进入事件循环。
 
 OpenGL 3.3 请求只描述上下文配置，不代表实体使用现代 OpenGL 管线绘制。
 
-## 8. `sgraphCore`：基础结果与设置迁移
+## 8. 基础核心、Qt 适配与辅助绘图状态
 
-### 8.1 文件清单
+### 8.1 `sgraphCore` 文件清单
 
 | 文件 | 类型/入口 | 作用、关系与边界 |
 | --- | --- | --- |
-| `sgraphCore/CMakeLists.txt` | `smartCore` | 建立静态库并链接 Qt Core；被几何、文档、IO 和 GUI 间接复用。 |
-| `sgraphCore/s_result.h` | `SResult<T>`、`SResult<void>` | 表示成功值或失败文本，是文档和 IO 的主要错误返回协议。 |
-| `sgraphCore/s_application_settings_migration.h` | `migrateMissingApplicationSettings()` | 声明 QSettings 缺失键迁移函数。 |
-| `sgraphCore/s_application_settings_migration.cpp` | 迁移实现 | 同步两端设置，只复制新位置不存在的旧键，错误返回 `-1`。 |
+| `sgraphCore/CMakeLists.txt` | `smartCore` | C++17 INTERFACE 目标；只有标准库头文件，不链接 Qt。 |
+| `sgraphCore/vp_result.h` | `VpResult<T>`、`VpResult<void>` | 成功值或 UTF-16 错误文本；可附加保留原生编码的异常诊断字节。 |
+| `sgraphCore/vp_id_collection.h` | ID 集合辅助函数 | 按 ID 筛选和稳定删除记录，避免复制完整实体负载。 |
 
-### 8.2 `SResult<T>` 与 `SResult<void>`
+### 8.2 `VpResult<T>` 与 `VpResult<void>`
 
-- **创建**：通过静态 `success()` 或 `failure()`，构造函数私有，避免不完整状态。
+- **创建**：通过 `success()`、`failure()` 或 `failureWithNativeDetail()`，构造函数私有。
 - **检查**：`isSuccess()` 和显式 `operator bool()`；调用方应先检查再读取值。
-- **读取**：`value()` 返回可变或只读引用；`errorMessage()` 返回错误文本。
+- **读取**：`value()` 返回可变或只读引用；`errorMessage()` 返回 `std::u16string`。
+- **异常诊断**：`nativeErrorDetail()` 返回未解码的 `std::string`；纯核心保留原生库字节，
+  桌面通过 `toQtError()` 使用原有 `QString::fromLocal8Bit` 语义附加显示。
 - **不变量**：成功状态携带有效值；失败状态携带错误文本，但实现未强制错误文本非空。
 - **限制**：`failure()` 会构造 `TValue{}`，所以 T 必须可默认构造；失败状态调用 `value()`
   没有断言、异常或类型保护；错误没有稳定错误码和嵌套原因。
-- **使用者**：原生 IO、DXF/DWG、SVG、位图、填充和二进制字段读取。
+- **使用者**：纯布尔运算及现有原生 IO、DXF/DWG、SVG、位图、填充和二进制读取。
 
-### 8.3 设置迁移
+### 8.3 `sgraphQtAdapters` 与设置迁移
+
+| 文件 | 类型/入口 | 作用、关系与边界 |
+| --- | --- | --- |
+| `sgraphQtAdapters/CMakeLists.txt` | `smartQtAdapters` | 仅桌面构建，依赖 `smartCore`、`smartGeometryCore` 和 Qt Core。 |
+| `sgraphQtAdapters/vp_qt_text.h` | `toCoreText()`、`toQtText()`、`toQtError()` | 保留 UTF-16 代码单元的文本转换及本地编码异常显示。 |
+| `sgraphQtAdapters/vp_qt_geometry.h` | `toQtPoint()`、`toCorePoint()`、`formatPoint()` | QPointF 与纯坐标之间的边界转换及坐标显示接口。 |
+| `sgraphQtAdapters/vp_qt_geometry.cpp` | Qt 几何适配实现 | 保留点坐标和原有格式精度，不承担核心几何算法。 |
+| `sgraphQtAdapters/vp_application_settings_migration.h` | `migrateMissingApplicationSettings()` | 声明 QSettings 缺失键迁移函数。 |
+| `sgraphQtAdapters/vp_application_settings_migration.cpp` | 迁移实现 | 同步两端设置，只复制新位置不存在的旧键，错误返回 `-1`。 |
 
 `migrateMissingApplicationSettings()` 先 `sync()` 旧、新 QSettings；任一状态异常返回 `-1`。
-随后遍历旧键，只在新设置不含该键时复制并计数，最后再次同步。该设计保证旧主题、比例、停靠
-布局、快捷键和颜色可迁移，又不覆盖用户已经建立的新品牌设置。
+随后遍历旧键，只在新设置不含该键时复制并计数，最后再次同步。迁移策略保持不变，源码已由
+`sgraphCore` 移至适配层；应用启动继续使用同一入口。
 
-## 9. `sgraphGeometry`：值类型和纯几何算法
+### 8.4 `sgraphInteraction`：已抽离的辅助绘图状态
+
+| 文件 | 类型/入口 | 作用、关系与边界 |
+| --- | --- | --- |
+| `sgraphInteraction/CMakeLists.txt` | `smartInteraction` | 纯 C++ 静态库，PUBLIC 链接 `smartGeometryCore`。 |
+| `sgraphInteraction/vp_drafting_state.h` | `VpDraftingState`、`VpGridBasis` | 栅格基、间距和旋转、正交、追踪点状态及约束接口。 |
+| `sgraphInteraction/vp_drafting_state.cpp` | 辅助绘图实现 | 接收世界坐标和显式容差，完成栅格/正交约束与追踪捕捉；不访问 QWidget 或文档。 |
+
+视口仍负责屏幕转换、事件转发、渲染和文档集成。此层目前只承接辅助绘图状态；工具切换、
+选择、夹点、完整动态预览与事务交互并未全部迁入。
+
+## 9. `sgraphGeometry`：纯核心与桌面实体聚合
 
 ### 9.1 模块职责和依赖
 
-Geometry 依赖 `smartCore`、Qt Core/Gui 和 Clipper2。它定义文档实体的值结构，提供不依赖
-窗口和文档所有权的几何函数。理想输入输出都是值或容器，便于独立测试和复用。
+`smartGeometryCore` PUBLIC 依赖 `smartCore`，PRIVATE 依赖 Clipper2；其点、曲线、标准
+形状、布尔和多边形接口不包含 Qt。`smartGeometry` PUBLIC 链接核心及 Qt Core/Gui，暂时
+保留文本与颜色实体、标注、填充完整检查及刀路；桌面与独立核心使用相同曲线类型和算法源文件。
 
-禁止在 Geometry 中弹对话框、读写 QSettings、发文档信号或直接修改 `SCadDocument`。
+禁止在 Geometry 中弹对话框、读写 QSettings、发文档信号或直接修改 `VpCadDocument`。
 
 ### 9.2 文件清单
 
 | 文件 | 类型/关键函数 | 作用、关系与边界 |
 | --- | --- | --- |
-| `sgraphGeometry/CMakeLists.txt` | `smartGeometry` | 汇集几何源文件，链接 `smartCore`、Clipper2、Qt Core/Gui。 |
-| `sgraphGeometry/s_geometry_types.h` | `SPoint2d`、`distance()`、`formatPoint()` | 最基础二维点、点运算、距离和显示格式；几乎所有上层模块依赖。 |
-| `sgraphGeometry/s_geometry_types.cpp` | 基础几何实现 | 实现距离与坐标格式化，不持有全局状态。 |
-| `sgraphGeometry/s_entity.h` | 实体枚举与值结构 | 定义全部 CAD 实体几何、`SEntityRecord`、关联阵列和稳定 ID 类型。 |
-| `sgraphGeometry/s_dimension_geometry.h` | 尺寸计算接口 | 测量值、显示文本、参考点和有效性检查。 |
-| `sgraphGeometry/s_dimension_geometry.cpp` | 尺寸计算实现 | 按尺寸类型计算线性/角度/半径等测量，不绘制 UI。 |
-| `sgraphGeometry/s_ellipse_geometry.h` | 椭圆接口 | 椭圆有效性、参数点和离散近似。 |
-| `sgraphGeometry/s_ellipse_geometry.cpp` | 椭圆实现 | 将中心、长短轴和参数区间转换为点列，供绘制、命中和导出使用。 |
-| `sgraphGeometry/s_hatch_geometry.h` | 填充边界接口 | 点在多边形内、环面积和 Hatch 有效性。 |
-| `sgraphGeometry/s_hatch_geometry.cpp` | 填充边界实现 | 判断闭合环和孔洞相关基础性质，不负责 UI 填充选择。 |
-| `sgraphGeometry/s_polygon_boolean.h` | `SPolygonBooleanOperation` | 定义 Union/Intersection/Difference/Xor 等布尔操作入口。 |
-| `sgraphGeometry/s_polygon_boolean.cpp` | Clipper2 适配 | 在项目点列与 Clipper2 路径之间转换，执行整数缩放、布尔计算和结果还原。 |
-| `sgraphGeometry/s_spline_geometry.h` | 样条求值接口 | 三次样条点、切向、离散近似和近似长度。 |
-| `sgraphGeometry/s_spline_geometry.cpp` | 样条实现 | 对 `SSplineEntity` 四控制点执行三次 Bézier 等价求值。 |
-| `sgraphGeometry/s_standard_shape.h` | `SStandardShapeType` | 标准三角形、多边形、星形等形状枚举和生成接口。 |
-| `sgraphGeometry/s_standard_shape.cpp` | 标准形状实现 | 根据中心/半径/方向生成确定性顶点序列。 |
-| `sgraphGeometry/s_toolpath.h` | 刀路类型和函数 | 可加工实体判断、起终点、反转、排序选项、运动段结构。 |
-| `sgraphGeometry/s_toolpath.cpp` | 刀路纯算法 | 排序候选、方向反转和运动序列基础计算，不直接提交文档。 |
+| `sgraphGeometry/CMakeLists.txt` | `smartGeometryCore`、`smartGeometry` | 前者始终构建且无 Qt；后者仅桌面构建并复用核心。 |
+| `sgraphGeometry/vp_geometry_types.h` | `VpPoint2d`、`distance()` | 不包含 Qt 的二维点和距离接口；Qt 转换与显示移至适配器。 |
+| `sgraphGeometry/vp_geometry_types.cpp` | 基础几何实现 | 实现距离，不持有全局状态。 |
+| `sgraphGeometry/vp_curve_entities.h` | 六种纯曲线实体 | 唯一定义 Line/Circle/Arc/Polyline/Spline/Ellipse；桌面实体聚合引入并共用。 |
+| `sgraphGeometry/vp_entity.h` | 实体枚举与值结构 | 引入纯曲线结构，定义含 QString/QColor 的其余实体及 `VpEntityRecord`、关联阵列和稳定 ID。 |
+| `sgraphGeometry/vp_dimension_geometry.h` | 尺寸计算接口 | 测量值、显示文本、参考点和有效性检查。 |
+| `sgraphGeometry/vp_dimension_geometry.cpp` | 尺寸计算实现 | 按尺寸类型计算线性/角度/半径等测量，不绘制 UI。 |
+| `sgraphGeometry/vp_ellipse_geometry.h` | 椭圆接口 | 椭圆有效性、参数点和离散近似。 |
+| `sgraphGeometry/vp_ellipse_geometry.cpp` | 椭圆实现 | 将中心、长短轴和参数区间转换为点列，供绘制、命中和导出使用。 |
+| `sgraphGeometry/vp_hatch_geometry.h` | 填充检查接口 | 引入纯多边形接口，并声明仍依赖 Qt 填充实体的有效性检查。 |
+| `sgraphGeometry/vp_hatch_geometry.cpp` | 填充检查实现 | 调用纯多边形算法，并检查图案文本和颜色有效性；暂留桌面聚合。 |
+| `sgraphGeometry/vp_polygon_geometry.h` | 多边形接口 | 不依赖 Qt 的点包含判断和环面积接口。 |
+| `sgraphGeometry/vp_polygon_geometry.cpp` | 多边形实现 | 共用原填充基础算法，保留方向、容差及边界行为。 |
+| `sgraphGeometry/vp_polygon_boolean.h` | `VpPolygonBooleanOperation` | 定义 Union/Intersection/Difference/Xor 等布尔操作入口。 |
+| `sgraphGeometry/vp_polygon_boolean.cpp` | Clipper2 适配 | 在项目点列与 Clipper2 路径之间转换，执行整数缩放、布尔计算和结果还原。 |
+| `sgraphGeometry/vp_spline_geometry.h` | 样条求值接口 | 三次样条点、切向、离散近似和近似长度。 |
+| `sgraphGeometry/vp_spline_geometry.cpp` | 样条实现 | 对 `VpSplineEntity` 四控制点执行三次 Bézier 等价求值。 |
+| `sgraphGeometry/vp_standard_shape.h` | `VpStandardShapeType` | 标准三角形、多边形、星形等形状枚举和生成接口。 |
+| `sgraphGeometry/vp_standard_shape.cpp` | 标准形状实现 | 根据中心/半径/方向生成确定性顶点序列。 |
+| `sgraphGeometry/vp_toolpath.h` | 刀路类型和函数 | 可加工实体判断、起终点、反转、排序选项、运动段结构。 |
+| `sgraphGeometry/vp_toolpath.cpp` | 刀路算法 | 排序候选、方向反转和运动序列计算；因依赖含 Qt 的实体记录暂留桌面聚合。 |
 
 ### 9.3 基础类型与实体模型
 
-#### `SPoint2d`
+#### `VpPoint2d`
 
 二维 double 坐标值。它是世界坐标、实体几何、捕捉结果、刀路运动和 SVG/DXF 中间数据的
 共同语言。比较和算术应注意浮点容差；不应把屏幕像素直接存入该类型后混作世界坐标。
+原 `toPointF()` / `fromPointF()` 成员已移除；Qt 调用方显式使用适配层的
+`toQtPoint()` / `toCorePoint()`，`formatPoint()` 也位于适配层。
 
 #### 实体枚举
 
 | 类型 | 作用 |
 | --- | --- |
-| `SEntityType` | 区分 Line、Circle、Arc、Polyline、Text、Dimension、Hatch、Spline、Ellipse、MText、Leader 等实体。序列化数值需要兼容。 |
-| `STextHorizontalAlignment` | 左、中、右等文字水平对齐。 |
-| `STextVerticalAlignment` | 基线、中部、顶部等垂直对齐。 |
-| `SDimensionType` | 线性、对齐、角度、半径、直径、弧长和坐标尺寸。 |
-| `SHatchFillType` | 实体填充或图案类填充模式。 |
-| `SArrayType` | 矩形、极轴、路径等关联阵列类型。 |
+| `VpEntityType` | 区分 Line、Circle、Arc、Polyline、Text、Dimension、Hatch、Spline、Ellipse、MText、Leader 等实体。序列化数值需要兼容。 |
+| `VpTextHorizontalAlignment` | 左、中、右等文字水平对齐。 |
+| `VpTextVerticalAlignment` | 基线、中部、顶部等垂直对齐。 |
+| `VpDimensionType` | 线性、对齐、角度、半径、直径、弧长和坐标尺寸。 |
+| `VpHatchFillType` | 实体填充或图案类填充模式。 |
+| `VpArrayType` | 矩形、极轴、路径等关联阵列类型。 |
 
 这些枚举进入原生文件或外部格式映射时必须维持旧数值语义；添加成员需要检查版本门槛、默认
 分支、渲染、属性 UI、DXF/DWG 和测试。
@@ -282,23 +324,23 @@ Geometry 依赖 `smartCore`、Qt Core/Gui 和 Clipper2。它定义文档实体�
 
 | 结构 | 核心状态 | 主要使用者 |
 | --- | --- | --- |
-| `SLineEntity` | 起点、终点 | 绘制、捕捉、修剪、刀路 |
-| `SCircleEntity` | 圆心、半径 | 圆构造、捕捉、偏移、DXF |
-| `SArcEntity` | 圆心、半径、起止角及方向信息 | 圆弧构造、修剪、尺寸、IO |
-| `SPolylineEntity` | 顶点、闭合、bulge、起止宽度 | 多段线编辑、填充、刀路、DXF |
-| `STextEntity` | 位置、文本、高度、旋转和对齐 | 标注绘制、样式、IO |
-| `SMTextEntity` | 位置、富文本、宽度、高度、旋转 | 多行文字和外部格式降级 |
-| `SLeaderEntity` | 引线点列、文字、文字高度、箭头尺寸 | 注释绘制和 IO |
-| `SLinearDimensionEntity` | 定义点、尺寸线点、类型和样式字段 | 尺寸计算、绘制、持久化 |
-| `SHatchEntity` | 外环/内环、填充类型、颜色和图案参数 | 填充验证、绘制、DXF/SVG |
-| `SSplineEntity` | 四个控制点 | 求值、编辑、近似和渲染 |
-| `SEllipseEntity` | 中心、长短轴、参数范围 | 椭圆构造、近似、渲染、DXF |
-| `SAssociativeArrayData` | 阵列类型、行列/角度/路径参数和源关联 | 阵列编辑、持久化、展开兼容 |
+| `VpLineEntity` | 起点、终点 | 绘制、捕捉、修剪、刀路 |
+| `VpCircleEntity` | 圆心、半径 | 圆构造、捕捉、偏移、DXF |
+| `VpArcEntity` | 圆心、半径、起止角及方向信息 | 圆弧构造、修剪、尺寸、IO |
+| `VpPolylineEntity` | 顶点、闭合、bulge、起止宽度 | 多段线编辑、填充、刀路、DXF |
+| `VpTextEntity` | 位置、文本、高度、旋转和对齐 | 标注绘制、样式、IO |
+| `VpMTextEntity` | 位置、富文本、宽度、高度、旋转 | 多行文字和外部格式降级 |
+| `VpLeaderEntity` | 引线点列、文字、文字高度、箭头尺寸 | 注释绘制和 IO |
+| `VpLinearDimensionEntity` | 定义点、尺寸线点、类型和样式字段 | 尺寸计算、绘制、持久化 |
+| `VpHatchEntity` | 外环/内环、填充类型、颜色和图案参数 | 填充验证、绘制、DXF/SVG |
+| `VpSplineEntity` | 四个控制点 | 求值、编辑、近似和渲染 |
+| `VpEllipseEntity` | 中心、长短轴、参数范围 | 椭圆构造、近似、渲染、DXF |
+| `VpAssociativeArrayData` | 阵列类型、行列/角度/路径参数和源关联 | 阵列编辑、持久化、展开兼容 |
 
-#### `SEntityRecord`
+#### `VpEntityRecord`
 
-`SEntityRecord` 是文档实体的聚合记录：稳定 `SEntityId`、`SEntityType`、具体
-`SEntityGeometry` 变体、图层名、颜色/线宽等显示属性及可选关联阵列数据。Document 存储
+`VpEntityRecord` 是文档实体的聚合记录：稳定 `VpEntityId`、`VpEntityType`、具体
+`VpEntityGeometry` 变体、图层名、颜色/线宽等显示属性及可选关联阵列数据。Document 存储
 记录，Render 读取并生成显示，IO 映射它，事务通过添加、替换、删除记录形成历史。
 
 不变量：`type` 必须与 geometry 变体匹配；实体 ID 在活动文档中唯一；图层名应能解析；几何
@@ -306,13 +348,13 @@ Geometry 依赖 `smartCore`、Qt Core/Gui 和 Clipper2。它定义文档实体�
 
 ### 9.4 专用算法类型
 
-- `SPolygonBooleanOperation`：布尔运算选择；输入需是可转换的闭合多边形。
-- `SStandardShapeType`：将 UI 形状命令映射为确定性顶点模板。
-- `SToolpathHorizontalDirection` / `SToolpathVerticalDirection`：规定扫描或排序偏好。
-- `SToolpathSortMode`：选择排序策略。
-- `SToolpathSortOptions`：组合排序范围、方向、反转允许等参数。
-- `SToolpathSortResult`：返回排序后的实体及统计。
-- `SToolpathMotionType` / `SToolpathMotion`：区分快移、加工等运动，携带起终点和实体关联。
+- `VpPolygonBooleanOperation`：布尔运算选择；输入需是可转换的闭合多边形。
+- `VpStandardShapeType`：将 UI 形状命令映射为确定性顶点模板。
+- `VpToolpathHorizontalDirection` / `VpToolpathVerticalDirection`：规定扫描或排序偏好。
+- `VpToolpathSortMode`：选择排序策略。
+- `VpToolpathSortOptions`：组合排序范围、方向、反转允许等参数。
+- `VpToolpathSortResult`：返回排序后的实体及统计。
+- `VpToolpathMotionType` / `VpToolpathMotion`：区分快移、加工等运动，携带起终点和实体关联。
 
 ### 9.5 测试与技术债
 
@@ -324,52 +366,52 @@ Geometry 主要由标准形状、布尔运算、椭圆、曲线构造、偏移�
 
 ### 10.1 模块职责和所有权
 
-Document 依赖 Core 和 Geometry，是业务状态的唯一权威来源。`SCadDocument` 拥有实体、
+Document 依赖 Core 和 Geometry，是业务状态的唯一权威来源。`VpCadDocument` 拥有实体、
 图层、样式、绘图设置、文件路径和历史；GUI/Render 不应维护另一份可提交的实体真相。
 
-`SCadDocument` 继承 QObject 并发出状态信号，但不是线程安全容器。正常情况下由
-`SCadMainWindow` 独占创建并在 GUI 线程使用。
+`VpCadDocument` 继承 QObject 并发出状态信号，但不是线程安全容器。正常情况下由
+`VpCadMainWindow` 独占创建并在 GUI 线程使用。
 
 ### 10.2 文件清单
 
 | 文件 | 类型/关键函数 | 作用、关系与边界 |
 | --- | --- | --- |
 | `sgraphDocument/CMakeLists.txt` | `smartDocument` | 汇集文档、IO 分拆和恢复代码，链接 Core、Geometry、Qt Core/Gui。 |
-| `sgraphDocument/s_cad_document.h` | `SCadDocument` | 文档公开 API、信号、历史项和全部权威状态定义。 |
-| `sgraphDocument/s_cad_document.cpp` | 文档基础实现 | 构造、实体/图层访问、事务创建、清空、ID 分配和公共状态发射。 |
-| `sgraphDocument/s_cad_document_history.cpp` | 历史实现 | 压入历史项、撤销、重做，以及实体/图层/设置前后状态恢复。 |
-| `sgraphDocument/s_cad_document_io.cpp` | 原生文件实现 | 版本 24 二进制保存、加载、恢复；使用 QSaveFile 和版本分支。 |
-| `sgraphDocument/s_cad_document_audit.cpp` | 文档审计实现 | 扫描 ID、图层、几何和样式异常，可选择修复并报告严重度。 |
-| `sgraphDocument/s_cad_document_color_layer.cpp` | 颜色图层工作流 | 按颜色创建/分配图层、合并同色图层及相关事务。 |
-| `sgraphDocument/s_cad_document_layer_state.cpp` | 图层状态 | 保存、恢复、删除命名图层状态。 |
-| `sgraphDocument/s_cad_document_text_style.cpp` | 文字样式 | 添加更新、删除、切换当前文字样式并纳入历史。 |
-| `sgraphDocument/s_cad_document_dimension_style.cpp` | 尺寸样式 | 管理尺寸样式和当前样式，并发出对应信号。 |
-| `sgraphDocument/s_document_transaction.h` | `SDocumentTransaction` | 声明所有实体创建、替换、删除、图层和绘图设置事务操作。 |
-| `sgraphDocument/s_document_transaction.cpp` | 事务实现 | 暂存变更，显式 commit 后交给文档形成单个历史项；析构不自动提交。 |
-| `sgraphDocument/s_entity_binary_io.h` | 实体二进制接口 | 单个 `SEntityRecord` 的写入和按版本读取。 |
-| `sgraphDocument/s_entity_binary_io.cpp` | 实体二进制实现 | 映射实体枚举与 geometry 变体，处理版本 2–24 字段演进。 |
-| `sgraphDocument/s_dimension_binary_io.h` | 尺寸二进制接口 | 尺寸字段读写。 |
-| `sgraphDocument/s_dimension_binary_io.cpp` | 尺寸二进制实现 | 按格式版本恢复尺寸类型、参考点和样式相关字段。 |
-| `sgraphDocument/s_hatch_binary_io.h` | Hatch 二进制接口 | 填充边界和参数读写。 |
-| `sgraphDocument/s_hatch_binary_io.cpp` | Hatch 二进制实现 | 处理外环、内环和版本 20 后字段。 |
-| `sgraphDocument/s_associative_array_io.h` | 阵列二进制接口 | 关联阵列参数的读写与版本适配。 |
-| `sgraphDocument/s_associative_array_io.cpp` | 阵列二进制实现 | 序列化阵列类型、行列、角度、路径等数据。 |
-| `sgraphDocument/s_document_style_io.h` | `SLoadedDocumentStyles` | 文字/尺寸样式集合的读写接口和读取结果容器。 |
-| `sgraphDocument/s_document_style_io.cpp` | 样式二进制实现 | 按版本 17/19 等门槛读取旧文件默认样式或新样式表。 |
-| `sgraphDocument/s_drawing_settings.h` | `SDrawingSettings` 等 | 插入单位、角度格式、精度、格式化和合法性接口。 |
-| `sgraphDocument/s_drawing_settings.cpp` | 绘图设置实现 | 单位键映射、数值格式化和参数验证。 |
-| `sgraphDocument/s_layer_record.h` | `SLayerRecord`、`SLayerStateRecord` | 图层属性和命名状态快照值结构。 |
-| `sgraphDocument/s_text_style_record.h` | `STextStyleRecord` | 字体、字高等文字样式值结构。 |
-| `sgraphDocument/s_dimension_style_record.h` | `SDimensionStyleRecord` | 尺寸文字、箭头、精度等样式值结构。 |
-| `sgraphDocument/s_document_audit.h` | 审计类型 | 严重度、问题和报告结构；供 Document 和 GUI 展示。 |
-| `sgraphDocument/s_document_recovery_manager.h` | `SRecoveryEntry`、`SDocumentRecoveryManager` | 恢复目录、候选条目、定时副本和清理接口。 |
-| `sgraphDocument/s_document_recovery_manager.cpp` | 恢复实现 | 生成 `.vectorpath.sv$`，扫描/保存/删除恢复候选。 |
-| `sgraphDocument/s_plot_style_table.h` | `SPlotStyleTable` 等 | STB/CTB 类打印样式记录、加载和查询接口。 |
-| `sgraphDocument/s_plot_style_table.cpp` | 打印样式实现 | 解析和保存样式表，保留 vectorPath/smartCam/smartCad 文件名兼容。 |
-| `sgraphDocument/s_toolpath_document.h` | `SToolpathDocumentSortResult` | 将纯刀路排序应用到文档的接口。 |
-| `sgraphDocument/s_toolpath_document.cpp` | 刀路提交实现 | 选取实体、调用 Geometry 排序并通过事务写回实体顺序/方向。 |
+| `sgraphDocument/vp_cad_document.h` | `VpCadDocument` | 文档公开 API、信号、历史项和全部权威状态定义。 |
+| `sgraphDocument/vp_cad_document.cpp` | 文档基础实现 | 构造、实体/图层访问、事务创建、清空、ID 分配和公共状态发射。 |
+| `sgraphDocument/vp_cad_document_history.cpp` | 历史实现 | 压入历史项、撤销、重做，以及实体/图层/设置前后状态恢复。 |
+| `sgraphDocument/vp_cad_document_io.cpp` | 原生文件实现 | 版本 24 二进制保存、加载、恢复；使用 QSaveFile 和版本分支。 |
+| `sgraphDocument/vp_cad_document_audit.cpp` | 文档审计实现 | 扫描 ID、图层、几何和样式异常，可选择修复并报告严重度。 |
+| `sgraphDocument/vp_cad_document_color_layer.cpp` | 颜色图层工作流 | 按颜色创建/分配图层、合并同色图层及相关事务。 |
+| `sgraphDocument/vp_cad_document_layer_state.cpp` | 图层状态 | 保存、恢复、删除命名图层状态。 |
+| `sgraphDocument/vp_cad_document_text_style.cpp` | 文字样式 | 添加更新、删除、切换当前文字样式并纳入历史。 |
+| `sgraphDocument/vp_cad_document_dimension_style.cpp` | 尺寸样式 | 管理尺寸样式和当前样式，并发出对应信号。 |
+| `sgraphDocument/vp_document_transaction.h` | `VpDocumentTransaction` | 声明所有实体创建、替换、删除、图层和绘图设置事务操作。 |
+| `sgraphDocument/vp_document_transaction.cpp` | 事务实现 | 暂存变更，显式 commit 后交给文档形成单个历史项；析构不自动提交。 |
+| `sgraphDocument/vp_entity_binary_io.h` | 实体二进制接口 | 单个 `VpEntityRecord` 的写入和按版本读取。 |
+| `sgraphDocument/vp_entity_binary_io.cpp` | 实体二进制实现 | 映射实体枚举与 geometry 变体，处理版本 2–24 字段演进。 |
+| `sgraphDocument/vp_dimension_binary_io.h` | 尺寸二进制接口 | 尺寸字段读写。 |
+| `sgraphDocument/vp_dimension_binary_io.cpp` | 尺寸二进制实现 | 按格式版本恢复尺寸类型、参考点和样式相关字段。 |
+| `sgraphDocument/vp_hatch_binary_io.h` | Hatch 二进制接口 | 填充边界和参数读写。 |
+| `sgraphDocument/vp_hatch_binary_io.cpp` | Hatch 二进制实现 | 处理外环、内环和版本 20 后字段。 |
+| `sgraphDocument/vp_associative_array_io.h` | 阵列二进制接口 | 关联阵列参数的读写与版本适配。 |
+| `sgraphDocument/vp_associative_array_io.cpp` | 阵列二进制实现 | 序列化阵列类型、行列、角度、路径等数据。 |
+| `sgraphDocument/vp_document_style_io.h` | `VpLoadedDocumentStyles` | 文字/尺寸样式集合的读写接口和读取结果容器。 |
+| `sgraphDocument/vp_document_style_io.cpp` | 样式二进制实现 | 按版本 17/19 等门槛读取旧文件默认样式或新样式表。 |
+| `sgraphDocument/vp_drawing_settings.h` | `VpDrawingSettings` 等 | 插入单位、角度格式、精度、格式化和合法性接口。 |
+| `sgraphDocument/vp_drawing_settings.cpp` | 绘图设置实现 | 单位键映射、数值格式化和参数验证。 |
+| `sgraphDocument/vp_layer_record.h` | `VpLayerRecord`、`VpLayerStateRecord` | 图层属性和命名状态快照值结构。 |
+| `sgraphDocument/vp_text_style_record.h` | `VpTextStyleRecord` | 字体、字高等文字样式值结构。 |
+| `sgraphDocument/vp_dimension_style_record.h` | `VpDimensionStyleRecord` | 尺寸文字、箭头、精度等样式值结构。 |
+| `sgraphDocument/vp_document_audit.h` | 审计类型 | 严重度、问题和报告结构；供 Document 和 GUI 展示。 |
+| `sgraphDocument/vp_document_recovery_manager.h` | `VpRecoveryEntry`、`VpDocumentRecoveryManager` | 恢复目录、候选条目、定时副本和清理接口。 |
+| `sgraphDocument/vp_document_recovery_manager.cpp` | 恢复实现 | 生成 `.vectorpath.sv$`，扫描/保存/删除恢复候选。 |
+| `sgraphDocument/vp_plot_style_table.h` | `VpPlotStyleTable` 等 | STB/CTB 类打印样式记录、加载和查询接口。 |
+| `sgraphDocument/vp_plot_style_table.cpp` | 打印样式实现 | 解析和保存样式表，保留 vectorPath/smartCam/smartCad 文件名兼容。 |
+| `sgraphDocument/vp_toolpath_document.h` | `VpToolpathDocumentSortResult` | 将纯刀路排序应用到文档的接口。 |
+| `sgraphDocument/vp_toolpath_document.cpp` | 刀路提交实现 | 选取实体、调用 Geometry 排序并通过事务写回实体顺序/方向。 |
 
-### 10.3 `SCadDocument`
+### 10.3 `VpCadDocument`
 
 #### 状态与不变量
 
@@ -407,10 +449,10 @@ Document 依赖 Core 和 Geometry，是业务状态的唯一权威来源。`SCad
 主窗口拥有文档。视口和管理器观察它，事务持有引用但生命周期短于文档。所有公开修改函数应
 在文档线程调用；后台工作先生成值结果，再回 GUI 线程提交。
 
-### 10.4 `SDocumentTransaction`
+### 10.4 `VpDocumentTransaction`
 
 事务构造时引用文档并记录标签。`addLine()`、`addCircle()`、`addArc()`、`addEllipse()`、
-`addSpline()`、`addPolyline()`、文字/尺寸/Hatch 等便利函数最终建立 `SEntityRecord`；
+`addSpline()`、`addPolyline()`、文字/尺寸/Hatch 等便利函数最终建立 `VpEntityRecord`；
 `addEntity()`/`addEntityCopy()` 支持通用和导入场景；`replaceEntity()`、`removeEntity()`、
 图层/线宽/绘图设置/实体顺序操作暂存旧新状态。
 
@@ -422,7 +464,7 @@ Document 依赖 Core 和 Geometry，是业务状态的唯一权威来源。`SCad
 
 ### 10.5 历史条目和撤销重做
 
-私有 `SHistoryEntry` 可记录添加/删除实体，以及图层、当前图层、绘图设置、文字样式、尺寸
+私有 `VpHistoryEntry` 可记录添加/删除实体，以及图层、当前图层、绘图设置、文字样式、尺寸
 样式、实体顺序的前后状态。撤销按反方向恢复，重做按正方向重放。新的提交会清空重做栈。
 
 当前没有历史条目数量或字节预算；大型导入、阵列和位图实体可能让内存增长。modified 只是
@@ -430,7 +472,7 @@ Document 依赖 Core 和 Geometry，是业务状态的唯一权威来源。`SCad
 
 ### 10.6 原生格式
 
-`s_cad_document_io.cpp` 的兼容常量：
+`vp_cad_document_io.cpp` 的兼容常量：
 
 - magic：8 字节 `SMCAD001`；
 - 当前格式版本：24；
@@ -446,10 +488,10 @@ manifest，再按格式版本读取图层、状态、样式、实体和关联数
 
 ### 10.7 恢复、审计、样式和刀路
 
-- `SDocumentRecoveryManager` 保存恢复副本时不更新文档路径/modified；条目包含原文件、恢复
+- `VpDocumentRecoveryManager` 保存恢复副本时不更新文档路径/modified；条目包含原文件、恢复
   文件和时间信息，由 GUI 恢复管理器展示。
-- `SDocumentAuditReport` 聚合问题和修复统计；审计修复本身可能改变文档，应更新信号和状态。
-- `SPlotStyleTable` 管理打印颜色/线宽等映射，旧文件名别名承担持久化兼容。
+- `VpDocumentAuditReport` 聚合问题和修复统计；审计修复本身可能改变文档，应更新信号和状态。
+- `VpPlotStyleTable` 管理打印颜色/线宽等映射，旧文件名别名承担持久化兼容。
 - `sortDocumentToolpaths()` 把 Geometry 的排序结果通过文档事务提交，返回排序和反转数量。
 
 ### 10.8 测试与技术债
@@ -464,20 +506,20 @@ manifest，再按格式版本读取图层、状态、样式、实体和关联数
 | 文件 | 类型/关键函数 | 作用、关系与边界 |
 | --- | --- | --- |
 | `sgraphCommands/CMakeLists.txt` | `smartCommands` | 链接 Geometry、Document 和 Qt Core，向 Render/GUI 提供命令基础。 |
-| `sgraphCommands/s_i_cad_command.h` | `SCommandContext`、`SICadCommand` | 定义可开始、接收点、取消的命令接口。 |
-| `sgraphCommands/s_coordinate_input.h` | `SCoordinateInputMode`、`SCoordinateInput` | 坐标输入结果、模式和解析接口。 |
-| `sgraphCommands/s_coordinate_input.cpp` | `parseCoordinateInput()` | 解析绝对/相对/极坐标文本，返回成功状态或错误。 |
-| `sgraphCommands/s_command_catalog.h` | 命令目录接口 | 返回全部补全项和按前缀匹配的候选。 |
-| `sgraphCommands/s_command_catalog.cpp` | 命令目录数据 | 维护命令及别名集合，为命令行 QCompleter 服务。 |
+| `sgraphCommands/vp_i_cad_command.h` | `VpCommandContext`、`VpICadCommand` | 定义可开始、接收点、取消的命令接口。 |
+| `sgraphCommands/vp_coordinate_input.h` | `VpCoordinateInputMode`、`VpCoordinateInput` | 坐标输入结果、模式和解析接口。 |
+| `sgraphCommands/vp_coordinate_input.cpp` | `parseCoordinateInput()` | 解析绝对/相对/极坐标文本，返回成功状态或错误。 |
+| `sgraphCommands/vp_command_catalog.h` | 命令目录接口 | 返回全部补全项和按前缀匹配的候选。 |
+| `sgraphCommands/vp_command_catalog.cpp` | 命令目录数据 | 维护命令及别名集合，为命令行 QCompleter 服务。 |
 
 ### 11.2 类型和调用关系
 
-`SCommandContext` 当前只携带 `SCadDocument*` 与光标世界坐标。`SICadCommand` 要求实现
+`VpCommandContext` 当前只携带 `VpCadDocument*` 与光标世界坐标。`VpICadCommand` 要求实现
 `id()`、`displayName()`、`begin()`、`acceptPoint()` 和 `cancel()`；接口表达理想的命令对象
-边界，但当前很多工具仍由 `SCadMainWindow::executeCommand()` 分发并由 `SCadViewport` 状态机
-执行，并未全部实例化为 SICadCommand。
+边界，但当前很多工具仍由 `VpCadMainWindow::executeCommand()` 分发并由 `VpCadViewport` 状态机
+执行，并未全部实例化为 VpICadCommand。
 
-`SCoordinateInputMode` 区分不同坐标语法；`SCoordinateInput` 保存解析是否成功、坐标/距离角度
+`VpCoordinateInputMode` 区分不同坐标语法；`VpCoordinateInput` 保存解析是否成功、坐标/距离角度
 值和错误信息。解析函数只负责语法，不应直接移动光标或写文档。
 
 新增命令需要同步命令目录、别名、Ribbon、快捷键、视口预览、事务、测试和 CAD YAML；只加
@@ -488,7 +530,7 @@ manifest，再按格式版本读取图层、状态、样式、实体和关联数
 ### 12.1 模块职责
 
 IO 依赖 Core、Geometry、Document 和 Qt Concurrent。它把外部数据转换为中间值或文档
-事务，并通过 `SFileCompatibilityReport` 暴露警告、跳过和降级。格式错误应返回 `SResult`，
+事务，并通过 `VpFileCompatibilityReport` 暴露警告、跳过和降级。格式错误应返回 `VpResult`，
 不能静默留下难以判断的半成品状态。
 
 ### 12.2 文件清单
@@ -496,53 +538,53 @@ IO 依赖 Core、Geometry、Document 和 Qt Concurrent。它把外部数据转�
 | 文件 | 类型/关键函数 | 作用、关系与边界 |
 | --- | --- | --- |
 | `sgraphIo/CMakeLists.txt` | `smartIo` | 汇集 DXF/DWG/SVG/位图代码，链接 Qt Concurrent，并注入 LibreDWG 路径常量。 |
-| `sgraphIo/s_i_file_codec.h` | `SIFileCodec` | 统一格式 ID、名称、扩展名、read/write 接口。 |
-| `sgraphIo/s_file_compatibility_report.h` | `SFileCompatibilityReport` | 记录读取/写入统计、警告和兼容信息。 |
-| `sgraphIo/s_dxf_codec.h` | `SDxfCodec` | DXF codec 公共接口。 |
-| `sgraphIo/s_dxf_codec.cpp` | DXF 总控 | 读取 pair、table/entity 段并写入文档；导出组织 HEADER/TABLES/ENTITIES。 |
-| `sgraphIo/s_dxf_pair.h` | `SDxfPair`、pair 函数 | DXF group code/value 基础记录和查找、读写接口。 |
-| `sgraphIo/s_dxf_pair.cpp` | pair 解析实现 | 按两行一组读取 ASCII DXF，验证 group code 并生成错误文本。 |
-| `sgraphIo/s_dxf_entity_io.h` | 实体 DXF 接口 | 单实体读取/写入和类型分派。 |
-| `sgraphIo/s_dxf_entity_io.cpp` | 实体 DXF 实现 | 映射直线、圆、弧、多段线、文字、尺寸、样条、椭圆等支持子集。 |
-| `sgraphIo/s_dxf_hatch_io.h` | Hatch DXF 接口 | 独立读取/写入复杂 Hatch 组码。 |
-| `sgraphIo/s_dxf_hatch_io.cpp` | Hatch DXF 实现 | 解析边界环和填充字段，失败返回详细错误。 |
-| `sgraphIo/s_dxf_table_io.h` | 图层 table 接口 | 读取图层表和当前图层，写出文档表数据。 |
-| `sgraphIo/s_dxf_table_io.cpp` | table 实现 | 映射图层颜色、可见性、线型等可支持字段。 |
-| `sgraphIo/s_dwg_codec.h` | `SDwgCodec` | DWG codec、工具可用性和版本查询。 |
-| `sgraphIo/s_dwg_codec.cpp` | DWG 总控 | 调用 LibreDWG 做 DWG↔DXF 转换，使用临时目录和原子目标复制。 |
-| `sgraphIo/s_dwg_dxf_adapter.h` | DWG 中转适配接口 | 为 LibreDWG R2000 DXF 中转准备兼容数据。 |
-| `sgraphIo/s_dwg_dxf_adapter.cpp` | 中转适配实现 | 修正/降级 DXF 内容以满足外部工具，结合文档信息保留可支持字段。 |
-| `sgraphIo/s_svg_vector_data.h` | SVG 中间类型 | 填充规则、轮廓、区域、源尺寸和警告。 |
-| `sgraphIo/s_svg_path_parser.h` | `SSvgSubpath` | SVG path `d` 属性解析接口和子路径结果。 |
-| `sgraphIo/s_svg_path_parser.cpp` | path 解析实现 | 处理移动、直线、曲线、闭合等命令并转换为点列/闭合标记。 |
-| `sgraphIo/s_svg_parser.h` | `parseSvgVectorData()` | 从 QByteArray 解析完整 SVG 中间数据。 |
-| `sgraphIo/s_svg_parser.cpp` | SVG 文档解析 | 读取元素、变换、样式、颜色、轮廓和区域，收集不支持项警告。 |
-| `sgraphIo/s_svg_document_operations.h` | 填充/去重报告 | 定义颜色图层优先级、填充和去重文档操作。 |
-| `sgraphIo/s_svg_document_operations.cpp` | SVG 文档操作 | 基于图层和几何执行填充、重复实体删除等事务。 |
-| `sgraphIo/s_vector_fill.h` | 导入设置和中间几何 | 缩放、背景、填充模式、颜色实体、Hatch 生成。 |
-| `sgraphIo/s_vector_fill.cpp` | 区域填充实现 | 将 SVG/位图轮廓转为线框或 Hatch，验证孔洞和填充规则。 |
-| `sgraphIo/s_vector_document_import.h` | 文档导入报告 | 把矢量中间结果提交到文档的接口和统计。 |
-| `sgraphIo/s_vector_document_import.cpp` | 导入提交实现 | 建立颜色图层、转换坐标并通过事务添加实体。 |
-| `sgraphIo/s_bitmap_vectorizer.h` | 位图公共类型/API | 设置、阶段指标、轮廓、结果和 SVG 转换入口。 |
-| `sgraphIo/s_bitmap_vectorizer.cpp` | SVG 输出包装 | 规范化轮廓并生成 SVG；`bitmapToSvgData()` 调用核心结果函数。 |
-| `sgraphIo/s_bitmap_vector_private.h` | `SBoundarySegment`、私有接口 | 边压缩、闭环等跨实现文件共享的内部数据。 |
-| `sgraphIo/s_bitmap_run_vectorizer.cpp` | 游程核心 | 行游程、并行连接、稳定 ID、并查集、边生成、指标和总控。 |
-| `sgraphIo/s_bitmap_contour_stitcher.cpp` | 边压缩/闭环 | 合并共线段，把有向边拼接为闭合、规范化且排序的轮廓。 |
+| `sgraphIo/vp_i_file_codec.h` | `VpIFileCodec` | 统一格式 ID、名称、扩展名、read/write 接口。 |
+| `sgraphIo/vp_file_compatibility_report.h` | `VpFileCompatibilityReport` | 记录读取/写入统计、警告和兼容信息。 |
+| `sgraphIo/vp_dxf_codec.h` | `VpDxfCodec` | DXF codec 公共接口。 |
+| `sgraphIo/vp_dxf_codec.cpp` | DXF 总控 | 读取 pair、table/entity 段并写入文档；导出组织 HEADER/TABLES/ENTITIES。 |
+| `sgraphIo/vp_dxf_pair.h` | `VpDxfPair`、pair 函数 | DXF group code/value 基础记录和查找、读写接口。 |
+| `sgraphIo/vp_dxf_pair.cpp` | pair 解析实现 | 按两行一组读取 ASCII DXF，验证 group code 并生成错误文本。 |
+| `sgraphIo/vp_dxf_entity_io.h` | 实体 DXF 接口 | 单实体读取/写入和类型分派。 |
+| `sgraphIo/vp_dxf_entity_io.cpp` | 实体 DXF 实现 | 映射直线、圆、弧、多段线、文字、尺寸、样条、椭圆等支持子集。 |
+| `sgraphIo/vp_dxf_hatch_io.h` | Hatch DXF 接口 | 独立读取/写入复杂 Hatch 组码。 |
+| `sgraphIo/vp_dxf_hatch_io.cpp` | Hatch DXF 实现 | 解析边界环和填充字段，失败返回详细错误。 |
+| `sgraphIo/vp_dxf_table_io.h` | 图层 table 接口 | 读取图层表和当前图层，写出文档表数据。 |
+| `sgraphIo/vp_dxf_table_io.cpp` | table 实现 | 映射图层颜色、可见性、线型等可支持字段。 |
+| `sgraphIo/vp_dwg_codec.h` | `VpDwgCodec` | DWG codec、工具可用性和版本查询。 |
+| `sgraphIo/vp_dwg_codec.cpp` | DWG 总控 | 调用 LibreDWG 做 DWG↔DXF 转换，使用临时目录和原子目标复制。 |
+| `sgraphIo/vp_dwg_dxf_adapter.h` | DWG 中转适配接口 | 为 LibreDWG R2000 DXF 中转准备兼容数据。 |
+| `sgraphIo/vp_dwg_dxf_adapter.cpp` | 中转适配实现 | 修正/降级 DXF 内容以满足外部工具，结合文档信息保留可支持字段。 |
+| `sgraphIo/vp_svg_vector_data.h` | SVG 中间类型 | 填充规则、轮廓、区域、源尺寸和警告。 |
+| `sgraphIo/vp_svg_path_parser.h` | `VpSvgSubpath` | SVG path `d` 属性解析接口和子路径结果。 |
+| `sgraphIo/vp_svg_path_parser.cpp` | path 解析实现 | 处理移动、直线、曲线、闭合等命令并转换为点列/闭合标记。 |
+| `sgraphIo/vp_svg_parser.h` | `parseSvgVectorData()` | 从 QByteArray 解析完整 SVG 中间数据。 |
+| `sgraphIo/vp_svg_parser.cpp` | SVG 文档解析 | 读取元素、变换、样式、颜色、轮廓和区域，收集不支持项警告。 |
+| `sgraphIo/vp_svg_document_operations.h` | 填充/去重报告 | 定义颜色图层优先级、填充和去重文档操作。 |
+| `sgraphIo/vp_svg_document_operations.cpp` | SVG 文档操作 | 基于图层和几何执行填充、重复实体删除等事务。 |
+| `sgraphIo/vp_vector_fill.h` | 导入设置和中间几何 | 缩放、背景、填充模式、颜色实体、Hatch 生成。 |
+| `sgraphIo/vp_vector_fill.cpp` | 区域填充实现 | 将 SVG/位图轮廓转为线框或 Hatch，验证孔洞和填充规则。 |
+| `sgraphIo/vp_vector_document_import.h` | 文档导入报告 | 把矢量中间结果提交到文档的接口和统计。 |
+| `sgraphIo/vp_vector_document_import.cpp` | 导入提交实现 | 建立颜色图层、转换坐标并通过事务添加实体。 |
+| `sgraphIo/vp_bitmap_vectorizer.h` | 位图公共类型/API | 设置、阶段指标、轮廓、结果和 SVG 转换入口。 |
+| `sgraphIo/vp_bitmap_vectorizer.cpp` | SVG 输出包装 | 规范化轮廓并生成 SVG；`bitmapToSvgData()` 调用核心结果函数。 |
+| `sgraphIo/vp_bitmap_vector_private.h` | `VpBoundarySegment`、私有接口 | 边压缩、闭环等跨实现文件共享的内部数据。 |
+| `sgraphIo/vp_bitmap_run_vectorizer.cpp` | 游程核心 | 行游程、并行连接、稳定 ID、并查集、边生成、指标和总控。 |
+| `sgraphIo/vp_bitmap_contour_stitcher.cpp` | 边压缩/闭环 | 合并共线段，把有向边拼接为闭合、规范化且排序的轮廓。 |
 
-### 12.3 `SIFileCodec` 与兼容报告
+### 12.3 `VpIFileCodec` 与兼容报告
 
-`SIFileCodec` 的 `id()` 是稳定实现标识，`displayName()` 面向 UI，`extensions()` 用于路由；
-`read()`/`write()` 返回 `SResult<SFileCompatibilityReport>`。失败表示操作无法完成，成功报告仍
+`VpIFileCodec` 的 `id()` 是稳定实现标识，`displayName()` 面向 UI，`extensions()` 用于路由；
+`read()`/`write()` 返回 `VpResult<VpFileCompatibilityReport>`。失败表示操作无法完成，成功报告仍
 可带警告，表示结果可用但存在降级。调用方必须展示或记录警告，不能只检查布尔成功。
 
-`SDxfCodec` 与 `SDwgCodec` 实现接口。原生文件未走该接口，而由 SCadDocument 自己处理；
+`VpDxfCodec` 与 `VpDwgCodec` 实现接口。原生文件未走该接口，而由 VpCadDocument 自己处理；
 SVG/位图先形成专用中间模型，再进入文档导入事务。
 
 ### 12.4 DXF 数据流和边界
 
 ```text
-文件文本 -> SDxfPair 列表 -> HEADER/TABLES/ENTITIES 分段
-        -> 图层/实体专用解析 -> SEntityRecord/中间对象 -> SCadDocument
+文件文本 -> VpDxfPair 列表 -> HEADER/TABLES/ENTITIES 分段
+        -> 图层/实体专用解析 -> VpEntityRecord/中间对象 -> VpCadDocument
 ```
 
 写出方向相反。DXF 支持 ASCII 子集；未知组码可以跳过，但未知实体和降级必须进入兼容报告。
@@ -551,10 +593,10 @@ SVG/位图先形成专用中间模型，再进入文档导入事务。
 
 ### 12.5 DWG 数据流和进程边界
 
-`SDwgCodec::isAvailable()` 要求 `dwgread.exe`、`dwg2dxf.exe`、`dxf2dwg.exe` 同时存在。
+`VpDwgCodec::isAvailable()` 要求 `dwgread.exe`、`dwg2dxf.exe`、`dxf2dwg.exe` 同时存在。
 默认先查应用目录的 `libredwg`，开发环境可使用编译期 `VECTORPATH_LIBREDWG_DIR`。
 
-导入：DWG → `dwg2dxf --as r2000` → 临时 DXF → `SDxfCodec::read()`。<br>
+导入：DWG → `dwg2dxf --as r2000` → 临时 DXF → `VpDxfCodec::read()`。<br>
 导出：Document → DXF → R2000 适配 → `dxf2dwg` → 临时 DWG → QSaveFile 原子复制。
 
 QProcess 启动上限 10 秒，默认完成上限 120 秒；超时后 kill 并等待 5 秒。外部 stderr 截断后
@@ -563,11 +605,11 @@ QProcess 启动上限 10 秒，默认完成上限 120 秒；超时后 kill 并�
 
 ### 12.6 SVG 中间模型
 
-- `SVectorFillRule` 表示 EvenOdd/NonZero；
-- `SVectorOutline` 保存点列、闭合和颜色；
-- `SVectorRegion` 保存多个轮廓、颜色和填充规则；
-- `SSvgVectorData` 汇总轮廓、区域、源尺寸和警告；
-- `SSvgSubpath` 是 path 解析阶段的子路径。
+- `VpVectorFillRule` 表示 EvenOdd/NonZero；
+- `VpVectorOutline` 保存点列、闭合和颜色；
+- `VpVectorRegion` 保存多个轮廓、颜色和填充规则；
+- `VpSvgVectorData` 汇总轮廓、区域、源尺寸和警告；
+- `VpSvgSubpath` 是 path 解析阶段的子路径。
 
 解析器把 SVG 元素和 path 命令转为上述中间值；导入设置决定缩放、填充或轮廓方式；
 `importVectorGeometry()` 类流程最终创建颜色图层并提交文档。滤镜、脚本、动画、复杂 CSS 和
@@ -577,11 +619,11 @@ QProcess 启动上限 10 秒，默认完成上限 120 秒；超时后 kill 并�
 
 | 类型 | 作用 |
 | --- | --- |
-| `SBitmapVectorSettings` | 是否忽略背景、背景色和 worker 数；0 表示自动。 |
-| `SBitmapVectorMetrics` | 像素、游程、组件、段、轮廓、各阶段耗时、内存估算、SVG 字节和线程数。 |
-| `SBitmapContour` | 颜色、稳定色块 ID 和闭合点列。 |
-| `SBitmapVectorResult` | SVG 字节、规范轮廓和指标。 |
-| `SBoundarySegment` | 内部有向边，记录起终点、颜色、所属游程和组件。 |
+| `VpBitmapVectorSettings` | 是否忽略背景、背景色和 worker 数；0 表示自动。 |
+| `VpBitmapVectorMetrics` | 像素、游程、组件、段、轮廓、各阶段耗时、内存估算、SVG 字节和线程数。 |
+| `VpBitmapContour` | 颜色、稳定色块 ID 和闭合点列。 |
+| `VpBitmapVectorResult` | SVG 字节、规范轮廓和指标。 |
+| `VpBoundarySegment` | 内部有向边，记录起终点、颜色、所属游程和组件。 |
 
 核心失败场景包括空图、全背景无前景、边压缩异常和闭环失败。成功输出必须满足轮廓闭合、颜色
 保留、组件数一致和确定性排序。
@@ -598,91 +640,91 @@ DXF/DWG、SVG、位图由 codec、SVG 导入和基准测试覆盖。技术债包
 Render 依赖 Commands、Document、Geometry 和 Qt OpenGL/Widgets。它把文档值转换为屏幕
 图形，解释鼠标/键盘输入，维护命令临时状态并在最终确认时提交文档事务。
 
-当前核心类 `SCadViewport` 同时承担视图变换、绘制、选择、捕捉、命令状态和动态预览，因而
-通过大量 `s_cad_viewport_*.cpp` 按实现职责拆分。拆分降低单文件长度，但类本身仍是高职责类。
+当前核心类 `VpCadViewport` 同时承担视图变换、绘制、选择、捕捉、命令状态和动态预览，因而
+通过大量 `vp_cad_viewport_*.cpp` 按实现职责拆分。拆分降低单文件长度，但类本身仍是高职责类。
 
 ### 13.2 基础算法和头文件清单
 
 | 文件 | 类型/关键函数 | 作用、关系与边界 |
 | --- | --- | --- |
 | `sgraphRender/CMakeLists.txt` | `smartRender` | 登记全部视口分拆源文件并链接 Commands、Document、Geometry、Qt OpenGL/Widgets。 |
-| `sgraphRender/s_cad_viewport.h` | `SCadViewport`、工具/夹点枚举 | 视口完整公开接口、信号、事件覆写、私有方法和状态定义。 |
-| `sgraphRender/s_cad_viewport.cpp` | 构造与基础绑定 | 初始化焦点/鼠标、绑定文档信号、设置工具和通用命令取消。 |
-| `sgraphRender/s_cad_viewport_geometry.h` | 变换/编辑纯函数 | 实体平移、旋转、缩放、镜像、多段线状态、分解、圆角等共享几何接口。 |
-| `sgraphRender/s_cad_viewport_geometry.cpp` | 共享几何实现 | 对 geometry 变体执行通用实体变换，供预览和事务提交复用。 |
-| `sgraphRender/s_cad_viewport_drafting.h` | `SGridBasis` | 旋转栅格基和栅格捕捉接口。 |
-| `sgraphRender/s_cad_viewport_drafting.cpp` | 绘图辅助实现 | 构造旋转基向量，将世界点量化到指定间距。 |
-| `sgraphRender/s_object_snap.h` | 捕捉枚举/结果 | 捕捉类型、位掩码模式、点和实体关联结果。 |
-| `sgraphRender/s_object_snap.cpp` | 捕捉算法 | 从实体端点、中心、节点等候选中按容差选择结果。 |
-| `sgraphRender/s_curve_offset.h` | 曲线偏移接口 | 对支持实体计算偏移结果和错误。 |
-| `sgraphRender/s_curve_offset.cpp` | 曲线偏移实现 | 处理线、圆、圆弧和多段线偏移及退化情况。 |
-| `sgraphRender/s_associative_array_geometry.h` | 阵列几何接口 | 生成矩形、极轴、路径阵列实例和参数更新结果。 |
-| `sgraphRender/s_associative_array_geometry.cpp` | 阵列实现 | 计算实例变换并携带关联阵列元数据。 |
-| `sgraphRender/s_circle_tangent_math.h` | `SVector3`、`SLinearConstraint` | 相切圆求解的内部代数类型和约束工具。 |
-| `sgraphRender/s_circle_tangent_geometry.cpp` | 相切圆实现 | 求两切一半径、三切等圆构造候选。 |
-| `sgraphRender/s_arc_construction_geometry.cpp` | 圆弧构造实现 | 根据三点、中心起终点、角度/方向/半径等模式求弧。 |
-| `sgraphRender/s_polyline_geometry.cpp` | 多段线基础算法 | bulge、弧段、采样、距离和局部几何工具。 |
-| `sgraphRender/s_polyline_edit.cpp` | 多段线编辑算法 | 顶点编辑、闭合、连接、反向和曲线化相关值变换。 |
-| `sgraphRender/s_polyline_fillet.cpp` | 多段线圆角算法 | 对相邻线段求切点、bulge 和新顶点序列。 |
-| `sgraphRender/s_spline_edit.h` | 样条编辑接口 | 反向和转多段线等无 UI 变换。 |
-| `sgraphRender/s_spline_edit.cpp` | 样条编辑实现 | 重排控制点或按段数生成近似多段线。 |
+| `sgraphRender/vp_cad_viewport.h` | `VpCadViewport`、工具/夹点枚举 | 视口完整公开接口、信号、事件覆写、私有方法和状态定义。 |
+| `sgraphRender/vp_cad_viewport.cpp` | 构造与基础绑定 | 初始化焦点/鼠标、绑定文档信号、设置工具和通用命令取消。 |
+| `sgraphRender/vp_cad_viewport_geometry.h` | 变换/编辑纯函数 | 实体平移、旋转、缩放、镜像、多段线状态、分解、圆角等共享几何接口。 |
+| `sgraphRender/vp_cad_viewport_geometry.cpp` | 共享几何实现 | 对 geometry 变体执行通用实体变换，供预览和事务提交复用。 |
+| `sgraphRender/vp_cad_viewport_drafting.h` | `VpGridBasis` | 旋转栅格基和栅格捕捉接口。 |
+| `sgraphRender/vp_cad_viewport_drafting.cpp` | 绘图辅助实现 | 构造旋转基向量，将世界点量化到指定间距。 |
+| `sgraphRender/vp_object_snap.h` | 捕捉枚举/结果 | 捕捉类型、位掩码模式、点和实体关联结果。 |
+| `sgraphRender/vp_object_snap.cpp` | 捕捉算法 | 从实体端点、中心、节点等候选中按容差选择结果。 |
+| `sgraphRender/vp_curve_offset.h` | 曲线偏移接口 | 对支持实体计算偏移结果和错误。 |
+| `sgraphRender/vp_curve_offset.cpp` | 曲线偏移实现 | 处理线、圆、圆弧和多段线偏移及退化情况。 |
+| `sgraphRender/vp_associative_array_geometry.h` | 阵列几何接口 | 生成矩形、极轴、路径阵列实例和参数更新结果。 |
+| `sgraphRender/vp_associative_array_geometry.cpp` | 阵列实现 | 计算实例变换并携带关联阵列元数据。 |
+| `sgraphRender/vp_circle_tangent_math.h` | `VpVector3`、`VpLinearConstraint` | 相切圆求解的内部代数类型和约束工具。 |
+| `sgraphRender/vp_circle_tangent_geometry.cpp` | 相切圆实现 | 求两切一半径、三切等圆构造候选。 |
+| `sgraphRender/vp_arc_construction_geometry.cpp` | 圆弧构造实现 | 根据三点、中心起终点、角度/方向/半径等模式求弧。 |
+| `sgraphRender/vp_polyline_geometry.cpp` | 多段线基础算法 | bulge、弧段、采样、距离和局部几何工具。 |
+| `sgraphRender/vp_polyline_edit.cpp` | 多段线编辑算法 | 顶点编辑、闭合、连接、反向和曲线化相关值变换。 |
+| `sgraphRender/vp_polyline_fillet.cpp` | 多段线圆角算法 | 对相邻线段求切点、bulge 和新顶点序列。 |
+| `sgraphRender/vp_spline_edit.h` | 样条编辑接口 | 反向和转多段线等无 UI 变换。 |
+| `sgraphRender/vp_spline_edit.cpp` | 样条编辑实现 | 重排控制点或按段数生成近似多段线。 |
 
-### 13.3 `SCadViewport` 分拆实现文件
+### 13.3 `VpCadViewport` 分拆实现文件
 
 | 文件 | 负责的方法组 | 与其他组件的关系 |
 | --- | --- | --- |
-| `s_cad_viewport_events.cpp` | OpenGL 初始化、paintGL、resize、鼠标/滚轮/键盘事件 | 事件转世界坐标；paintGL 清背景后用 QPainter 调用各绘制层。 |
-| `s_cad_viewport_render.cpp` | 网格、实体集合和通用预览调度 | 读取 Document，只画可见/未冻结图层；调用实体专用绘制。 |
-| `s_cad_viewport_entity_render.cpp` | 每种实体的 QPainter 绘制 | 使用 `worldToScreen()`；处理线型、线宽、文字、曲线和选中样式。 |
-| `s_cad_viewport_overlay.cpp` | 导航和通用叠加 | 绘制坐标/提示等非文档图形。 |
-| `s_cad_viewport_entity_overlay.cpp` | 节点、方向、顺序显示 | 根据开关读取实体关键点和刀路方向，不修改实体。 |
-| `s_cad_viewport_snap_render.cpp` | 捕捉标记 | 显示当前 `SObjectSnapResult` 和追踪提示。 |
-| `s_cad_viewport_simulation.cpp` | 刀路仿真叠加 | 读取运动快照、已完成数量和显示开关。 |
-| `s_cad_viewport_appearance.cpp` | 画布/网格/线宽等外观设置 | 接收主题/界面设置，触发 repaint。 |
-| `s_cad_viewport_zoom.cpp` | 世界/屏幕变换、缩放范围 | 维护 `m_zoom`、`m_pan_offset`，保证缩放上下限。 |
-| `s_cad_viewport_interaction.cpp` | 通用点接受和工具阶段调度 | 根据 `SToolMode` 把点送到绘制/修改/标注处理器。 |
-| `s_cad_viewport_keyword.cpp` | 命令关键字 | 解释当前工具可接受的 Close/Undo/Radius 等关键字。 |
-| `s_cad_viewport_tracking.cpp` | 正交、栅格、对象追踪约束 | 组合 `constrainedPoint()` 和参考点，输出最终候选。 |
-| `s_cad_viewport_selection.cpp` | 命中、点选、窗口/交叉选择 | 更新实体 ID 集合并发出选择信号。 |
-| `s_cad_viewport_grip.cpp` | 夹点生成、拖动、提交/取消 | 预览使用实体副本，确认后以事务替换。 |
-| `s_cad_viewport_transform.cpp` | 移动、复制、旋转、缩放、镜像 | 调用共享实体变换函数，生成预览并事务提交。 |
-| `s_cad_viewport_modify_complete.cpp` | 通用修改完成逻辑 | 集中处理删除、变换等选中实体的最终提交和状态清理。 |
-| `s_cad_viewport_stretch.cpp` | 拉伸 | 依据窗口/夹点集合变换受影响顶点并预览。 |
-| `s_cad_viewport_lengthen.cpp` | 拉长 | 处理线/弧等支持实体的长度修改。 |
-| `s_cad_viewport_align.cpp` | 对齐 | 收集源/目标点，计算平移旋转及可选缩放。 |
-| `s_cad_viewport_curve_draw.cpp` | 线、圆、多段线等基础绘制 | 收集点和宽度/bulge，最终调用事务创建实体。 |
-| `s_cad_viewport_curve_construction.cpp` | 圆/圆弧多种构造 | 调用相切圆和圆弧几何求解，绘制候选预览。 |
-| `s_cad_viewport_standard_shape.cpp` | 标准形状命令 | 由中心/半径调用 Geometry 生成多段线。 |
-| `s_cad_viewport_curve_trim.cpp` | 修剪选择、计算和预览 | 选边界与目标，调用交点/裁剪算法；最终替换或删除。 |
-| `s_cad_viewport_curve_extend.cpp` | 延伸计算 | 找边界交点并延伸支持曲线。 |
-| `s_cad_viewport_curve_break.cpp` | 打断计算 | 将实体按一或两点拆分为记录集合。 |
-| `s_cad_viewport_curve_join.cpp` | 连接计算 | 合并相容线段/多段线并处理方向。 |
-| `s_cad_viewport_curve_fillet.cpp` | 圆角核心计算 | 求两曲线切点和新圆弧/修剪实体。 |
-| `s_cad_viewport_curve_chamfer.cpp` | 倒角核心计算 | 使用两距离生成倒角线和修剪结果。 |
-| `s_cad_viewport_fillet.cpp` | 圆角交互与预览 | 管理半径、实体选择和事务提交。 |
-| `s_cad_viewport_chamfer.cpp` | 倒角交互与预览 | 管理两距离、选择和提交。 |
-| `s_cad_viewport_blend.cpp` | 混接 | 在曲线间生成平滑样条连接及预览。 |
-| `s_cad_viewport_break_render.cpp` | 打断预览 | 绘制切点和将保留/删除的区段。 |
-| `s_cad_viewport_extend_render.cpp` | 延伸预览 | 绘制延伸后的临时几何。 |
-| `s_cad_viewport_join_render.cpp` | 连接预览 | 绘制合并候选。 |
-| `s_cad_viewport_explode_render.cpp` | 分解预览 | 绘制由复合实体生成的子实体。 |
-| `s_cad_viewport_array_rect.cpp` | 矩形阵列 | 行列数、间距、预览和关联阵列提交。 |
-| `s_cad_viewport_array_polar.cpp` | 极轴阵列 | 中心、数量、填充角和旋转预览。 |
-| `s_cad_viewport_array_path.cpp` | 路径阵列 | 选择路径、数量、对齐和沿路径放置。 |
-| `s_cad_viewport_array_edit.cpp` | 关联阵列编辑 | 读取/更新 `SAssociativeArrayData` 并重建实例。 |
-| `s_cad_viewport_polyline_edit.cpp` | PEDIT 交互 | 选择多段线，处理 Close/Open/Join/Width/Reverse/Decurve 等关键字。 |
-| `s_cad_viewport_spline_edit.cpp` | 样条编辑交互 | 控制点选择、反向、转多段线和预览。 |
-| `s_cad_viewport_annotation.cpp` | Text/MText/Leader | 收集位置和文本参数，创建注释实体。 |
-| `s_cad_viewport_dimension.cpp` | 尺寸输入、测量和绘制 | 映射工具到 `SDimensionType`，绘制箭头/文字并提交尺寸。 |
-| `s_cad_viewport_hatch.cpp` | Hatch 边界与预览 | 从闭合实体构造 Hatch，应用当前填充设置。 |
-| `s_cad_viewport_drafting.cpp` | 栅格和绘图辅助显示 | 绘制旋转网格、正交/捕捉相关辅助。 |
+| `vp_cad_viewport_events.cpp` | OpenGL 初始化、paintGL、resize、鼠标/滚轮/键盘事件 | 事件转世界坐标；paintGL 清背景后用 QPainter 调用各绘制层。 |
+| `vp_cad_viewport_render.cpp` | 网格、实体集合和通用预览调度 | 读取 Document，只画可见/未冻结图层；调用实体专用绘制。 |
+| `vp_cad_viewport_entity_render.cpp` | 每种实体的 QPainter 绘制 | 使用 `worldToScreen()`；处理线型、线宽、文字、曲线和选中样式。 |
+| `vp_cad_viewport_overlay.cpp` | 导航和通用叠加 | 绘制坐标/提示等非文档图形。 |
+| `vp_cad_viewport_entity_overlay.cpp` | 节点、方向、顺序显示 | 根据开关读取实体关键点和刀路方向，不修改实体。 |
+| `vp_cad_viewport_snap_render.cpp` | 捕捉标记 | 显示当前 `VpObjectSnapResult` 和追踪提示。 |
+| `vp_cad_viewport_simulation.cpp` | 刀路仿真叠加 | 读取运动快照、已完成数量和显示开关。 |
+| `vp_cad_viewport_appearance.cpp` | 画布/网格/线宽等外观设置 | 接收主题/界面设置，触发 repaint。 |
+| `vp_cad_viewport_zoom.cpp` | 世界/屏幕变换、缩放范围 | 维护 `m_zoom`、`m_pan_offset`，保证缩放上下限。 |
+| `vp_cad_viewport_interaction.cpp` | 通用点接受和工具阶段调度 | 根据 `VpToolMode` 把点送到绘制/修改/标注处理器。 |
+| `vp_cad_viewport_keyword.cpp` | 命令关键字 | 解释当前工具可接受的 Close/Undo/Radius 等关键字。 |
+| `vp_cad_viewport_tracking.cpp` | 正交、栅格、对象追踪约束 | 组合 `constrainedPoint()` 和参考点，输出最终候选。 |
+| `vp_cad_viewport_selection.cpp` | 命中、点选、窗口/交叉选择 | 更新实体 ID 集合并发出选择信号。 |
+| `vp_cad_viewport_grip.cpp` | 夹点生成、拖动、提交/取消 | 预览使用实体副本，确认后以事务替换。 |
+| `vp_cad_viewport_transform.cpp` | 移动、复制、旋转、缩放、镜像 | 调用共享实体变换函数，生成预览并事务提交。 |
+| `vp_cad_viewport_modify_complete.cpp` | 通用修改完成逻辑 | 集中处理删除、变换等选中实体的最终提交和状态清理。 |
+| `vp_cad_viewport_stretch.cpp` | 拉伸 | 依据窗口/夹点集合变换受影响顶点并预览。 |
+| `vp_cad_viewport_lengthen.cpp` | 拉长 | 处理线/弧等支持实体的长度修改。 |
+| `vp_cad_viewport_align.cpp` | 对齐 | 收集源/目标点，计算平移旋转及可选缩放。 |
+| `vp_cad_viewport_curve_draw.cpp` | 线、圆、多段线等基础绘制 | 收集点和宽度/bulge，最终调用事务创建实体。 |
+| `vp_cad_viewport_curve_construction.cpp` | 圆/圆弧多种构造 | 调用相切圆和圆弧几何求解，绘制候选预览。 |
+| `vp_cad_viewport_standard_shape.cpp` | 标准形状命令 | 由中心/半径调用 Geometry 生成多段线。 |
+| `vp_cad_viewport_curve_trim.cpp` | 修剪选择、计算和预览 | 选边界与目标，调用交点/裁剪算法；最终替换或删除。 |
+| `vp_cad_viewport_curve_extend.cpp` | 延伸计算 | 找边界交点并延伸支持曲线。 |
+| `vp_cad_viewport_curve_break.cpp` | 打断计算 | 将实体按一或两点拆分为记录集合。 |
+| `vp_cad_viewport_curve_join.cpp` | 连接计算 | 合并相容线段/多段线并处理方向。 |
+| `vp_cad_viewport_curve_fillet.cpp` | 圆角核心计算 | 求两曲线切点和新圆弧/修剪实体。 |
+| `vp_cad_viewport_curve_chamfer.cpp` | 倒角核心计算 | 使用两距离生成倒角线和修剪结果。 |
+| `vp_cad_viewport_fillet.cpp` | 圆角交互与预览 | 管理半径、实体选择和事务提交。 |
+| `vp_cad_viewport_chamfer.cpp` | 倒角交互与预览 | 管理两距离、选择和提交。 |
+| `vp_cad_viewport_blend.cpp` | 混接 | 在曲线间生成平滑样条连接及预览。 |
+| `vp_cad_viewport_break_render.cpp` | 打断预览 | 绘制切点和将保留/删除的区段。 |
+| `vp_cad_viewport_extend_render.cpp` | 延伸预览 | 绘制延伸后的临时几何。 |
+| `vp_cad_viewport_join_render.cpp` | 连接预览 | 绘制合并候选。 |
+| `vp_cad_viewport_explode_render.cpp` | 分解预览 | 绘制由复合实体生成的子实体。 |
+| `vp_cad_viewport_array_rect.cpp` | 矩形阵列 | 行列数、间距、预览和关联阵列提交。 |
+| `vp_cad_viewport_array_polar.cpp` | 极轴阵列 | 中心、数量、填充角和旋转预览。 |
+| `vp_cad_viewport_array_path.cpp` | 路径阵列 | 选择路径、数量、对齐和沿路径放置。 |
+| `vp_cad_viewport_array_edit.cpp` | 关联阵列编辑 | 读取/更新 `VpAssociativeArrayData` 并重建实例。 |
+| `vp_cad_viewport_polyline_edit.cpp` | PEDIT 交互 | 选择多段线，处理 Close/Open/Join/Width/Reverse/Decurve 等关键字。 |
+| `vp_cad_viewport_spline_edit.cpp` | 样条编辑交互 | 控制点选择、反向、转多段线和预览。 |
+| `vp_cad_viewport_annotation.cpp` | Text/MText/Leader | 收集位置和文本参数，创建注释实体。 |
+| `vp_cad_viewport_dimension.cpp` | 尺寸输入、测量和绘制 | 映射工具到 `VpDimensionType`，绘制箭头/文字并提交尺寸。 |
+| `vp_cad_viewport_hatch.cpp` | Hatch 边界与预览 | 从闭合实体构造 Hatch，应用当前填充设置。 |
+| `vp_cad_viewport_drafting.cpp` | 栅格和绘图辅助显示 | 绘制旋转网格、正交/捕捉相关辅助。 |
 
-以上文件都实现同一个 `SCadViewport`，没有各自独立对象。它们共享头文件中的状态，因此修改
+以上文件都实现同一个 `VpCadViewport`，没有各自独立对象。它们共享头文件中的状态，因此修改
 一个交互流程时必须检查事件调度、取消清理、预览绘制和最终提交是否同时更新。
 
 ### 13.4 视口类型
 
-#### `SToolMode`
+#### `VpToolMode`
 
 覆盖 Select、Line、Circle、Polyline、PolylineEdit、Ellipse、Spline、Rectangle、
 StandardShape、Arc、Move、Copy、Rotate、Scale、Mirror、Erase、Trim、Extend、Break、Join、
@@ -694,21 +736,21 @@ Explode、Stretch、Lengthen、Fillet、Chamfer、Blend、Align、三类阵列�
 
 #### 夹点类型
 
-- `SGripRole` 区分整体移动、控制点、半径点、弧起终点；
-- `SGripOperation` 区分 Stretch/Move/Rotate/Scale/Mirror；
-- `SGripHandle` 关联实体 ID、角色、索引和世界点；
+- `VpGripRole` 区分整体移动、控制点、半径点、弧起终点；
+- `VpGripOperation` 区分 Stretch/Move/Rotate/Scale/Mirror；
+- `VpGripHandle` 关联实体 ID、角色、索引和世界点；
 - `entityGripHandles()` 从实体生成可编辑夹点；
 - `gripEditedEntity()` 和 `gripTransformedEntities()` 生成预览/提交值。
 
 #### 构造模式
 
-`SCircleConstruction` 包含圆心半径/直径、两点、三点、两切半径、三切；
-`SArcConstruction` 包含三点以及中心/起点/终点/角度/方向/半径组合。
+`VpCircleConstruction` 包含圆心半径/直径、两点、三点、两切半径、三切；
+`VpArcConstruction` 包含三点以及中心/起点/终点/角度/方向/半径组合。
 
-#### `SCadViewport`
+#### `VpCadViewport`
 
-- **所有权**：由 `SCadWorkspaceWidget` 的 Qt 子对象树拥有。
-- **文档引用**：`QPointer<SCadDocument>`；`setDocument()` 重连信号并刷新。
+- **所有权**：由 `VpCadWorkspaceWidget` 的 Qt 子对象树拥有。
+- **文档引用**：`QPointer<VpCadDocument>`；`setDocument()` 重连信号并刷新。
 - **视图状态**：缩放、平移、画布/网格颜色、网格开关、线宽显示。
 - **绘图辅助**：对象捕捉位掩码、正交、网格捕捉、旋转、追踪点。
 - **命令状态**：当前/上次工具、首点、输入点、参数、文本、Hatch、阵列设置。
@@ -739,7 +781,7 @@ Explode、Stretch、Lengthen、Fillet、Chamfer、Blend、Align、三类阵列�
 视口、精确捕捉、夹点、阵列、曲线构造、偏移、圆角、混接、多段线、样条、标注、尺寸、
 Hatch 和标准形状测试覆盖核心纯函数及部分 offscreen 交互。真实高 DPI、OpenGL、字体、Ribbon
 和停靠组合仍需人工视觉验收。首要技术债是把命令会话状态、预览计算和渲染适配器从
-`SCadViewport` 进一步拆开。
+`VpCadViewport` 进一步拆开。
 
 ## 14. `sgraphGui`：主窗口、工作区和设计系统
 
@@ -754,77 +796,77 @@ GUI 依赖全部自研库、SARibbon、Qt ADS 和 Qt Widgets/Svg/PrintSupport。
 | 文件 | 负责的方法组 | 关系与边界 |
 | --- | --- | --- |
 | `sgraphGui/CMakeLists.txt` | `smartGui` | 登记 GUI、设计系统和 qrc，链接全部内部库、SARibbon、Qt ADS。 |
-| `s_cad_main_window.h` | `SCadMainWindow` | 声明窗口生命周期、所有 action、拥有对象和分拆方法。 |
-| `s_cad_main_window.cpp` | 构造、析构、基础连接 | 按顺序创建 Action/Ribbon/停靠/状态栏，连接文档与视口。 |
-| `s_cad_main_window_setup.cpp` | Action、Ribbon、状态栏骨架 | 建立主界面结构并注册工具 action。 |
-| `s_cad_main_window_workspace.cpp` | Qt ADS 停靠工作区 | 创建中央工作区、图层/属性/命令停靠，配置比例和兼容 object name。 |
-| `s_cad_main_window_command.cpp` | 命令执行主路由 | 规范化文本，路由坐标、视图、绘图、修改、IO 和设置命令。 |
-| `s_cad_main_window_execute.cpp` | 命令子路由 | 处理多类命令别名和通用工具激活。 |
-| `s_cad_main_window_coordinate.cpp` | 坐标输入 | 调用 Commands 解析坐标并把世界点交给视口。 |
-| `s_cad_main_window_drafting.cpp` | 绘图辅助 UI | 对象捕捉、正交、网格、追踪等 Action 与视口状态同步。 |
-| `s_cad_main_window_display.cpp` | 显示选项 | 节点、方向、顺序、线宽等显示开关。 |
-| `s_cad_main_window_view.cpp` | 视图命令 | 缩放范围和视图相关 Ribbon 配置。 |
-| `s_cad_main_window_file.cpp` | 新建、打开、保存、布局设置 | 路由扩展名、关闭确认、窗口标题、工作区持久化。 |
-| `s_cad_main_window_vector_import.cpp` | SVG/位图导入 | 打开导入对话框，将中间几何替换为新文档实体。 |
-| `s_cad_main_window_plot.cpp` | 打印/输出 | 打印样式管理、输出命令和兼容提示。 |
-| `s_cad_main_window_recovery.cpp` | 恢复入口 | 创建恢复副本、展示候选并恢复原路径。 |
-| `s_cad_main_window_audit.cpp` | 审计入口 | 运行只读或修复审计，汇总报告给用户。 |
-| `s_cad_main_window_layer.cpp` | 图层 UI | 图层停靠操作、清空图层、颜色和当前层同步。 |
-| `s_cad_main_window_annotation.cpp` | 注释 Ribbon/命令 | Text、MText、Leader 参数和工具激活。 |
-| `s_cad_main_window_dimension.cpp` | 尺寸 Ribbon/命令 | 多种尺寸工具、图标和命令映射。 |
-| `s_cad_main_window_dimension_style.cpp` | 尺寸样式对话框 | 管理样式并同步文档当前样式。 |
-| `s_cad_main_window_text_style.cpp` | 文字样式对话框 | 管理字体/高度等文字样式。 |
-| `s_cad_main_window_hatch.cpp` | Hatch UI | 填充设置、新建/编辑入口和视口参数同步。 |
-| `s_cad_main_window_boolean.cpp` | 多边形布尔 UI | 配置 Ribbon，收集选中实体并调用 Geometry/事务。 |
-| `s_cad_main_window_quick_operation.cpp` | 快捷实体操作 | 配置快速栏并调用 `executeQuickEntityOperation()`。 |
-| `s_cad_main_window_simulation.cpp` | 刀路仿真 UI | 仿真 Ribbon、命令和控制器状态同步。 |
-| `s_cad_main_window_shortcut.cpp` | 快捷键设置 | 注册 Action、打开设置对话框并刷新绑定。 |
-| `s_cad_main_window_ui_scale.cpp` | UI 比例 | 应用比例到 token、Ribbon、停靠和工作区。 |
-| `s_cad_main_window_units.cpp` | 单位设置 | 编辑 `SDrawingSettings` 并通过文档提交。 |
-| `s_cad_main_window_icon.cpp` | 图标刷新 | 主题改变时重建 Action、停靠和状态按钮图标。 |
+| `vp_cad_main_window.h` | `VpCadMainWindow` | 声明窗口生命周期、所有 action、拥有对象和分拆方法。 |
+| `vp_cad_main_window.cpp` | 构造、析构、基础连接 | 按顺序创建 Action/Ribbon/停靠/状态栏，连接文档与视口。 |
+| `vp_cad_main_window_setup.cpp` | Action、Ribbon、状态栏骨架 | 建立主界面结构并注册工具 action。 |
+| `vp_cad_main_window_workspace.cpp` | Qt ADS 停靠工作区 | 创建中央工作区、图层/属性/命令停靠，配置比例和兼容 object name。 |
+| `vp_cad_main_window_command.cpp` | 命令执行主路由 | 规范化文本，路由坐标、视图、绘图、修改、IO 和设置命令。 |
+| `vp_cad_main_window_execute.cpp` | 命令子路由 | 处理多类命令别名和通用工具激活。 |
+| `vp_cad_main_window_coordinate.cpp` | 坐标输入 | 调用 Commands 解析坐标并把世界点交给视口。 |
+| `vp_cad_main_window_drafting.cpp` | 绘图辅助 UI | 对象捕捉、正交、网格、追踪等 Action 与视口状态同步。 |
+| `vp_cad_main_window_display.cpp` | 显示选项 | 节点、方向、顺序、线宽等显示开关。 |
+| `vp_cad_main_window_view.cpp` | 视图命令 | 缩放范围和视图相关 Ribbon 配置。 |
+| `vp_cad_main_window_file.cpp` | 新建、打开、保存、布局设置 | 路由扩展名、关闭确认、窗口标题、工作区持久化。 |
+| `vp_cad_main_window_vector_import.cpp` | SVG/位图导入 | 打开导入对话框，将中间几何替换为新文档实体。 |
+| `vp_cad_main_window_plot.cpp` | 打印/输出 | 打印样式管理、输出命令和兼容提示。 |
+| `vp_cad_main_window_recovery.cpp` | 恢复入口 | 创建恢复副本、展示候选并恢复原路径。 |
+| `vp_cad_main_window_audit.cpp` | 审计入口 | 运行只读或修复审计，汇总报告给用户。 |
+| `vp_cad_main_window_layer.cpp` | 图层 UI | 图层停靠操作、清空图层、颜色和当前层同步。 |
+| `vp_cad_main_window_annotation.cpp` | 注释 Ribbon/命令 | Text、MText、Leader 参数和工具激活。 |
+| `vp_cad_main_window_dimension.cpp` | 尺寸 Ribbon/命令 | 多种尺寸工具、图标和命令映射。 |
+| `vp_cad_main_window_dimension_style.cpp` | 尺寸样式对话框 | 管理样式并同步文档当前样式。 |
+| `vp_cad_main_window_text_style.cpp` | 文字样式对话框 | 管理字体/高度等文字样式。 |
+| `vp_cad_main_window_hatch.cpp` | Hatch UI | 填充设置、新建/编辑入口和视口参数同步。 |
+| `vp_cad_main_window_boolean.cpp` | 多边形布尔 UI | 配置 Ribbon，收集选中实体并调用 Geometry/事务。 |
+| `vp_cad_main_window_quick_operation.cpp` | 快捷实体操作 | 配置快速栏并调用 `executeQuickEntityOperation()`。 |
+| `vp_cad_main_window_simulation.cpp` | 刀路仿真 UI | 仿真 Ribbon、命令和控制器状态同步。 |
+| `vp_cad_main_window_shortcut.cpp` | 快捷键设置 | 注册 Action、打开设置对话框并刷新绑定。 |
+| `vp_cad_main_window_ui_scale.cpp` | UI 比例 | 应用比例到 token、Ribbon、停靠和工作区。 |
+| `vp_cad_main_window_units.cpp` | 单位设置 | 编辑 `VpDrawingSettings` 并通过文档提交。 |
+| `vp_cad_main_window_icon.cpp` | 图标刷新 | 主题改变时重建 Action、停靠和状态按钮图标。 |
 
 ### 14.3 其他 GUI 组件文件清单
 
 | 文件 | 类型/作用 | 主要协作者 |
 | --- | --- | --- |
-| `s_cad_workspace_widget.h/.cpp` | `SCadWorkspaceWidget`：文档标签、视口和快速操作工具栏容器 | MainWindow、Viewport、Document |
-| `s_cad_workspace_proportion.cpp` | 计算/应用主工作区和停靠比例 | MainWindow、Qt ADS |
-| `s_command_line_widget.h/.cpp` | `SCommandLineWidget`：历史文本、输入框、补全、预览和提交信号 | Commands 目录、MainWindow |
-| `s_selection_context_bar.h/.cpp` | `SSelectionContextBar`：选择后的上下文快捷操作 | MainWindow、Viewport |
-| `s_cad_property_tree.h/.cpp` | 构建实体/图层属性树项 | Document、DesignToken |
-| `s_cad_property_ui.h/.cpp` | 属性编辑控件和选项辅助函数 | 属性停靠面板、Document |
-| `s_dialog_service.h/.cpp` | `SDialog`、`SDialogService`：统一对话框尺寸、消息和布局策略 | 全部 GUI 对话框 |
-| `s_shortcut_manager.h/.cpp` | `SShortcutBinding`、`SShortcutManager`：注册、冲突检查、持久化、应用 QAction 快捷键 | MainWindow、QSettings |
-| `s_shortcut_dialog.h/.cpp` | `SShortcutDialog`：搜索、树形显示和录入快捷键 | ShortcutManager |
-| `s_vector_import_dialog.h/.cpp` | `SVectorImportDialog`：SVG/位图预览、背景/缩放/填充设置和中间结果重建 | IO bitmap/SVG/vector fill |
-| `s_quick_entity_operation.h/.cpp` | `SQuickEntityOperation`、结果结构和执行函数 | DocumentTransaction、MainWindow |
-| `s_toolpath_sort_dialog.h/.cpp` | `SToolpathSortDialog`：编辑 `SToolpathSortOptions` | MainWindow、Toolpath Document |
-| `s_toolpath_simulation_controller.h/.cpp` | `SSimulationState`、`SToolpathSimulationController`：定时推进运动并更新视口 | Document、Viewport、QTimer |
-| `s_gui_resources.qrc` | 主题 JSON 等 Qt 资源表 | App `Q_INIT_RESOURCE`、ThemeManager |
+| `vp_cad_workspace_widget.h/.cpp` | `VpCadWorkspaceWidget`：文档标签、视口和快速操作工具栏容器 | MainWindow、Viewport、Document |
+| `vp_cad_workspace_proportion.cpp` | 计算/应用主工作区和停靠比例 | MainWindow、Qt ADS |
+| `vp_command_line_widget.h/.cpp` | `VpCommandLineWidget`：历史文本、输入框、补全、预览和提交信号 | Commands 目录、MainWindow |
+| `vp_selection_context_bar.h/.cpp` | `VpSelectionContextBar`：选择后的上下文快捷操作 | MainWindow、Viewport |
+| `vp_cad_property_tree.h/.cpp` | 构建实体/图层属性树项 | Document、DesignToken |
+| `vp_cad_property_ui.h/.cpp` | 属性编辑控件和选项辅助函数 | 属性停靠面板、Document |
+| `vp_dialog_service.h/.cpp` | `VpDialog`、`VpDialogService`：统一对话框尺寸、消息和布局策略 | 全部 GUI 对话框 |
+| `vp_shortcut_manager.h/.cpp` | `VpShortcutBinding`、`VpShortcutManager`：注册、冲突检查、持久化、应用 QAction 快捷键 | MainWindow、QSettings |
+| `vp_shortcut_dialog.h/.cpp` | `VpShortcutDialog`：搜索、树形显示和录入快捷键 | ShortcutManager |
+| `vp_vector_import_dialog.h/.cpp` | `VpVectorImportDialog`：SVG/位图预览、背景/缩放/填充设置和中间结果重建 | IO bitmap/SVG/vector fill |
+| `vp_quick_entity_operation.h/.cpp` | `VpQuickEntityOperation`、结果结构和执行函数 | DocumentTransaction、MainWindow |
+| `vp_toolpath_sort_dialog.h/.cpp` | `VpToolpathSortDialog`：编辑 `VpToolpathSortOptions` | MainWindow、Toolpath Document |
+| `vp_toolpath_simulation_controller.h/.cpp` | `VpSimulationState`、`VpToolpathSimulationController`：定时推进运动并更新视口 | Document、Viewport、QTimer |
+| `vp_gui_resources.qrc` | 主题 JSON 等 Qt 资源表 | App `Q_INIT_RESOURCE`、ThemeManager |
 
 ### 14.4 设计系统文件清单
 
 | 文件 | 类型/作用 | 说明 |
 | --- | --- | --- |
-| `sgraphDesignSystem/s_design_token.h` | `SDesignToken`、`SThemeMode` | 集中颜色、间距、尺寸和主题枚举，减少控件硬编码。 |
-| `sgraphDesignSystem/s_design_metrics.json` | 尺寸 token 数据 | 控件高度、间距、图标尺寸等可缩放设计参数。 |
-| `sgraphDesignSystem/s_theme_manager.h/.cpp` | `SThemeManager` | 加载主题 JSON、应用样式表、保存模式并发出主题变化。 |
-| `sgraphDesignSystem/s_theme_dark.json` | 深色主题 | 当前默认颜色与控件样式数据。 |
-| `sgraphDesignSystem/s_theme_light.json` | 浅色主题 | 浅色模式数据。 |
-| `sgraphDesignSystem/s_theme_high_contrast.json` | 高对比主题 | 可访问性和高对比显示数据。 |
-| `sgraphDesignSystem/s_icon_provider.h/.cpp` | `SIconType`、`SIconProvider` | 将语义图标枚举映射为主题自适应 QIcon。 |
-| `sgraphDesignSystem/s_icon_names.cpp` | 图标名/语义映射 | 集中名称与分类，避免 Action 使用资源路径。 |
-| `sgraphDesignSystem/s_file_icon.h/.cpp` | 文件类图标绘制 | 新建、打开、保存、导入导出等。 |
-| `sgraphDesignSystem/s_dimension_icon.h/.cpp` | 尺寸图标绘制 | 各尺寸类型的几何符号。 |
-| `sgraphDesignSystem/s_hatch_icon.h/.cpp` | Hatch 图标绘制 | 填充/图案相关符号。 |
-| `sgraphDesignSystem/s_import_icon.h/.cpp` | 导入图标绘制 | SVG、位图等导入语义。 |
-| `sgraphDesignSystem/s_output_icon.h/.cpp` | 输出图标绘制 | 打印、导出和结果输出语义。 |
-| `sgraphDesignSystem/s_quick_transform_icon.h/.cpp` | 快速变换图标 | 移动、旋转、镜像等快捷操作。 |
-| `sgraphDesignSystem/s_shape_boolean_icon.h/.cpp` | 布尔图标 | 并、交、差、异或的形状组合。 |
-| `sgraphDesignSystem/s_specialized_icon.h/.cpp` | 专用图标 | 不适合其他分类的 CAD/CAM 符号。 |
-| `sgraphDesignSystem/s_proxy_style.h/.cpp` | `SProxyStyle` | 调整 Qt 原生控件绘制和尺寸，使主题/比例一致。 |
+| `sgraphDesignSystem/vp_design_token.h` | `VpDesignToken`、`VpThemeMode` | 集中颜色、间距、尺寸和主题枚举，减少控件硬编码。 |
+| `sgraphDesignSystem/vp_design_metrics.json` | 尺寸 token 数据 | 控件高度、间距、图标尺寸等可缩放设计参数。 |
+| `sgraphDesignSystem/vp_theme_manager.h/.cpp` | `VpThemeManager` | 加载主题 JSON、应用样式表、保存模式并发出主题变化。 |
+| `sgraphDesignSystem/vp_theme_dark.json` | 深色主题 | 当前默认颜色与控件样式数据。 |
+| `sgraphDesignSystem/vp_theme_light.json` | 浅色主题 | 浅色模式数据。 |
+| `sgraphDesignSystem/vp_theme_high_contrast.json` | 高对比主题 | 可访问性和高对比显示数据。 |
+| `sgraphDesignSystem/vp_icon_provider.h/.cpp` | `VpIconType`、`VpIconProvider` | 将语义图标枚举映射为主题自适应 QIcon。 |
+| `sgraphDesignSystem/vp_icon_names.cpp` | 图标名/语义映射 | 集中名称与分类，避免 Action 使用资源路径。 |
+| `sgraphDesignSystem/vp_file_icon.h/.cpp` | 文件类图标绘制 | 新建、打开、保存、导入导出等。 |
+| `sgraphDesignSystem/vp_dimension_icon.h/.cpp` | 尺寸图标绘制 | 各尺寸类型的几何符号。 |
+| `sgraphDesignSystem/vp_hatch_icon.h/.cpp` | Hatch 图标绘制 | 填充/图案相关符号。 |
+| `sgraphDesignSystem/vp_import_icon.h/.cpp` | 导入图标绘制 | SVG、位图等导入语义。 |
+| `sgraphDesignSystem/vp_output_icon.h/.cpp` | 输出图标绘制 | 打印、导出和结果输出语义。 |
+| `sgraphDesignSystem/vp_quick_transform_icon.h/.cpp` | 快速变换图标 | 移动、旋转、镜像等快捷操作。 |
+| `sgraphDesignSystem/vp_shape_boolean_icon.h/.cpp` | 布尔图标 | 并、交、差、异或的形状组合。 |
+| `sgraphDesignSystem/vp_specialized_icon.h/.cpp` | 专用图标 | 不适合其他分类的 CAD/CAM 符号。 |
+| `sgraphDesignSystem/vp_proxy_style.h/.cpp` | `VpProxyStyle` | 调整 Qt 原生控件绘制和尺寸，使主题/比例一致。 |
 
-### 14.5 `SCadMainWindow`
+### 14.5 `VpCadMainWindow`
 
 - **基类**：`SARibbonMainWindow`；使用原生窗口框架与 Ribbon 内容区。
 - **核心所有权**：ThemeManager 引用；Document、ShortcutManager、RecoveryManager、
@@ -843,16 +885,16 @@ GUI 依赖全部自研库、SARibbon、Qt ADS 和 Qt Widgets/Svg/PrintSupport。
 
 ### 14.6 关键 GUI 类型
 
-- `SCommandLineWidget`：拥有只读历史区、输入框和 completer；发出命令提交和预览信号，不
+- `VpCommandLineWidget`：拥有只读历史区、输入框和 completer；发出命令提交和预览信号，不
   直接执行 CAD 修改。
-- `SShortcutManager`：绑定 command ID、显示名、分类、默认/当前 QKeySequence 和 QAction；
+- `VpShortcutManager`：绑定 command ID、显示名、分类、默认/当前 QKeySequence 和 QAction；
   冲突或无效序列应在应用前报告。
-- `SVectorImportDialog`：持有源 SVG/位图和中间 `SVectorImportGeometry`；参数变化直接调用
+- `VpVectorImportDialog`：持有源 SVG/位图和中间 `VpVectorImportGeometry`；参数变化直接调用
   `rebuildVectorData()`，当前大图可能在 GUI 线程阻塞。
-- `SToolpathSimulationController`：状态为 Stopped/Running/Paused 等，QTimer 推进完成运动数，
+- `VpToolpathSimulationController`：状态为 Stopped/Running/Paused 等，QTimer 推进完成运动数，
   把只读运动快照交给视口；不修改文档实体。
-- `SThemeManager`：当前主题和设计 token 的权威来源；主题变化驱动样式表和图标重建。
-- `SIconProvider`：根据语义枚举和 token 以 QPainter 生成图标，避免深/浅主题使用固定颜色位图。
+- `VpThemeManager`：当前主题和设计 token 的权威来源；主题变化驱动样式表和图标重建。
+- `VpIconProvider`：根据语义枚举和 token 以 QPainter 生成图标，避免深/浅主题使用固定颜色位图。
 
 ### 14.7 测试与人工验收
 
@@ -869,10 +911,10 @@ GUI 依赖全部自研库、SARibbon、Qt ADS 和 Qt Widgets/Svg/PrintSupport。
 ```mermaid
 sequenceDiagram
     participant OS as Windows
-    participant Main as s_main.cpp
+    participant Main as vp_main.cpp
     participant Settings as QSettings
-    participant Theme as SThemeManager
-    participant Window as SCadMainWindow
+    participant Theme as VpThemeManager
+    participant Window as VpCadMainWindow
     OS->>Main: 启动 vectorPath.exe
     Main->>Main: 设置 High DPI/OpenGL 属性
     Main->>Main: 创建 QApplication/资源/翻译器
@@ -895,11 +937,11 @@ vectorPath 值都不会被覆盖。迁移函数返回错误时当前 `main()` �
 sequenceDiagram
     participant User as 用户
     participant GUI as Ribbon/命令行/快捷键
-    participant Main as SCadMainWindow
-    participant View as SCadViewport
+    participant Main as VpCadMainWindow
+    participant View as VpCadViewport
     participant Geo as Geometry
-    participant Tx as SDocumentTransaction
-    participant Doc as SCadDocument
+    participant Tx as VpDocumentTransaction
+    participant Doc as VpCadDocument
     User->>GUI: 选择命令或输入别名
     GUI->>Main: executeCommand(text)
     Main->>View: setToolMode()/设置参数
@@ -940,8 +982,8 @@ sequenceDiagram
 ### 18.2 正常保存
 
 ```text
-SCadMainWindow::saveDocument[As]
-  -> SCadDocument::save()
+VpCadMainWindow::saveDocument[As]
+  -> VpCadDocument::save()
   -> saveInternal(update_document_state=true)
   -> QSaveFile + QDataStream(Qt_5_12, LittleEndian)
   -> magic + manifest + layers + states + styles + entities
@@ -962,11 +1004,11 @@ SCadMainWindow::saveDocument[As]
 主窗口根据扩展名选择：
 
 ```text
-.vectorpath/.smartcam/.smartcad -> SCadDocument::load
-.dxf                            -> SDxfCodec::read
-.dwg                            -> SDwgCodec::read -> LibreDWG -> DXF codec
+.vectorpath/.smartcam/.smartcad -> VpCadDocument::load
+.dxf                            -> VpDxfCodec::read
+.dwg                            -> VpDwgCodec::read -> LibreDWG -> DXF codec
 .svg                            -> parseSvgVectorData -> importVectorGeometry
-位图                            -> SVectorImportDialog -> bitmapToSvgData
+位图                            -> VpVectorImportDialog -> bitmapToSvgData
                                   -> SVG parse/vector import -> Document
 ```
 
@@ -975,9 +1017,9 @@ SCadMainWindow::saveDocument[As]
 
 ## 20. SVG 与位图导入到 CAD 实体
 
-`SVectorImportDialog` 对 SVG 直接解析，对位图先生成 SVG。两者随后共享轮廓/区域、缩放、
-填充和颜色图层路径。`SVectorImportSettings` 决定线框、填充、缩放和背景策略；
-`SVectorImportGeometry` 保存待提交的彩色实体几何；`replaceWithVectorGeometry()` 创建新文档或
+`VpVectorImportDialog` 对 SVG 直接解析，对位图先生成 SVG。两者随后共享轮廓/区域、缩放、
+填充和颜色图层路径。`VpVectorImportSettings` 决定线框、填充、缩放和背景策略；
+`VpVectorImportGeometry` 保存待提交的彩色实体几何；`replaceWithVectorGeometry()` 创建新文档或
 清空目标后提交。
 
 颜色图层名称由颜色稳定生成；填充规则决定外环和孔洞组合。导入后 GUI 可执行 SVG 填充和
@@ -990,15 +1032,15 @@ sequenceDiagram
     participant UI as 排序对话框
     participant DocSvc as sortDocumentToolpaths
     participant Geo as Geometry toolpath
-    participant Doc as SCadDocument
-    participant Sim as SToolpathSimulationController
-    participant View as SCadViewport
-    UI->>DocSvc: 选中 ID + SToolpathSortOptions
+    participant Doc as VpCadDocument
+    participant Sim as VpToolpathSimulationController
+    participant View as VpCadViewport
+    UI->>DocSvc: 选中 ID + VpToolpathSortOptions
     DocSvc->>Geo: 提取可加工实体并排序/反向
     Geo-->>DocSvc: 新顺序和统计
     DocSvc->>Doc: 事务更新实体顺序/方向
     Doc-->>Sim: 文档变化
-    Sim->>Geo: 构建 SToolpathMotion 快照
+    Sim->>Geo: 构建 VpToolpathMotion 快照
     Sim->>View: 设置运动及完成段数
     View->>View: 绘制仿真、方向和顺序
 ```
@@ -1031,7 +1073,7 @@ Potrace 或曲线平滑，不减少颜色，也不把像素阶梯自动拟合成
 `extractRowRuns()` 从左到右扫描，每次颜色变化输出：
 
 ```text
-SColorRun { row, begin_x, end_x, color, run_id, is_foreground }
+VpColorRun { row, begin_x, end_x, color, run_id, is_foreground }
 ```
 
 区间为半开 `[begin_x,end_x)`，长度是 `end_x-begin_x`。背景游程也保留在行结构中以辅助边界
@@ -1053,7 +1095,7 @@ end   = min(A.end_x,   B.end_x)
 ### 23.4 稳定 ID 与并查集
 
 并行提取结束后，主线程严格按行、按行内顺序给前景游程分配 `0..N-1` ID。随后并行相邻行
-任务的 join 结果按固定 boundary 顺序串行送入 `SDisjointSet::unite()`。这种顺序避免线程完成
+任务的 join 结果按固定 boundary 顺序串行送入 `VpDisjointSet::unite()`。这种顺序避免线程完成
 先后改变最终组件根。
 
 图像顶行、底行以及每个游程左右侧生成有向边。所有边最终把 `block_id` 规范为并查集根，
@@ -1093,7 +1135,7 @@ settings.worker_count > 0 -> 使用显式值（至少 1）
 
 ```text
 GUI:
-SVectorImportDialog::rebuildVectorData()
+VpVectorImportDialog::rebuildVectorData()
   -> bitmapToSvgData()
   -> bitmapToVectorResult()
 
@@ -1103,12 +1145,12 @@ smartBitmapVectorBenchmark
   -> bitmapToVectorResult(worker_count=N)
 ```
 
-两者共享 `sgraphIo/s_bitmap_run_vectorizer.cpp`。flood fill 只位于基准模块，作为正确性和性能
+两者共享 `sgraphIo/vp_bitmap_run_vectorizer.cpp`。flood fill 只位于基准模块，作为正确性和性能
 参照，不是软件正式导入算法。基准绕过文件选择和 UI，但核心轮廓结果由同一函数生成。
 
 ## 25. 指标与失败语义
 
-`SBitmapVectorMetrics` 分别记录 scan、connection、stitch 和 total 纳秒；计数包括像素、游程、
+`VpBitmapVectorMetrics` 分别记录 scan、connection、stitch 和 total 纳秒；计数包括像素、游程、
 组件、压缩后段和轮廓；`estimated_working_bytes` 只估算核心游程/边容器，不等于进程峰值工作
 集；`svg_bytes` 是最终 QByteArray 大小。
 
@@ -1151,47 +1193,55 @@ smartBitmapVectorBenchmark
 
 # 第五部分：测试、基准、构建与发布
 
-## 27. `sgraphTests`：32 个日常测试文件
+## 27. `sgraphTests`：纯核心与桌面测试
 
-`sgraphTests/CMakeLists.txt` 为每个源文件建立独立 Qt Test 可执行程序并注册 CTest。需要 QWidget
-的测试设置 `QT_QPA_PLATFORM=offscreen`；PATH 注入 Qt 和 Qt ADS DLL 目录。
+`sgraphTests/CMakeLists.txt` 始终注册结果、几何、ID 集合与辅助绘图状态的纯 C++ 测试。
+桌面开启时再注册 Qt Test；需要 QWidget 的测试设置 `QT_QPA_PLATFORM=offscreen`，
+PATH 注入 Qt 和 Qt ADS DLL 目录。纯测试不启动 QApplication，也不加载 Qt DLL。
 
 | 测试文件 | CTest/领域 | 主要场景 |
 | --- | --- | --- |
-| `s_cad_document_test.cpp` | `smartDocumentTests` | 事务、实体、撤销重做、原生持久化、兼容扩展名。 |
-| `s_application_settings_migration_test.cpp` | `vectorPathApplicationSettingsMigrationTests` | 只迁移缺失键、不覆盖新值、空设置和错误边界。 |
-| `s_dwg_codec_test.cpp` | `vectorPathDwgCodecTests` | LibreDWG 可用性、DXF 中转、读写报告和失败。 |
-| `s_document_recovery_test.cpp` | `smartDocumentRecoveryTests` | 恢复副本、候选扫描、原路径恢复和清理。 |
-| `s_document_audit_test.cpp` | `smartDocumentAuditTests` | 问题发现、只读报告、修复和状态变化。 |
-| `s_cad_viewport_test.cpp` | `vectorPathViewportTests` | 工具状态、视图、选择、预览和基础交互。 |
-| `s_curve_offset_test.cpp` | `vectorPathCurveOffsetTests` | 线/圆/弧/多段线偏移和退化输入。 |
-| `s_array_operations_test.cpp` | `vectorPathArrayOperationsTests` | 矩形/极轴/路径阵列、关联参数和编辑。 |
-| `s_curve_fillet_test.cpp` | `vectorPathCurveFilletTests` | 曲线圆角、切点、半径零/过大和失败。 |
-| `s_spline_blend_test.cpp` | `vectorPathSplineBlendTests` | 曲线间样条混接、切向和预览结果。 |
-| `s_spline_edit_test.cpp` | `vectorPathSplineEditTests` | 控制点、反向、近似多段线和错误类型。 |
-| `s_annotation_test.cpp` | `vectorPathAnnotationTests` | Text/MText/Leader 创建、修改、绘制/持久化。 |
-| `s_dimension_test.cpp` | `vectorPathDimensionTests` | 多类尺寸测量、样式、绘制和二进制读写。 |
-| `s_hatch_test.cpp` | `vectorPathHatchTests` | 边界有效性、孔洞、填充创建、绘制和 IO。 |
-| `s_polyline_corner_test.cpp` | `vectorPathPolylineCornerTests` | 多段线 bulge、圆角、倒角和角点边界。 |
-| `s_grip_edit_test.cpp` | `vectorPathGripEditTests` | 不同实体夹点、拖动预览、变换和提交。 |
-| `s_precision_snap_test.cpp` | `vectorPathPrecisionSnapTests` | 栅格基、旋转捕捉、浮点精度和对象捕捉。 |
-| `s_command_line_widget_test.cpp` | `vectorPathCommandLineWidgetTests` | 输入、历史、补全、提交/预览信号。 |
-| `s_window_control_test.cpp` | `vectorPathWindowControlTests` | 窗口控制按钮、标题栏和窗口状态。 |
-| `s_workspace_persistence_test.cpp` | `vectorPathWorkspacePersistenceTests` | Qt ADS 布局保存、版本、兼容恢复。 |
-| `s_ellipse_test.cpp` | `vectorPathEllipseTests` | 椭圆构造、有效性、近似、绘制和 IO。 |
-| `s_curve_construction_test.cpp` | `vectorPathCurveConstructionTests` | 多模式圆/圆弧和相切几何。 |
-| `s_shortcut_manager_test.cpp` | `vectorPathShortcutManagerTests` | 默认绑定、冲突、设置持久化和 QAction 应用。 |
-| `s_dialog_size_policy_test.cpp` | `vectorPathDialogSizePolicyTests` | 统一对话框尺寸、缩放和屏幕边界。 |
-| `s_standard_shape_test.cpp` | `vectorPathStandardShapeTests` | 标准多边形/星形点序和退化参数。 |
-| `s_layer_color_workflow_test.cpp` | `vectorPathLayerColorWorkflowTests` | 按颜色建层、分配、合并、撤销和锁定边界。 |
-| `s_polygon_boolean_test.cpp` | `vectorPathPolygonBooleanTests` | 并/交/差/异或、孔洞、空结果和非法多边形。 |
-| `s_ui_scale_test.cpp` | `vectorPathUiScaleTests` | 比例 token、控件/工作区应用和持久化。 |
-| `s_toolpath_sort_test.cpp` | `vectorPathToolpathSortTests` | 可加工筛选、顺序、方向反转和文档提交。 |
-| `s_toolpath_simulation_test.cpp` | `vectorPathToolpathSimulationTests` | 运动快照、运行/暂停/停止、计时推进和视口同步。 |
-| `s_quick_entity_operation_test.cpp` | `vectorPathQuickEntityOperationTests` | 快捷变换、选择要求、事务和错误结果。 |
-| `s_svg_vector_import_test.cpp` | `vectorPathSvgVectorImportTests` | SVG path/区域/颜色层、位图核心、填充、去重和确定性。 |
+| `vp_core_result_test.cpp` | `vectorPathCoreResultTests` | 纯结果成功/失败、UTF-16 和原生错误字节。 |
+| `vp_geometry_core_test.cpp` | `vectorPathGeometryCoreTests` | 曲线采样边界、多边形面积/包含、五种布尔操作、错误与异常。 |
+| `vp_id_collection_test.cpp` | `vectorPathIdCollectionTests` | 稳定过滤、重复/缺失 ID、随机输入和零实体负载复制。 |
+| `vp_drafting_state_test.cpp` | `vectorPathDraftingStateTests` | 栅格、旋转、正交、追踪状态和参数边界，无 Qt。 |
+| `vp_qt_adapter_test.cpp` | `vectorPathQtAdapterTests` | UTF-16 代码单元往返及原生编码异常显示。 |
+| `vp_document_history_test.cpp` | `vectorPathDocumentHistoryTests` | 文档事务、撤销重做和历史行为。 |
+| `vp_cad_document_test.cpp` | `smartDocumentTests` | 事务、实体、撤销重做、原生持久化、兼容扩展名。 |
+| `vp_application_settings_migration_test.cpp` | `vectorPathApplicationSettingsMigrationTests` | 只迁移缺失键、不覆盖新值、空设置和错误边界。 |
+| `vp_dwg_codec_test.cpp` | `vectorPathDwgCodecTests` | LibreDWG 可用性、DXF 中转、读写报告和失败。 |
+| `vp_document_recovery_test.cpp` | `smartDocumentRecoveryTests` | 恢复副本、候选扫描、原路径恢复和清理。 |
+| `vp_document_audit_test.cpp` | `smartDocumentAuditTests` | 问题发现、只读报告、修复和状态变化。 |
+| `vp_cad_viewport_test.cpp` | `vectorPathViewportTests` | 工具状态、视图、选择、预览和基础交互。 |
+| `vp_curve_offset_test.cpp` | `vectorPathCurveOffsetTests` | 线/圆/弧/多段线偏移和退化输入。 |
+| `vp_array_operations_test.cpp` | `vectorPathArrayOperationsTests` | 矩形/极轴/路径阵列、关联参数和编辑。 |
+| `vp_curve_fillet_test.cpp` | `vectorPathCurveFilletTests` | 曲线圆角、切点、半径零/过大和失败。 |
+| `vp_spline_blend_test.cpp` | `vectorPathSplineBlendTests` | 曲线间样条混接、切向和预览结果。 |
+| `vp_spline_edit_test.cpp` | `vectorPathSplineEditTests` | 控制点、反向、近似多段线和错误类型。 |
+| `vp_annotation_test.cpp` | `vectorPathAnnotationTests` | Text/MText/Leader 创建、修改、绘制/持久化。 |
+| `vp_dimension_test.cpp` | `vectorPathDimensionTests` | 多类尺寸测量、样式、绘制和二进制读写。 |
+| `vp_hatch_test.cpp` | `vectorPathHatchTests` | 边界有效性、孔洞、填充创建、绘制和 IO。 |
+| `vp_polyline_corner_test.cpp` | `vectorPathPolylineCornerTests` | 多段线 bulge、圆角、倒角和角点边界。 |
+| `vp_grip_edit_test.cpp` | `vectorPathGripEditTests` | 不同实体夹点、拖动预览、变换和提交。 |
+| `vp_precision_snap_test.cpp` | `vectorPathPrecisionSnapTests` | 栅格基、旋转捕捉、浮点精度和对象捕捉。 |
+| `vp_command_line_widget_test.cpp` | `vectorPathCommandLineWidgetTests` | 输入、历史、补全、提交/预览信号。 |
+| `vp_window_control_test.cpp` | `vectorPathWindowControlTests` | 窗口控制按钮、标题栏和窗口状态。 |
+| `vp_workspace_persistence_test.cpp` | `vectorPathWorkspacePersistenceTests` | Qt ADS 布局保存、版本、兼容恢复。 |
+| `vp_ellipse_test.cpp` | `vectorPathEllipseTests` | 椭圆构造、有效性、近似、绘制和 IO。 |
+| `vp_curve_construction_test.cpp` | `vectorPathCurveConstructionTests` | 多模式圆/圆弧和相切几何。 |
+| `vp_shortcut_manager_test.cpp` | `vectorPathShortcutManagerTests` | 默认绑定、冲突、设置持久化和 QAction 应用。 |
+| `vp_dialog_size_policy_test.cpp` | `vectorPathDialogSizePolicyTests` | 统一对话框尺寸、缩放和屏幕边界。 |
+| `vp_standard_shape_test.cpp` | `vectorPathStandardShapeTests` | 标准多边形/星形点序和退化参数。 |
+| `vp_layer_color_workflow_test.cpp` | `vectorPathLayerColorWorkflowTests` | 按颜色建层、分配、合并、撤销和锁定边界。 |
+| `vp_polygon_boolean_test.cpp` | `vectorPathPolygonBooleanTests` | 并/交/差/异或、孔洞、空结果和非法多边形。 |
+| `vp_ui_scale_test.cpp` | `vectorPathUiScaleTests` | 比例 token、控件/工作区应用和持久化。 |
+| `vp_toolpath_sort_test.cpp` | `vectorPathToolpathSortTests` | 可加工筛选、顺序、方向反转和文档提交。 |
+| `vp_toolpath_simulation_test.cpp` | `vectorPathToolpathSimulationTests` | 运动快照、运行/暂停/停止、计时推进和视口同步。 |
+| `vp_quick_entity_operation_test.cpp` | `vectorPathQuickEntityOperationTests` | 快捷变换、选择要求、事务和错误结果。 |
+| `vp_svg_vector_import_test.cpp` | `vectorPathSvgVectorImportTests` | SVG path/区域/颜色层、位图核心、填充、去重和确定性。 |
 
-加上位图基准 smoke 和输出布局测试，当前 CTest 总数是 34。
+桌面配置另含位图基准 smoke 和输出布局测试；纯核心配置不注册这些 Qt 依赖测试。
+具体测试清单以对应构建目录的 `ctest -N` 为准，验证结果见本次测试报告。
 
 ## 28. `sgraphVectorBenchmark`：位图正确性与性能基准
 
@@ -1203,26 +1253,26 @@ smartBitmapVectorBenchmark
 | `sgraphVectorBenchmark/README.md` | 基准说明 | 运行参数、结果目录、正式/冒烟示例和口径。 |
 | `sgraphVectorBenchmark/fixtures/README.md` | fixture 说明 | 说明固定输入或夹具目录用途。 |
 | `sgraphVectorBenchmark/results/README.md` | 历史结果说明 | 约定日期序号目录、保留范围和不覆盖策略。 |
-| `sgraphVectorBenchmark/s_run_benchmark.py` | Python 入口 | 解析常用参数、构建 Release x64 benchmark 并传递执行参数。 |
-| `src/s_bitmap_benchmark_types.h` | 5 个基准结构 | case、算法摘要、case 结果、选项等共享数据模型。 |
-| `src/s_bitmap_benchmark_generator.h` | 生成接口 | 声明固定种子图像/案例生成和断点复用。 |
-| `src/s_bitmap_benchmark_generator.cpp` | 生成实现 | 按 case 索引确定图案/尺寸；有效现有 PNG 复用，缺失/损坏/尺寸错则重建。 |
-| `src/s_bitmap_flood_baseline.h` | flood fill 接口 | 声明四邻域基线输出。 |
-| `src/s_bitmap_flood_baseline.cpp` | 基线实现 | 用逐像素 flood fill 建组件轮廓，只供正确性和性能参照。 |
-| `src/s_bitmap_benchmark_validation.h` | `SBitmapValidationResult` | 声明轮廓哈希、单多线程和回栅格验证结果。 |
-| `src/s_bitmap_benchmark_validation.cpp` | 验证实现 | 比较组件、SVG 字节、轮廓哈希，并把轮廓栅格化后逐像素对比源图。 |
-| `src/s_bitmap_benchmark_report.h` | 报告接口 | 声明 aggregate、HTML 和 manifest 输出。 |
-| `src/s_bitmap_benchmark_report.cpp` | 报告实现 | 统计耗时、加速比、分位数、峰值工作集，标题使用实际 case 数。 |
-| `src/s_bitmap_vector_benchmark.cpp` | `main()` | 参数解析、三算法重复计时取中位数、验证、诊断文件和报告总控。 |
-| `tests/s_verify_output_layout.cmake` | 布局 CTest | 检查 smoke 结果目录必需 manifest/报告/数据文件。 |
+| `sgraphVectorBenchmark/vp_run_benchmark.py` | Python 入口 | 解析常用参数、构建 Release x64 benchmark 并传递执行参数。 |
+| `src/vp_bitmap_benchmark_types.h` | 5 个基准结构 | case、算法摘要、case 结果、选项等共享数据模型。 |
+| `src/vp_bitmap_benchmark_generator.h` | 生成接口 | 声明固定种子图像/案例生成和断点复用。 |
+| `src/vp_bitmap_benchmark_generator.cpp` | 生成实现 | 按 case 索引确定图案/尺寸；有效现有 PNG 复用，缺失/损坏/尺寸错则重建。 |
+| `src/vp_bitmap_flood_baseline.h` | flood fill 接口 | 声明四邻域基线输出。 |
+| `src/vp_bitmap_flood_baseline.cpp` | 基线实现 | 用逐像素 flood fill 建组件轮廓，只供正确性和性能参照。 |
+| `src/vp_bitmap_benchmark_validation.h` | `VpBitmapValidationResult` | 声明轮廓哈希、单多线程和回栅格验证结果。 |
+| `src/vp_bitmap_benchmark_validation.cpp` | 验证实现 | 比较组件、SVG 字节、轮廓哈希，并把轮廓栅格化后逐像素对比源图。 |
+| `src/vp_bitmap_benchmark_report.h` | 报告接口 | 声明 aggregate、HTML 和 manifest 输出。 |
+| `src/vp_bitmap_benchmark_report.cpp` | 报告实现 | 统计耗时、加速比、分位数、峰值工作集，标题使用实际 case 数。 |
+| `src/vp_bitmap_vector_benchmark.cpp` | `main()` | 参数解析、三算法重复计时取中位数、验证、诊断文件和报告总控。 |
+| `tests/vp_verify_output_layout.cmake` | 布局 CTest | 检查 smoke 结果目录必需 manifest/报告/数据文件。 |
 
 ### 28.2 基准类型
 
-- `SBitmapBenchmarkCase`：编号、名称、路径、尺寸和生成类别等 case 元数据。
-- `SBitmapAlgorithmSummary`：成功状态、耗时、指标、哈希和错误。
-- `SBitmapBenchmarkCaseResult`：一个 case 的 flood、游程单线程、多线程结果及验证状态。
-- `SBitmapBenchmarkOptions`：case 数、种子、线程、重复、输出目录和 smoke 开关。
-- `SBitmapValidationResult`：正确性布尔值、错误、serial/parallel hash 等。
+- `VpBitmapBenchmarkCase`：编号、名称、路径、尺寸和生成类别等 case 元数据。
+- `VpBitmapAlgorithmSummary`：成功状态、耗时、指标、哈希和错误。
+- `VpBitmapBenchmarkCaseResult`：一个 case 的 flood、游程单线程、多线程结果及验证状态。
+- `VpBitmapBenchmarkOptions`：case 数、种子、线程、重复、输出目录和 smoke 开关。
+- `VpBitmapValidationResult`：正确性布尔值、错误、serial/parallel hash 等。
 
 ### 28.3 执行数据流
 
@@ -1248,16 +1298,23 @@ options/seed
 | --- | --- |
 | 根 `CMakeLists.txt` | 设置 C++17、AUTOMOC/RCC/UIC、Qt 组件、MSVC 选项、第三方配置、模块顺序和测试开关。 |
 | 各模块 `CMakeLists.txt` | 声明源文件、PUBLIC/PRIVATE 链接和编译定义；新增文件必须登记。 |
-| `s_build_32_debug.py` | 调用公共驱动，固定 x86 Debug。 |
-| `s_build_32_release.py` | 调用公共驱动，固定 x86 Release。 |
-| `s_build_64_debug.py` | 调用公共驱动，固定 x64 Debug。 |
-| `s_build_64_release.py` | 调用公共驱动，固定 x64 Release。 |
-| `s_build_common.py` | Qt/VS 查找、CMake/Ninja、CTest、PE 架构、部署、manifest、ZIP 和 SHA-256 总控。 |
+| `vp_build_32_debug.py` | 调用公共驱动，固定 x86 Debug。 |
+| `vp_build_32_release.py` | 调用公共驱动，固定 x86 Release。 |
+| `vp_build_64_debug.py` | 调用公共驱动，固定 x64 Debug。 |
+| `vp_build_64_release.py` | 调用公共驱动，固定 x64 Release。 |
+| `vp_build_common.py` | Qt/VS 查找、CMake/Ninja、CTest、PE 架构、部署、manifest、ZIP 和 SHA-256 总控。 |
+| `vp_build_core.py` | 独立无 Qt 入口；配置、构建纯核心并运行对应 CTest。 |
 
-根选项 `VECTORPATH_BUILD_TESTS` 默认 ON。旧 `SMARTCAM_BUILD_TESTS`、
+根选项 `VECTORPATH_BUILD_DESKTOP` 默认 ON；关闭后跳过 Qt 查找、自动生成和桌面目标。
+`VECTORPATH_BUILD_TESTS` 默认 ON。旧 `SMARTCAM_BUILD_TESTS`、
 `SMARTCAD_BUILD_TESTS` 被定义时映射到新变量并发出弃用提示，只承担过渡兼容。
 
-### 29.2 `s_build_common.py` 关键函数
+核心入口 `python sgraphBuildTools/vp_build_core.py --config Release --bits 64 --jobs 4`
+支持 `--config Debug|Release`、`--bits 32|64`、正整数 `--jobs`，默认值分别为 Release、64、4。
+输出到 `build/core/<位数>/<配置>`，设置 DESKTOP=OFF、TESTS=ON，并用
+`CMAKE_DISABLE_FIND_PACKAGE_Qt5=ON` 显式禁止 Qt 查找；不执行桌面部署或打包。
+
+### 29.2 `vp_build_common.py` 关键函数
 
 | 函数组 | 作用和失败边界 |
 | --- | --- |
@@ -1330,20 +1387,20 @@ CI 不能替代本地四配置和人工界面验收。后续应补 Debug CI、cl
 | 文件 | 权威内容与维护责任 |
 | --- | --- |
 | `ARCHITECTURE.md` | 快速架构概览；详细内容以本文为准。 |
-| `BUILDING.md` | 环境、Qt 查找、四配置构建和常见错误。 |
+| `BUILDING.md` | 环境、Qt 查找、四配置桌面与无 Qt 核心构建和常见错误。 |
 | `USER_GUIDE.md` | 面向普通用户的简明操作。 |
 | `TEST_RESULTS.md` | 已执行测试和性能结果记录，必须注明配置和日期。 |
-| `s_coding_style.md` | C++ 命名、格式、文件和 Qt 使用规范。 |
-| `s_default_shortcuts.md` | 默认命令快捷键及冲突口径。 |
-| `s_icon_catalog.md` | 语义图标、主题适配和使用位置。 |
-| `s_autocad_2026_feature_catalog.yaml` | 以稳定 ID 列出 AutoCAD 功能基线、依赖和范围。 |
-| `s_autocad_gap_matrix.yaml` | complete/partial/stub/missing/blocked/out_of_scope 差距状态。 |
-| `s_smartcad_feature_inventory.yaml` | 当前实现的源码、入口和测试证据；名称是历史兼容。 |
-| `s_autocad_2026_command_index.md` | 命令和功能 ID 索引。 |
-| `s_autocad_sources.md` | 功能基线来源和引用说明。 |
-| `s_feature_implementation_roadmap.md` | 规划优先级，不代表已实现。 |
-| `s_implementation_status.md` | 阶段性状态摘要，数字可能滞后，发布前需复核。 |
-| `images/s_bitmap_vectorization_ui.png` | README/文档使用的人工界面截图资产。 |
+| `vp_coding_style.md` | C++ 命名、格式、文件和 Qt 使用规范。 |
+| `vp_default_shortcuts.md` | 默认命令快捷键及冲突口径。 |
+| `vp_icon_catalog.md` | 语义图标、主题适配和使用位置。 |
+| `vp_autocad_2026_feature_catalog.yaml` | 以稳定 ID 列出 AutoCAD 功能基线、依赖和范围。 |
+| `vp_autocad_gap_matrix.yaml` | complete/partial/stub/missing/blocked/out_of_scope 差距状态。 |
+| `vp_smartcad_feature_inventory.yaml` | 当前实现的源码、入口和测试证据；名称是历史兼容。 |
+| `vp_autocad_2026_command_index.md` | 命令和功能 ID 索引。 |
+| `vp_autocad_sources.md` | 功能基线来源和引用说明。 |
+| `vp_feature_implementation_roadmap.md` | 规划优先级，不代表已实现。 |
+| `vp_implementation_status.md` | 阶段性状态摘要，数字可能滞后，发布前需复核。 |
+| `images/vp_bitmap_vectorization_ui.png` | README/文档使用的人工界面截图资产。 |
 | `CODEBASE_REFERENCE.md` | 本文；代码结构、逐文件/类型和关键链路的总参考。 |
 
 功能评审前先读 catalog 和 gap matrix。只有主题自适应图标、Ribbon、命令/别名、动态预览、
@@ -1373,67 +1430,69 @@ CI 不能替代本地四配置和人工界面验收。后续应补 Debug CI、cl
 
 | 类型 | 文件 | 职责/主要协作者 |
 | --- | --- | --- |
-| `SChineseUiTranslator` | `sgraphApp/s_chinese_ui_translator.h` | Qt 运行时中文翻译；QApplication。 |
-| `SResult<T>` / `SResult<void>` | `sgraphCore/s_result.h` | 值或错误文本；Document/IO。 |
-| `SPoint2d` | `sgraphGeometry/s_geometry_types.h` | 二维世界坐标；全模块。 |
-| `SEntityType` 及文字/尺寸/Hatch/阵列枚举 | `sgraphGeometry/s_entity.h` | 实体分类和持久化语义。 |
-| 全部实体 geometry 结构 | `sgraphGeometry/s_entity.h` | 实体具体参数；Document/Render/IO。 |
-| `SEntityRecord` | `sgraphGeometry/s_entity.h` | ID、类型、geometry、图层和显示属性聚合。 |
-| `SPolygonBooleanOperation` | `sgraphGeometry/s_polygon_boolean.h` | Clipper2 布尔操作选择。 |
-| `SStandardShapeType` | `sgraphGeometry/s_standard_shape.h` | 标准形状模板。 |
-| 刀路枚举/选项/结果/运动 | `sgraphGeometry/s_toolpath.h` | 排序和仿真共享模型。 |
+| `VpChineseUiTranslator` | `sgraphApp/vp_chinese_ui_translator.h` | Qt 运行时中文翻译；QApplication。 |
+| `VpResult<T>` / `VpResult<void>` | `sgraphCore/vp_result.h` | 值或错误文本；Document/IO。 |
+| `VpPoint2d` | `sgraphGeometry/vp_geometry_types.h` | 二维世界坐标；全模块。 |
+| `VpEntityType` 及文字/尺寸/Hatch/阵列枚举 | `sgraphGeometry/vp_entity.h` | 实体分类和持久化语义。 |
+| 六种纯曲线 geometry 结构 | `sgraphGeometry/vp_curve_entities.h` | 曲线参数；GeometryCore 与桌面共用。 |
+| 其余实体 geometry 与聚合 | `sgraphGeometry/vp_entity.h` | 仍含 Qt 文本和颜色；Document/Render/IO。 |
+| `VpDraftingState`、`VpGridBasis` | `sgraphInteraction/vp_drafting_state.h` | 无 Qt 的栅格、正交和追踪状态。 |
+| `VpEntityRecord` | `sgraphGeometry/vp_entity.h` | ID、类型、geometry、图层和显示属性聚合。 |
+| `VpPolygonBooleanOperation` | `sgraphGeometry/vp_polygon_boolean.h` | Clipper2 布尔操作选择。 |
+| `VpStandardShapeType` | `sgraphGeometry/vp_standard_shape.h` | 标准形状模板。 |
+| 刀路枚举/选项/结果/运动 | `sgraphGeometry/vp_toolpath.h` | 排序和仿真共享模型。 |
 
 ### 34.2 Document/Commands/IO
 
 | 类型 | 文件 | 职责/主要协作者 |
 | --- | --- | --- |
-| `SCadDocument` | `sgraphDocument/s_cad_document.h` | 权威文档、信号、历史和 IO；MainWindow/Viewport。 |
-| `SDocumentTransaction` | `sgraphDocument/s_document_transaction.h` | 单撤销单元的暂存与提交；SCadDocument。 |
-| `SLayerRecord` / `SLayerStateRecord` | `sgraphDocument/s_layer_record.h` | 图层值和快照。 |
-| `STextStyleRecord` | `sgraphDocument/s_text_style_record.h` | 文字样式。 |
-| `SDimensionStyleRecord` | `sgraphDocument/s_dimension_style_record.h` | 尺寸样式。 |
-| `SInsertionUnit` / `SAngleFormat` / `SDrawingSettings` | `sgraphDocument/s_drawing_settings.h` | 插入单位、角度格式和精度。 |
-| `SAuditSeverity` / `SDocumentAuditIssue` / `SDocumentAuditReport` | `sgraphDocument/s_document_audit.h` | 审计严重度、单项问题和汇总模型。 |
-| `SRecoveryEntry` / `SDocumentRecoveryManager` | `sgraphDocument/s_document_recovery_manager.h` | 恢复候选和副本生命周期。 |
-| `SLoadedDocumentStyles` | `sgraphDocument/s_document_style_io.h` | 样式反序列化临时结果。 |
-| `SPlotStyleTableType` / `SPlotStyleRecord` / `SPlotStyleTable` | `sgraphDocument/s_plot_style_table.h` | STB/CTB 类型、单项记录、解析和查询。 |
-| `SToolpathDocumentSortResult` | `sgraphDocument/s_toolpath_document.h` | 文档刀路提交统计。 |
-| `SCommandContext` / `SICadCommand` | `sgraphCommands/s_i_cad_command.h` | 命令对象契约。 |
-| `SCoordinateInputMode` / `SCoordinateInput` | `sgraphCommands/s_coordinate_input.h` | 坐标解析结果。 |
-| `SIFileCodec` | `sgraphIo/s_i_file_codec.h` | 外部文件 codec 接口。 |
-| `SFileCompatibilityReport` | `sgraphIo/s_file_compatibility_report.h` | 格式警告和统计。 |
-| `SDxfCodec` / `SDwgCodec` | 对应 codec 头文件 | DXF/DWG 读写实现。 |
-| `SDxfPair` | `sgraphIo/s_dxf_pair.h` | DXF group code/value。 |
-| SVG 填充/轮廓/区域/文档类型 | `sgraphIo/s_svg_vector_data.h` | SVG 中间模型。 |
-| `SSvgSubpath` | `sgraphIo/s_svg_path_parser.h` | path 子路径。 |
-| `SSvgLayerPriority` / `SSvgFillReport` / `SSvgDeduplicateReport` | `sgraphIo/s_svg_document_operations.h` | SVG 图层取舍、填充和去重统计。 |
-| `SImportFillMode` / `SVectorImportSettings` / `SColoredEntityGeometry` / `SVectorImportGeometry` | `sgraphIo/s_vector_fill.h` | SVG/位图导入模式、设置和彩色中间几何。 |
-| `SVectorDocumentImportReport` | `sgraphIo/s_vector_document_import.h` | 中间几何提交文档后的实体/图层统计。 |
-| Bitmap 设置/指标/轮廓/结果 | `sgraphIo/s_bitmap_vectorizer.h` | 位图核心公开协议。 |
-| `SBoundarySegment` | `sgraphIo/s_bitmap_vector_private.h` | 位图内部有向边。 |
+| `VpCadDocument` | `sgraphDocument/vp_cad_document.h` | 权威文档、信号、历史和 IO；MainWindow/Viewport。 |
+| `VpDocumentTransaction` | `sgraphDocument/vp_document_transaction.h` | 单撤销单元的暂存与提交；VpCadDocument。 |
+| `VpLayerRecord` / `VpLayerStateRecord` | `sgraphDocument/vp_layer_record.h` | 图层值和快照。 |
+| `VpTextStyleRecord` | `sgraphDocument/vp_text_style_record.h` | 文字样式。 |
+| `VpDimensionStyleRecord` | `sgraphDocument/vp_dimension_style_record.h` | 尺寸样式。 |
+| `VpInsertionUnit` / `VpAngleFormat` / `VpDrawingSettings` | `sgraphDocument/vp_drawing_settings.h` | 插入单位、角度格式和精度。 |
+| `VpAuditSeverity` / `VpDocumentAuditIssue` / `VpDocumentAuditReport` | `sgraphDocument/vp_document_audit.h` | 审计严重度、单项问题和汇总模型。 |
+| `VpRecoveryEntry` / `VpDocumentRecoveryManager` | `sgraphDocument/vp_document_recovery_manager.h` | 恢复候选和副本生命周期。 |
+| `VpLoadedDocumentStyles` | `sgraphDocument/vp_document_style_io.h` | 样式反序列化临时结果。 |
+| `VpPlotStyleTableType` / `VpPlotStyleRecord` / `VpPlotStyleTable` | `sgraphDocument/vp_plot_style_table.h` | STB/CTB 类型、单项记录、解析和查询。 |
+| `VpToolpathDocumentSortResult` | `sgraphDocument/vp_toolpath_document.h` | 文档刀路提交统计。 |
+| `VpCommandContext` / `VpICadCommand` | `sgraphCommands/vp_i_cad_command.h` | 命令对象契约。 |
+| `VpCoordinateInputMode` / `VpCoordinateInput` | `sgraphCommands/vp_coordinate_input.h` | 坐标解析结果。 |
+| `VpIFileCodec` | `sgraphIo/vp_i_file_codec.h` | 外部文件 codec 接口。 |
+| `VpFileCompatibilityReport` | `sgraphIo/vp_file_compatibility_report.h` | 格式警告和统计。 |
+| `VpDxfCodec` / `VpDwgCodec` | 对应 codec 头文件 | DXF/DWG 读写实现。 |
+| `VpDxfPair` | `sgraphIo/vp_dxf_pair.h` | DXF group code/value。 |
+| SVG 填充/轮廓/区域/文档类型 | `sgraphIo/vp_svg_vector_data.h` | SVG 中间模型。 |
+| `VpSvgSubpath` | `sgraphIo/vp_svg_path_parser.h` | path 子路径。 |
+| `VpSvgLayerPriority` / `VpSvgFillReport` / `VpSvgDeduplicateReport` | `sgraphIo/vp_svg_document_operations.h` | SVG 图层取舍、填充和去重统计。 |
+| `VpImportFillMode` / `VpVectorImportSettings` / `VpColoredEntityGeometry` / `VpVectorImportGeometry` | `sgraphIo/vp_vector_fill.h` | SVG/位图导入模式、设置和彩色中间几何。 |
+| `VpVectorDocumentImportReport` | `sgraphIo/vp_vector_document_import.h` | 中间几何提交文档后的实体/图层统计。 |
+| Bitmap 设置/指标/轮廓/结果 | `sgraphIo/vp_bitmap_vectorizer.h` | 位图核心公开协议。 |
+| `VpBoundarySegment` | `sgraphIo/vp_bitmap_vector_private.h` | 位图内部有向边。 |
 
 ### 34.3 Render/GUI/Benchmark
 
 | 类型 | 文件 | 职责/主要协作者 |
 | --- | --- | --- |
-| `SCadViewport` | `sgraphRender/s_cad_viewport.h` | 绘制、输入、选择、预览和提交。 |
-| `SToolMode`、构造/夹点枚举和 `SGripHandle` | `sgraphRender/s_cad_viewport.h` | 视口交互状态。 |
-| `SObjectSnapType` / `SObjectSnapMode` / `SObjectSnapResult` | `sgraphRender/s_object_snap.h` | 捕捉候选类型、位掩码模式和最终结果。 |
-| `SGridBasis` | `sgraphRender/s_cad_viewport_drafting.h` | 旋转网格基。 |
-| `SVector3` / `SLinearConstraint` | `sgraphRender/s_circle_tangent_math.h` | 相切圆内部代数。 |
-| `SCadMainWindow` | `sgraphGui/s_cad_main_window.h` | 应用 GUI 总编排和会话所有权。 |
-| `SCadWorkspaceWidget` | `sgraphGui/s_cad_workspace_widget.h` | 视口/标签/快速栏容器。 |
-| `SCommandLineWidget` | `sgraphGui/s_command_line_widget.h` | 命令输入、历史和补全。 |
-| `SSelectionContextBar` | `sgraphGui/s_selection_context_bar.h` | 选择上下文操作。 |
-| `SDialog` / `SDialogService` | `sgraphGui/s_dialog_service.h` | 对话框统一策略。 |
+| `VpCadViewport` | `sgraphRender/vp_cad_viewport.h` | 绘制、输入、选择、预览和提交。 |
+| `VpToolMode`、构造/夹点枚举和 `VpGripHandle` | `sgraphRender/vp_cad_viewport.h` | 视口交互状态。 |
+| `VpObjectSnapType` / `VpObjectSnapMode` / `VpObjectSnapResult` | `sgraphRender/vp_object_snap.h` | 捕捉候选类型、位掩码模式和最终结果。 |
+| `VpGridBasis` | `sgraphRender/vp_cad_viewport_drafting.h` | 旋转网格基。 |
+| `VpVector3` / `VpLinearConstraint` | `sgraphRender/vp_circle_tangent_math.h` | 相切圆内部代数。 |
+| `VpCadMainWindow` | `sgraphGui/vp_cad_main_window.h` | 应用 GUI 总编排和会话所有权。 |
+| `VpCadWorkspaceWidget` | `sgraphGui/vp_cad_workspace_widget.h` | 视口/标签/快速栏容器。 |
+| `VpCommandLineWidget` | `sgraphGui/vp_command_line_widget.h` | 命令输入、历史和补全。 |
+| `VpSelectionContextBar` | `sgraphGui/vp_selection_context_bar.h` | 选择上下文操作。 |
+| `VpDialog` / `VpDialogService` | `sgraphGui/vp_dialog_service.h` | 对话框统一策略。 |
 | Shortcut binding/manager/dialog | 对应 shortcut 头文件 | 快捷键模型、持久化和 UI。 |
-| `SVectorImportDialog` | `sgraphGui/s_vector_import_dialog.h` | SVG/位图参数和中间结果。 |
-| `SQuickEntityOperation` / `SQuickEntityOperationResult` | `sgraphGui/s_quick_entity_operation.h` | 快捷实体操作选择和事务执行结果。 |
-| `SToolpathSortDialog` | `sgraphGui/s_toolpath_sort_dialog.h` | 刀路排序参数。 |
-| 仿真状态/控制器 | `sgraphGui/s_toolpath_simulation_controller.h` | QTimer 推进刀路快照。 |
+| `VpVectorImportDialog` | `sgraphGui/vp_vector_import_dialog.h` | SVG/位图参数和中间结果。 |
+| `VpQuickEntityOperation` / `VpQuickEntityOperationResult` | `sgraphGui/vp_quick_entity_operation.h` | 快捷实体操作选择和事务执行结果。 |
+| `VpToolpathSortDialog` | `sgraphGui/vp_toolpath_sort_dialog.h` | 刀路排序参数。 |
+| 仿真状态/控制器 | `sgraphGui/vp_toolpath_simulation_controller.h` | QTimer 推进刀路快照。 |
 | Design token/theme/icon/proxy 类型 | `sgraphGui/sgraphDesignSystem/*.h` | 主题、比例、语义图标和 Qt 样式。 |
-| Benchmark case/summary/result/options | `sgraphVectorBenchmark/src/s_bitmap_benchmark_types.h` | 基准共享模型。 |
-| `SBitmapValidationResult` | `sgraphVectorBenchmark/src/s_bitmap_benchmark_validation.h` | 正确性验证结果。 |
+| Benchmark case/summary/result/options | `sgraphVectorBenchmark/src/vp_bitmap_benchmark_types.h` | 基准共享模型。 |
+| `VpBitmapValidationResult` | `sgraphVectorBenchmark/src/vp_bitmap_benchmark_validation.h` | 正确性验证结果。 |
 
 ## 35. 全部自研代码文件索引
 
@@ -1444,333 +1503,353 @@ CI 不能替代本地四配置和人工界面验收。后续应补 Debug CI、cl
 
 ```text
 sgraphApp/CMakeLists.txt
-sgraphApp/s_chinese_ui_translator.cpp
-sgraphApp/s_chinese_ui_translator.h
-sgraphApp/s_main.cpp
+sgraphApp/vp_chinese_ui_translator.cpp
+sgraphApp/vp_chinese_ui_translator.h
+sgraphApp/vp_main.cpp
 sgraphCore/CMakeLists.txt
-sgraphCore/s_application_settings_migration.cpp
-sgraphCore/s_application_settings_migration.h
-sgraphCore/s_result.h
+sgraphCore/vp_id_collection.h
+sgraphQtAdapters/CMakeLists.txt
+sgraphQtAdapters/vp_application_settings_migration.cpp
+sgraphQtAdapters/vp_application_settings_migration.h
+sgraphQtAdapters/vp_qt_text.h
+sgraphQtAdapters/vp_qt_geometry.cpp
+sgraphQtAdapters/vp_qt_geometry.h
+sgraphInteraction/CMakeLists.txt
+sgraphInteraction/vp_drafting_state.cpp
+sgraphInteraction/vp_drafting_state.h
+sgraphCore/vp_result.h
 sgraphGeometry/CMakeLists.txt
-sgraphGeometry/s_dimension_geometry.cpp
-sgraphGeometry/s_dimension_geometry.h
-sgraphGeometry/s_ellipse_geometry.cpp
-sgraphGeometry/s_ellipse_geometry.h
-sgraphGeometry/s_entity.h
-sgraphGeometry/s_geometry_types.cpp
-sgraphGeometry/s_geometry_types.h
-sgraphGeometry/s_hatch_geometry.cpp
-sgraphGeometry/s_hatch_geometry.h
-sgraphGeometry/s_polygon_boolean.cpp
-sgraphGeometry/s_polygon_boolean.h
-sgraphGeometry/s_spline_geometry.cpp
-sgraphGeometry/s_spline_geometry.h
-sgraphGeometry/s_standard_shape.cpp
-sgraphGeometry/s_standard_shape.h
-sgraphGeometry/s_toolpath.cpp
-sgraphGeometry/s_toolpath.h
+sgraphGeometry/vp_curve_entities.h
+sgraphGeometry/vp_polygon_geometry.cpp
+sgraphGeometry/vp_polygon_geometry.h
+sgraphGeometry/vp_dimension_geometry.cpp
+sgraphGeometry/vp_dimension_geometry.h
+sgraphGeometry/vp_ellipse_geometry.cpp
+sgraphGeometry/vp_ellipse_geometry.h
+sgraphGeometry/vp_entity.h
+sgraphGeometry/vp_geometry_types.cpp
+sgraphGeometry/vp_geometry_types.h
+sgraphGeometry/vp_hatch_geometry.cpp
+sgraphGeometry/vp_hatch_geometry.h
+sgraphGeometry/vp_polygon_boolean.cpp
+sgraphGeometry/vp_polygon_boolean.h
+sgraphGeometry/vp_spline_geometry.cpp
+sgraphGeometry/vp_spline_geometry.h
+sgraphGeometry/vp_standard_shape.cpp
+sgraphGeometry/vp_standard_shape.h
+sgraphGeometry/vp_toolpath.cpp
+sgraphGeometry/vp_toolpath.h
 ```
 
 ### 35.2 Document、Commands、IO
 
 ```text
 sgraphDocument/CMakeLists.txt
-sgraphDocument/s_associative_array_io.cpp
-sgraphDocument/s_associative_array_io.h
-sgraphDocument/s_cad_document.cpp
-sgraphDocument/s_cad_document.h
-sgraphDocument/s_cad_document_audit.cpp
-sgraphDocument/s_cad_document_color_layer.cpp
-sgraphDocument/s_cad_document_dimension_style.cpp
-sgraphDocument/s_cad_document_history.cpp
-sgraphDocument/s_cad_document_io.cpp
-sgraphDocument/s_cad_document_layer_state.cpp
-sgraphDocument/s_cad_document_text_style.cpp
-sgraphDocument/s_dimension_binary_io.cpp
-sgraphDocument/s_dimension_binary_io.h
-sgraphDocument/s_dimension_style_record.h
-sgraphDocument/s_document_audit.h
-sgraphDocument/s_document_recovery_manager.cpp
-sgraphDocument/s_document_recovery_manager.h
-sgraphDocument/s_document_style_io.cpp
-sgraphDocument/s_document_style_io.h
-sgraphDocument/s_document_transaction.cpp
-sgraphDocument/s_document_transaction.h
-sgraphDocument/s_drawing_settings.cpp
-sgraphDocument/s_drawing_settings.h
-sgraphDocument/s_entity_binary_io.cpp
-sgraphDocument/s_entity_binary_io.h
-sgraphDocument/s_hatch_binary_io.cpp
-sgraphDocument/s_hatch_binary_io.h
-sgraphDocument/s_layer_record.h
-sgraphDocument/s_plot_style_table.cpp
-sgraphDocument/s_plot_style_table.h
-sgraphDocument/s_text_style_record.h
-sgraphDocument/s_toolpath_document.cpp
-sgraphDocument/s_toolpath_document.h
+sgraphDocument/vp_associative_array_io.cpp
+sgraphDocument/vp_associative_array_io.h
+sgraphDocument/vp_cad_document.cpp
+sgraphDocument/vp_cad_document.h
+sgraphDocument/vp_cad_document_audit.cpp
+sgraphDocument/vp_cad_document_color_layer.cpp
+sgraphDocument/vp_cad_document_dimension_style.cpp
+sgraphDocument/vp_cad_document_history.cpp
+sgraphDocument/vp_cad_document_io.cpp
+sgraphDocument/vp_cad_document_layer_state.cpp
+sgraphDocument/vp_cad_document_text_style.cpp
+sgraphDocument/vp_dimension_binary_io.cpp
+sgraphDocument/vp_dimension_binary_io.h
+sgraphDocument/vp_dimension_style_record.h
+sgraphDocument/vp_document_audit.h
+sgraphDocument/vp_document_recovery_manager.cpp
+sgraphDocument/vp_document_recovery_manager.h
+sgraphDocument/vp_document_style_io.cpp
+sgraphDocument/vp_document_style_io.h
+sgraphDocument/vp_document_transaction.cpp
+sgraphDocument/vp_document_transaction.h
+sgraphDocument/vp_drawing_settings.cpp
+sgraphDocument/vp_drawing_settings.h
+sgraphDocument/vp_entity_binary_io.cpp
+sgraphDocument/vp_entity_binary_io.h
+sgraphDocument/vp_hatch_binary_io.cpp
+sgraphDocument/vp_hatch_binary_io.h
+sgraphDocument/vp_layer_record.h
+sgraphDocument/vp_plot_style_table.cpp
+sgraphDocument/vp_plot_style_table.h
+sgraphDocument/vp_text_style_record.h
+sgraphDocument/vp_toolpath_document.cpp
+sgraphDocument/vp_toolpath_document.h
 sgraphCommands/CMakeLists.txt
-sgraphCommands/s_command_catalog.cpp
-sgraphCommands/s_command_catalog.h
-sgraphCommands/s_coordinate_input.cpp
-sgraphCommands/s_coordinate_input.h
-sgraphCommands/s_i_cad_command.h
+sgraphCommands/vp_command_catalog.cpp
+sgraphCommands/vp_command_catalog.h
+sgraphCommands/vp_coordinate_input.cpp
+sgraphCommands/vp_coordinate_input.h
+sgraphCommands/vp_i_cad_command.h
 sgraphIo/CMakeLists.txt
-sgraphIo/s_bitmap_contour_stitcher.cpp
-sgraphIo/s_bitmap_run_vectorizer.cpp
-sgraphIo/s_bitmap_vector_private.h
-sgraphIo/s_bitmap_vectorizer.cpp
-sgraphIo/s_bitmap_vectorizer.h
-sgraphIo/s_dwg_codec.cpp
-sgraphIo/s_dwg_codec.h
-sgraphIo/s_dwg_dxf_adapter.cpp
-sgraphIo/s_dwg_dxf_adapter.h
-sgraphIo/s_dxf_codec.cpp
-sgraphIo/s_dxf_codec.h
-sgraphIo/s_dxf_entity_io.cpp
-sgraphIo/s_dxf_entity_io.h
-sgraphIo/s_dxf_hatch_io.cpp
-sgraphIo/s_dxf_hatch_io.h
-sgraphIo/s_dxf_pair.cpp
-sgraphIo/s_dxf_pair.h
-sgraphIo/s_dxf_table_io.cpp
-sgraphIo/s_dxf_table_io.h
-sgraphIo/s_file_compatibility_report.h
-sgraphIo/s_i_file_codec.h
-sgraphIo/s_svg_document_operations.cpp
-sgraphIo/s_svg_document_operations.h
-sgraphIo/s_svg_parser.cpp
-sgraphIo/s_svg_parser.h
-sgraphIo/s_svg_path_parser.cpp
-sgraphIo/s_svg_path_parser.h
-sgraphIo/s_svg_vector_data.h
-sgraphIo/s_vector_document_import.cpp
-sgraphIo/s_vector_document_import.h
-sgraphIo/s_vector_fill.cpp
-sgraphIo/s_vector_fill.h
+sgraphIo/vp_bitmap_contour_stitcher.cpp
+sgraphIo/vp_bitmap_run_vectorizer.cpp
+sgraphIo/vp_bitmap_vector_private.h
+sgraphIo/vp_bitmap_vectorizer.cpp
+sgraphIo/vp_bitmap_vectorizer.h
+sgraphIo/vp_dwg_codec.cpp
+sgraphIo/vp_dwg_codec.h
+sgraphIo/vp_dwg_dxf_adapter.cpp
+sgraphIo/vp_dwg_dxf_adapter.h
+sgraphIo/vp_dxf_codec.cpp
+sgraphIo/vp_dxf_codec.h
+sgraphIo/vp_dxf_entity_io.cpp
+sgraphIo/vp_dxf_entity_io.h
+sgraphIo/vp_dxf_hatch_io.cpp
+sgraphIo/vp_dxf_hatch_io.h
+sgraphIo/vp_dxf_pair.cpp
+sgraphIo/vp_dxf_pair.h
+sgraphIo/vp_dxf_table_io.cpp
+sgraphIo/vp_dxf_table_io.h
+sgraphIo/vp_file_compatibility_report.h
+sgraphIo/vp_i_file_codec.h
+sgraphIo/vp_svg_document_operations.cpp
+sgraphIo/vp_svg_document_operations.h
+sgraphIo/vp_svg_parser.cpp
+sgraphIo/vp_svg_parser.h
+sgraphIo/vp_svg_path_parser.cpp
+sgraphIo/vp_svg_path_parser.h
+sgraphIo/vp_svg_vector_data.h
+sgraphIo/vp_vector_document_import.cpp
+sgraphIo/vp_vector_document_import.h
+sgraphIo/vp_vector_fill.cpp
+sgraphIo/vp_vector_fill.h
 ```
 
 ### 35.3 Render
 
 ```text
 sgraphRender/CMakeLists.txt
-sgraphRender/s_arc_construction_geometry.cpp
-sgraphRender/s_associative_array_geometry.cpp
-sgraphRender/s_associative_array_geometry.h
-sgraphRender/s_cad_viewport.cpp
-sgraphRender/s_cad_viewport.h
-sgraphRender/s_cad_viewport_align.cpp
-sgraphRender/s_cad_viewport_annotation.cpp
-sgraphRender/s_cad_viewport_appearance.cpp
-sgraphRender/s_cad_viewport_array_edit.cpp
-sgraphRender/s_cad_viewport_array_path.cpp
-sgraphRender/s_cad_viewport_array_polar.cpp
-sgraphRender/s_cad_viewport_array_rect.cpp
-sgraphRender/s_cad_viewport_blend.cpp
-sgraphRender/s_cad_viewport_break_render.cpp
-sgraphRender/s_cad_viewport_chamfer.cpp
-sgraphRender/s_cad_viewport_curve_break.cpp
-sgraphRender/s_cad_viewport_curve_chamfer.cpp
-sgraphRender/s_cad_viewport_curve_construction.cpp
-sgraphRender/s_cad_viewport_curve_draw.cpp
-sgraphRender/s_cad_viewport_curve_extend.cpp
-sgraphRender/s_cad_viewport_curve_fillet.cpp
-sgraphRender/s_cad_viewport_curve_join.cpp
-sgraphRender/s_cad_viewport_curve_trim.cpp
-sgraphRender/s_cad_viewport_dimension.cpp
-sgraphRender/s_cad_viewport_drafting.cpp
-sgraphRender/s_cad_viewport_drafting.h
-sgraphRender/s_cad_viewport_entity_overlay.cpp
-sgraphRender/s_cad_viewport_entity_render.cpp
-sgraphRender/s_cad_viewport_events.cpp
-sgraphRender/s_cad_viewport_explode_render.cpp
-sgraphRender/s_cad_viewport_extend_render.cpp
-sgraphRender/s_cad_viewport_fillet.cpp
-sgraphRender/s_cad_viewport_geometry.cpp
-sgraphRender/s_cad_viewport_geometry.h
-sgraphRender/s_cad_viewport_grip.cpp
-sgraphRender/s_cad_viewport_hatch.cpp
-sgraphRender/s_cad_viewport_interaction.cpp
-sgraphRender/s_cad_viewport_join_render.cpp
-sgraphRender/s_cad_viewport_keyword.cpp
-sgraphRender/s_cad_viewport_lengthen.cpp
-sgraphRender/s_cad_viewport_modify_complete.cpp
-sgraphRender/s_cad_viewport_overlay.cpp
-sgraphRender/s_cad_viewport_polyline_edit.cpp
-sgraphRender/s_cad_viewport_render.cpp
-sgraphRender/s_cad_viewport_selection.cpp
-sgraphRender/s_cad_viewport_simulation.cpp
-sgraphRender/s_cad_viewport_snap_render.cpp
-sgraphRender/s_cad_viewport_spline_edit.cpp
-sgraphRender/s_cad_viewport_standard_shape.cpp
-sgraphRender/s_cad_viewport_stretch.cpp
-sgraphRender/s_cad_viewport_tracking.cpp
-sgraphRender/s_cad_viewport_transform.cpp
-sgraphRender/s_cad_viewport_zoom.cpp
-sgraphRender/s_circle_tangent_geometry.cpp
-sgraphRender/s_circle_tangent_math.h
-sgraphRender/s_curve_offset.cpp
-sgraphRender/s_curve_offset.h
-sgraphRender/s_object_snap.cpp
-sgraphRender/s_object_snap.h
-sgraphRender/s_polyline_edit.cpp
-sgraphRender/s_polyline_fillet.cpp
-sgraphRender/s_polyline_geometry.cpp
-sgraphRender/s_spline_edit.cpp
-sgraphRender/s_spline_edit.h
+sgraphRender/vp_arc_construction_geometry.cpp
+sgraphRender/vp_associative_array_geometry.cpp
+sgraphRender/vp_associative_array_geometry.h
+sgraphRender/vp_cad_viewport.cpp
+sgraphRender/vp_cad_viewport.h
+sgraphRender/vp_cad_viewport_align.cpp
+sgraphRender/vp_cad_viewport_annotation.cpp
+sgraphRender/vp_cad_viewport_appearance.cpp
+sgraphRender/vp_cad_viewport_array_edit.cpp
+sgraphRender/vp_cad_viewport_array_path.cpp
+sgraphRender/vp_cad_viewport_array_polar.cpp
+sgraphRender/vp_cad_viewport_array_rect.cpp
+sgraphRender/vp_cad_viewport_blend.cpp
+sgraphRender/vp_cad_viewport_break_render.cpp
+sgraphRender/vp_cad_viewport_chamfer.cpp
+sgraphRender/vp_cad_viewport_curve_break.cpp
+sgraphRender/vp_cad_viewport_curve_chamfer.cpp
+sgraphRender/vp_cad_viewport_curve_construction.cpp
+sgraphRender/vp_cad_viewport_curve_draw.cpp
+sgraphRender/vp_cad_viewport_curve_extend.cpp
+sgraphRender/vp_cad_viewport_curve_fillet.cpp
+sgraphRender/vp_cad_viewport_curve_join.cpp
+sgraphRender/vp_cad_viewport_curve_trim.cpp
+sgraphRender/vp_cad_viewport_dimension.cpp
+sgraphRender/vp_cad_viewport_drafting.cpp
+sgraphRender/vp_cad_viewport_drafting.h
+sgraphRender/vp_cad_viewport_entity_overlay.cpp
+sgraphRender/vp_cad_viewport_entity_render.cpp
+sgraphRender/vp_cad_viewport_events.cpp
+sgraphRender/vp_cad_viewport_explode_render.cpp
+sgraphRender/vp_cad_viewport_extend_render.cpp
+sgraphRender/vp_cad_viewport_fillet.cpp
+sgraphRender/vp_cad_viewport_geometry.cpp
+sgraphRender/vp_cad_viewport_geometry.h
+sgraphRender/vp_cad_viewport_grip.cpp
+sgraphRender/vp_cad_viewport_hatch.cpp
+sgraphRender/vp_cad_viewport_interaction.cpp
+sgraphRender/vp_cad_viewport_join_render.cpp
+sgraphRender/vp_cad_viewport_keyword.cpp
+sgraphRender/vp_cad_viewport_lengthen.cpp
+sgraphRender/vp_cad_viewport_modify_complete.cpp
+sgraphRender/vp_cad_viewport_overlay.cpp
+sgraphRender/vp_cad_viewport_polyline_edit.cpp
+sgraphRender/vp_cad_viewport_render.cpp
+sgraphRender/vp_cad_viewport_selection.cpp
+sgraphRender/vp_cad_viewport_simulation.cpp
+sgraphRender/vp_cad_viewport_snap_render.cpp
+sgraphRender/vp_cad_viewport_spline_edit.cpp
+sgraphRender/vp_cad_viewport_standard_shape.cpp
+sgraphRender/vp_cad_viewport_stretch.cpp
+sgraphRender/vp_cad_viewport_tracking.cpp
+sgraphRender/vp_cad_viewport_transform.cpp
+sgraphRender/vp_cad_viewport_zoom.cpp
+sgraphRender/vp_circle_tangent_geometry.cpp
+sgraphRender/vp_circle_tangent_math.h
+sgraphRender/vp_curve_offset.cpp
+sgraphRender/vp_curve_offset.h
+sgraphRender/vp_object_snap.cpp
+sgraphRender/vp_object_snap.h
+sgraphRender/vp_polyline_edit.cpp
+sgraphRender/vp_polyline_fillet.cpp
+sgraphRender/vp_polyline_geometry.cpp
+sgraphRender/vp_spline_edit.cpp
+sgraphRender/vp_spline_edit.h
 ```
 
 ### 35.4 GUI 和设计系统
 
 ```text
 sgraphGui/CMakeLists.txt
-sgraphGui/s_cad_main_window.cpp
-sgraphGui/s_cad_main_window.h
-sgraphGui/s_cad_main_window_annotation.cpp
-sgraphGui/s_cad_main_window_audit.cpp
-sgraphGui/s_cad_main_window_boolean.cpp
-sgraphGui/s_cad_main_window_command.cpp
-sgraphGui/s_cad_main_window_coordinate.cpp
-sgraphGui/s_cad_main_window_dimension.cpp
-sgraphGui/s_cad_main_window_dimension_style.cpp
-sgraphGui/s_cad_main_window_display.cpp
-sgraphGui/s_cad_main_window_drafting.cpp
-sgraphGui/s_cad_main_window_execute.cpp
-sgraphGui/s_cad_main_window_file.cpp
-sgraphGui/s_cad_main_window_hatch.cpp
-sgraphGui/s_cad_main_window_icon.cpp
-sgraphGui/s_cad_main_window_layer.cpp
-sgraphGui/s_cad_main_window_plot.cpp
-sgraphGui/s_cad_main_window_quick_operation.cpp
-sgraphGui/s_cad_main_window_recovery.cpp
-sgraphGui/s_cad_main_window_setup.cpp
-sgraphGui/s_cad_main_window_shortcut.cpp
-sgraphGui/s_cad_main_window_simulation.cpp
-sgraphGui/s_cad_main_window_text_style.cpp
-sgraphGui/s_cad_main_window_ui_scale.cpp
-sgraphGui/s_cad_main_window_units.cpp
-sgraphGui/s_cad_main_window_vector_import.cpp
-sgraphGui/s_cad_main_window_view.cpp
-sgraphGui/s_cad_main_window_workspace.cpp
-sgraphGui/s_cad_property_tree.cpp
-sgraphGui/s_cad_property_tree.h
-sgraphGui/s_cad_property_ui.cpp
-sgraphGui/s_cad_property_ui.h
-sgraphGui/s_cad_workspace_proportion.cpp
-sgraphGui/s_cad_workspace_widget.cpp
-sgraphGui/s_cad_workspace_widget.h
-sgraphGui/s_command_line_widget.cpp
-sgraphGui/s_command_line_widget.h
-sgraphGui/s_dialog_service.cpp
-sgraphGui/s_dialog_service.h
-sgraphGui/s_gui_resources.qrc
-sgraphGui/s_quick_entity_operation.cpp
-sgraphGui/s_quick_entity_operation.h
-sgraphGui/s_selection_context_bar.cpp
-sgraphGui/s_selection_context_bar.h
-sgraphGui/s_shortcut_dialog.cpp
-sgraphGui/s_shortcut_dialog.h
-sgraphGui/s_shortcut_manager.cpp
-sgraphGui/s_shortcut_manager.h
-sgraphGui/s_toolpath_simulation_controller.cpp
-sgraphGui/s_toolpath_simulation_controller.h
-sgraphGui/s_toolpath_sort_dialog.cpp
-sgraphGui/s_toolpath_sort_dialog.h
-sgraphGui/s_vector_import_dialog.cpp
-sgraphGui/s_vector_import_dialog.h
-sgraphGui/sgraphDesignSystem/s_design_metrics.json
-sgraphGui/sgraphDesignSystem/s_design_token.h
-sgraphGui/sgraphDesignSystem/s_dimension_icon.cpp
-sgraphGui/sgraphDesignSystem/s_dimension_icon.h
-sgraphGui/sgraphDesignSystem/s_file_icon.cpp
-sgraphGui/sgraphDesignSystem/s_file_icon.h
-sgraphGui/sgraphDesignSystem/s_hatch_icon.cpp
-sgraphGui/sgraphDesignSystem/s_hatch_icon.h
-sgraphGui/sgraphDesignSystem/s_icon_names.cpp
-sgraphGui/sgraphDesignSystem/s_icon_provider.cpp
-sgraphGui/sgraphDesignSystem/s_icon_provider.h
-sgraphGui/sgraphDesignSystem/s_import_icon.cpp
-sgraphGui/sgraphDesignSystem/s_import_icon.h
-sgraphGui/sgraphDesignSystem/s_output_icon.cpp
-sgraphGui/sgraphDesignSystem/s_output_icon.h
-sgraphGui/sgraphDesignSystem/s_proxy_style.cpp
-sgraphGui/sgraphDesignSystem/s_proxy_style.h
-sgraphGui/sgraphDesignSystem/s_quick_transform_icon.cpp
-sgraphGui/sgraphDesignSystem/s_quick_transform_icon.h
-sgraphGui/sgraphDesignSystem/s_shape_boolean_icon.cpp
-sgraphGui/sgraphDesignSystem/s_shape_boolean_icon.h
-sgraphGui/sgraphDesignSystem/s_specialized_icon.cpp
-sgraphGui/sgraphDesignSystem/s_specialized_icon.h
-sgraphGui/sgraphDesignSystem/s_theme_dark.json
-sgraphGui/sgraphDesignSystem/s_theme_high_contrast.json
-sgraphGui/sgraphDesignSystem/s_theme_light.json
-sgraphGui/sgraphDesignSystem/s_theme_manager.cpp
-sgraphGui/sgraphDesignSystem/s_theme_manager.h
+sgraphGui/vp_cad_main_window.cpp
+sgraphGui/vp_cad_main_window.h
+sgraphGui/vp_cad_main_window_annotation.cpp
+sgraphGui/vp_cad_main_window_audit.cpp
+sgraphGui/vp_cad_main_window_boolean.cpp
+sgraphGui/vp_cad_main_window_command.cpp
+sgraphGui/vp_cad_main_window_coordinate.cpp
+sgraphGui/vp_cad_main_window_dimension.cpp
+sgraphGui/vp_cad_main_window_dimension_style.cpp
+sgraphGui/vp_cad_main_window_display.cpp
+sgraphGui/vp_cad_main_window_drafting.cpp
+sgraphGui/vp_cad_main_window_execute.cpp
+sgraphGui/vp_cad_main_window_file.cpp
+sgraphGui/vp_cad_main_window_hatch.cpp
+sgraphGui/vp_cad_main_window_icon.cpp
+sgraphGui/vp_cad_main_window_layer.cpp
+sgraphGui/vp_cad_main_window_plot.cpp
+sgraphGui/vp_cad_main_window_quick_operation.cpp
+sgraphGui/vp_cad_main_window_recovery.cpp
+sgraphGui/vp_cad_main_window_setup.cpp
+sgraphGui/vp_cad_main_window_shortcut.cpp
+sgraphGui/vp_cad_main_window_simulation.cpp
+sgraphGui/vp_cad_main_window_text_style.cpp
+sgraphGui/vp_cad_main_window_ui_scale.cpp
+sgraphGui/vp_cad_main_window_units.cpp
+sgraphGui/vp_cad_main_window_vector_import.cpp
+sgraphGui/vp_cad_main_window_view.cpp
+sgraphGui/vp_cad_main_window_workspace.cpp
+sgraphGui/vp_cad_property_tree.cpp
+sgraphGui/vp_cad_property_tree.h
+sgraphGui/vp_cad_property_ui.cpp
+sgraphGui/vp_cad_property_ui.h
+sgraphGui/vp_cad_workspace_proportion.cpp
+sgraphGui/vp_cad_workspace_widget.cpp
+sgraphGui/vp_cad_workspace_widget.h
+sgraphGui/vp_command_line_widget.cpp
+sgraphGui/vp_command_line_widget.h
+sgraphGui/vp_dialog_service.cpp
+sgraphGui/vp_dialog_service.h
+sgraphGui/vp_gui_resources.qrc
+sgraphGui/vp_quick_entity_operation.cpp
+sgraphGui/vp_quick_entity_operation.h
+sgraphGui/vp_selection_context_bar.cpp
+sgraphGui/vp_selection_context_bar.h
+sgraphGui/vp_shortcut_dialog.cpp
+sgraphGui/vp_shortcut_dialog.h
+sgraphGui/vp_shortcut_manager.cpp
+sgraphGui/vp_shortcut_manager.h
+sgraphGui/vp_toolpath_simulation_controller.cpp
+sgraphGui/vp_toolpath_simulation_controller.h
+sgraphGui/vp_toolpath_sort_dialog.cpp
+sgraphGui/vp_toolpath_sort_dialog.h
+sgraphGui/vp_vector_import_dialog.cpp
+sgraphGui/vp_vector_import_dialog.h
+sgraphGui/sgraphDesignSystem/vp_design_metrics.json
+sgraphGui/sgraphDesignSystem/vp_design_token.h
+sgraphGui/sgraphDesignSystem/vp_dimension_icon.cpp
+sgraphGui/sgraphDesignSystem/vp_dimension_icon.h
+sgraphGui/sgraphDesignSystem/vp_file_icon.cpp
+sgraphGui/sgraphDesignSystem/vp_file_icon.h
+sgraphGui/sgraphDesignSystem/vp_hatch_icon.cpp
+sgraphGui/sgraphDesignSystem/vp_hatch_icon.h
+sgraphGui/sgraphDesignSystem/vp_icon_names.cpp
+sgraphGui/sgraphDesignSystem/vp_icon_provider.cpp
+sgraphGui/sgraphDesignSystem/vp_icon_provider.h
+sgraphGui/sgraphDesignSystem/vp_import_icon.cpp
+sgraphGui/sgraphDesignSystem/vp_import_icon.h
+sgraphGui/sgraphDesignSystem/vp_output_icon.cpp
+sgraphGui/sgraphDesignSystem/vp_output_icon.h
+sgraphGui/sgraphDesignSystem/vp_proxy_style.cpp
+sgraphGui/sgraphDesignSystem/vp_proxy_style.h
+sgraphGui/sgraphDesignSystem/vp_quick_transform_icon.cpp
+sgraphGui/sgraphDesignSystem/vp_quick_transform_icon.h
+sgraphGui/sgraphDesignSystem/vp_shape_boolean_icon.cpp
+sgraphGui/sgraphDesignSystem/vp_shape_boolean_icon.h
+sgraphGui/sgraphDesignSystem/vp_specialized_icon.cpp
+sgraphGui/sgraphDesignSystem/vp_specialized_icon.h
+sgraphGui/sgraphDesignSystem/vp_theme_dark.json
+sgraphGui/sgraphDesignSystem/vp_theme_high_contrast.json
+sgraphGui/sgraphDesignSystem/vp_theme_light.json
+sgraphGui/sgraphDesignSystem/vp_theme_manager.cpp
+sgraphGui/sgraphDesignSystem/vp_theme_manager.h
 ```
 
 ### 35.5 Tests、Benchmark、Build Tools
 
 ```text
 sgraphTests/CMakeLists.txt
-sgraphTests/s_annotation_test.cpp
-sgraphTests/s_application_settings_migration_test.cpp
-sgraphTests/s_array_operations_test.cpp
-sgraphTests/s_cad_document_test.cpp
-sgraphTests/s_cad_viewport_test.cpp
-sgraphTests/s_command_line_widget_test.cpp
-sgraphTests/s_curve_construction_test.cpp
-sgraphTests/s_curve_fillet_test.cpp
-sgraphTests/s_curve_offset_test.cpp
-sgraphTests/s_dialog_size_policy_test.cpp
-sgraphTests/s_dimension_test.cpp
-sgraphTests/s_document_audit_test.cpp
-sgraphTests/s_document_recovery_test.cpp
-sgraphTests/s_dwg_codec_test.cpp
-sgraphTests/s_ellipse_test.cpp
-sgraphTests/s_grip_edit_test.cpp
-sgraphTests/s_hatch_test.cpp
-sgraphTests/s_layer_color_workflow_test.cpp
-sgraphTests/s_polygon_boolean_test.cpp
-sgraphTests/s_polyline_corner_test.cpp
-sgraphTests/s_precision_snap_test.cpp
-sgraphTests/s_quick_entity_operation_test.cpp
-sgraphTests/s_shortcut_manager_test.cpp
-sgraphTests/s_spline_blend_test.cpp
-sgraphTests/s_spline_edit_test.cpp
-sgraphTests/s_standard_shape_test.cpp
-sgraphTests/s_svg_vector_import_test.cpp
-sgraphTests/s_toolpath_simulation_test.cpp
-sgraphTests/s_toolpath_sort_test.cpp
-sgraphTests/s_ui_scale_test.cpp
-sgraphTests/s_window_control_test.cpp
-sgraphTests/s_workspace_persistence_test.cpp
+sgraphTests/vp_annotation_test.cpp
+sgraphTests/vp_application_settings_migration_test.cpp
+sgraphTests/vp_core_result_test.cpp
+sgraphTests/vp_geometry_core_test.cpp
+sgraphTests/vp_id_collection_test.cpp
+sgraphTests/vp_id_collection_fixture.h
+sgraphTests/vp_id_collection_benchmark.cpp
+sgraphTests/vp_drafting_state_test.cpp
+sgraphTests/vp_qt_adapter_test.cpp
+sgraphTests/vp_document_history_test.cpp
+sgraphTests/vp_array_operations_test.cpp
+sgraphTests/vp_cad_document_test.cpp
+sgraphTests/vp_cad_viewport_test.cpp
+sgraphTests/vp_command_line_widget_test.cpp
+sgraphTests/vp_curve_construction_test.cpp
+sgraphTests/vp_curve_fillet_test.cpp
+sgraphTests/vp_curve_offset_test.cpp
+sgraphTests/vp_dialog_size_policy_test.cpp
+sgraphTests/vp_dimension_test.cpp
+sgraphTests/vp_document_audit_test.cpp
+sgraphTests/vp_document_recovery_test.cpp
+sgraphTests/vp_dwg_codec_test.cpp
+sgraphTests/vp_ellipse_test.cpp
+sgraphTests/vp_grip_edit_test.cpp
+sgraphTests/vp_hatch_test.cpp
+sgraphTests/vp_layer_color_workflow_test.cpp
+sgraphTests/vp_polygon_boolean_test.cpp
+sgraphTests/vp_polyline_corner_test.cpp
+sgraphTests/vp_precision_snap_test.cpp
+sgraphTests/vp_quick_entity_operation_test.cpp
+sgraphTests/vp_shortcut_manager_test.cpp
+sgraphTests/vp_spline_blend_test.cpp
+sgraphTests/vp_spline_edit_test.cpp
+sgraphTests/vp_standard_shape_test.cpp
+sgraphTests/vp_svg_vector_import_test.cpp
+sgraphTests/vp_toolpath_simulation_test.cpp
+sgraphTests/vp_toolpath_sort_test.cpp
+sgraphTests/vp_ui_scale_test.cpp
+sgraphTests/vp_window_control_test.cpp
+sgraphTests/vp_workspace_persistence_test.cpp
 sgraphVectorBenchmark/CMakeLists.txt
 sgraphVectorBenchmark/README.md
 sgraphVectorBenchmark/fixtures/README.md
 sgraphVectorBenchmark/results/README.md
-sgraphVectorBenchmark/s_run_benchmark.py
-sgraphVectorBenchmark/src/s_bitmap_benchmark_generator.cpp
-sgraphVectorBenchmark/src/s_bitmap_benchmark_generator.h
-sgraphVectorBenchmark/src/s_bitmap_benchmark_report.cpp
-sgraphVectorBenchmark/src/s_bitmap_benchmark_report.h
-sgraphVectorBenchmark/src/s_bitmap_benchmark_types.h
-sgraphVectorBenchmark/src/s_bitmap_benchmark_validation.cpp
-sgraphVectorBenchmark/src/s_bitmap_benchmark_validation.h
-sgraphVectorBenchmark/src/s_bitmap_flood_baseline.cpp
-sgraphVectorBenchmark/src/s_bitmap_flood_baseline.h
-sgraphVectorBenchmark/src/s_bitmap_vector_benchmark.cpp
-sgraphVectorBenchmark/tests/s_verify_output_layout.cmake
-sgraphBuildTools/s_build_32_debug.py
-sgraphBuildTools/s_build_32_release.py
-sgraphBuildTools/s_build_64_debug.py
-sgraphBuildTools/s_build_64_release.py
-sgraphBuildTools/s_build_common.py
+sgraphVectorBenchmark/vp_run_benchmark.py
+sgraphVectorBenchmark/src/vp_bitmap_benchmark_generator.cpp
+sgraphVectorBenchmark/src/vp_bitmap_benchmark_generator.h
+sgraphVectorBenchmark/src/vp_bitmap_benchmark_report.cpp
+sgraphVectorBenchmark/src/vp_bitmap_benchmark_report.h
+sgraphVectorBenchmark/src/vp_bitmap_benchmark_types.h
+sgraphVectorBenchmark/src/vp_bitmap_benchmark_validation.cpp
+sgraphVectorBenchmark/src/vp_bitmap_benchmark_validation.h
+sgraphVectorBenchmark/src/vp_bitmap_flood_baseline.cpp
+sgraphVectorBenchmark/src/vp_bitmap_flood_baseline.h
+sgraphVectorBenchmark/src/vp_bitmap_vector_benchmark.cpp
+sgraphVectorBenchmark/tests/vp_verify_output_layout.cmake
+sgraphBuildTools/vp_build_32_debug.py
+sgraphBuildTools/vp_build_32_release.py
+sgraphBuildTools/vp_build_64_debug.py
+sgraphBuildTools/vp_build_64_release.py
+sgraphBuildTools/vp_build_common.py
+sgraphBuildTools/vp_build_core.py
 ```
 
 ## 36. 功能—实现—事务—测试证据表
 
 | 功能 | UI/命令入口 | 核心实现 | 文档修改方式 | 主要测试 |
 | --- | --- | --- | --- | --- |
-| 直线/圆/弧/椭圆/样条 | Ribbon、命令行、SToolMode | Render 构造 + Geometry | Transaction add* | curve construction、ellipse、spline |
+| 直线/圆/弧/椭圆/样条 | Ribbon、命令行、VpToolMode | Render 构造 + Geometry | Transaction add* | curve construction、ellipse、spline |
 | 多段线编辑 | PEDIT、视口关键字 | polyline geometry/edit | replace/remove | polyline corner |
 | 修剪/延伸/打断/连接 | Modify Ribbon/命令 | viewport curve_* | replace/remove/add | viewport、curve tests |
 | 圆角/倒角/混接 | Modify Ribbon/命令 | fillet/chamfer/blend | 单事务替换并添加 | fillet、spline blend |
@@ -1808,10 +1887,10 @@ sgraphBuildTools/s_build_common.py
 
 1. 将位图和 DWG 转换改为带进度、取消、代次校验的后台任务；
 2. 将 DXF 导入改为完整解析/验证后一次原子文档替换；
-3. 从 `SCadViewport` 抽取命令会话状态和纯预览计算；
-4. 从 `SCadMainWindow` 抽取命令路由、文件工作流和 Ribbon builder；
+3. 从 `VpCadViewport` 抽取命令会话状态和纯预览计算；
+4. 从 `VpCadMainWindow` 抽取命令路由、文件工作流和 Ribbon builder；
 5. 为撤销历史增加内存预算和精确保存点；
-6. 改进 `SResult<T>`，移除默认构造约束并保护失败值访问；
+6. 改进 `VpResult<T>`，移除默认构造约束并保护失败值访问；
 7. 基于大图纸实测引入空间索引、绘制裁剪和缓存，再评估 GPU 批渲染；
 8. 统一外部格式中间模型和兼容报告错误码；
 9. 自动校验功能 inventory 中的源码路径和测试证据，减少文档滞后；
@@ -1822,7 +1901,7 @@ sgraphBuildTools/s_build_common.py
 | 变更 | 必查范围 |
 | --- | --- |
 | 添加实体类型/字段 | Geometry 变体、Document 事务/版本、Render 绘制/命中/夹点、IO、属性 UI、测试/YAML。 |
-| 添加绘图命令 | Ribbon、命令/别名、SToolMode、提示/点输入、动态预览、取消、事务、图标和测试。 |
+| 添加绘图命令 | Ribbon、命令/别名、VpToolMode、提示/点输入、动态预览、取消、事务、图标和测试。 |
 | 修改图层/样式 | Document 历史/信号/IO、属性/图层面板、DXF/DWG 和旧文件。 |
 | 修改原生格式 | magic/version/字段顺序、旧版本分支、恢复副本、三代扩展名和回归 fixture。 |
 | 修改捕捉/坐标 | 世界/屏幕容差、正交/网格/追踪组合、不同 zoom 和精度测试。 |
@@ -1856,12 +1935,12 @@ sgraphBuildTools/s_build_common.py
 - [构建指南](BUILDING.md)
 - [用户指南](USER_GUIDE.md)
 - [测试结果](TEST_RESULTS.md)
-- [编码规范](s_coding_style.md)
-- [默认快捷键](s_default_shortcuts.md)
-- [AutoCAD 2026 功能目录](s_autocad_2026_feature_catalog.yaml)
-- [AutoCAD 差距矩阵](s_autocad_gap_matrix.yaml)
-- [实现证据清单](s_smartcad_feature_inventory.yaml)
-- [功能实施路线图](s_feature_implementation_roadmap.md)
+- [编码规范](vp_coding_style.md)
+- [默认快捷键](vp_default_shortcuts.md)
+- [AutoCAD 2026 功能目录](vp_autocad_2026_feature_catalog.yaml)
+- [AutoCAD 差距矩阵](vp_autocad_gap_matrix.yaml)
+- [实现证据清单](vp_smartcad_feature_inventory.yaml)
+- [功能实施路线图](vp_feature_implementation_roadmap.md)
 - [位图基准说明](../sgraphVectorBenchmark/README.md)
 - [贡献指南](../CONTRIBUTING.md)
 - [第三方声明](../THIRD_PARTY_NOTICES.md)

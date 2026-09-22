@@ -20,19 +20,19 @@
 运行 64 位 Release 完整基准：
 
 ```powershell
-python sgraphVectorBenchmark/s_run_benchmark.py
+python sgraphVectorBenchmark/vp_run_benchmark.py
 ```
 
 5000 文件耐久基准：
 
 ```powershell
-python sgraphVectorBenchmark/s_run_benchmark.py --cases 5000
+python sgraphVectorBenchmark/vp_run_benchmark.py --cases 5000
 ```
 
 小规模验证：
 
 ```powershell
-python sgraphVectorBenchmark/s_run_benchmark.py --cases 20 --repetitions 1 --threads 2
+python sgraphVectorBenchmark/vp_run_benchmark.py --cases 20 --repetitions 1 --threads 2
 ```
 
 脚本先调用项目标准构建入口，因此同样要求本机安装 Qt 5.12.10，并支持

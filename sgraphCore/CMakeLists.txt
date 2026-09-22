@@ -1,8 +1,5 @@
-add_library(smartCore STATIC
-    s_application_settings_migration.cpp
-    s_application_settings_migration.h
-    s_result.h
-)
-
-target_include_directories(smartCore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(smartCore PUBLIC Qt5::Core)
+add_library(smartCore INTERFACE)
+target_sources(smartCore INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/vp_result.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/vp_id_collection.h)
+target_include_directories(smartCore INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_compile_features(smartCore INTERFACE cxx_std_17)

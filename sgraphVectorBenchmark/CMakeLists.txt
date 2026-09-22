@@ -1,14 +1,14 @@
 add_executable(smartBitmapVectorBenchmark
-    src/s_bitmap_benchmark_types.h
-    src/s_bitmap_benchmark_generator.h
-    src/s_bitmap_benchmark_generator.cpp
-    src/s_bitmap_flood_baseline.h
-    src/s_bitmap_flood_baseline.cpp
-    src/s_bitmap_benchmark_validation.h
-    src/s_bitmap_benchmark_validation.cpp
-    src/s_bitmap_benchmark_report.h
-    src/s_bitmap_benchmark_report.cpp
-    src/s_bitmap_vector_benchmark.cpp
+    src/vp_bitmap_benchmark_types.h
+    src/vp_bitmap_benchmark_generator.h
+    src/vp_bitmap_benchmark_generator.cpp
+    src/vp_bitmap_flood_baseline.h
+    src/vp_bitmap_flood_baseline.cpp
+    src/vp_bitmap_benchmark_validation.h
+    src/vp_bitmap_benchmark_validation.cpp
+    src/vp_bitmap_benchmark_report.h
+    src/vp_bitmap_benchmark_report.cpp
+    src/vp_bitmap_vector_benchmark.cpp
 )
 
 target_link_libraries(smartBitmapVectorBenchmark
@@ -54,7 +54,7 @@ add_test(
     NAME vectorPathBitmapBenchmarkOutputLayout
     COMMAND ${CMAKE_COMMAND}
             "-DOUTPUT_DIRECTORY=${SGRAPH_BENCHMARK_SMOKE_OUTPUT}"
-            -P "${CMAKE_CURRENT_SOURCE_DIR}/tests/s_verify_output_layout.cmake"
+            -P "${CMAKE_CURRENT_SOURCE_DIR}/tests/vp_verify_output_layout.cmake"
 )
 
 set_tests_properties(

@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/smartcad/themes">
+        <file alias="vp_theme_dark.json">sgraphDesignSystem/vp_theme_dark.json</file>
+        <file alias="vp_theme_light.json">sgraphDesignSystem/vp_theme_light.json</file>
+        <file alias="vp_theme_high_contrast.json">sgraphDesignSystem/vp_theme_high_contrast.json</file>
+        <file alias="vp_design_metrics.json">sgraphDesignSystem/vp_design_metrics.json</file>
+    </qresource>
+</RCC>
