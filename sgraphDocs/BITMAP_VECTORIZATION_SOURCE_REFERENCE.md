@@ -1103,13 +1103,15 @@ VpResult<QString> writeBitmapBenchmarkReport(
 
 ### 25.2 `vp_run_benchmark.py::main()`
 
-定位仓库根，调用 64 位 Release 构建脚本构建 benchmark，再启动生成的可执行文件并返回其
-退出码。subprocess 使用 `check=True` 的构建步骤失败会直接终止。
+定位仓库根，调用统一入口 `sgraphBuildTools/vp_build.py --bits <位数> --benchmarks`
+构建 Release benchmark，再启动生成的程序并返回退出码。默认位数为 64；构建步骤使用
+`check=True`，失败直接终止，默认不运行普通 CTest。
 
 ### 25.3 Benchmark CMake
 
 `smartBitmapVectorBenchmark` 链接 smartIo、Qt Core/Gui/Concurrent；Windows 额外链接 Psapi。
-编译定义注入 fixture 和 benchmark root。CTest：
+编译定义注入 fixture 和 benchmark root。项目仅在桌面开启 `VECTORPATH_BUILD_BENCHMARKS`
+时构建；同时开启 `VECTORPATH_BUILD_TESTS` 才注册以下 CTest：
 
 - `vectorPathBitmapVectorBenchmarkSmoke`：20 case、seed 20260727、2 线程、1 次、smoke；
 - `vectorPathBitmapBenchmarkOutputLayout`：依赖 smoke，检查最终目录。
@@ -1124,7 +1126,8 @@ VpResult<QString> writeBitmapBenchmarkReport(
 
 ## 26. 专项 Qt Test
 
-位图专项位于 `VpSvgVectorImportTest`：
+位图专项位于 `VpSvgVectorImportTest`，编入共享的 `vectorPathDesktopTests` 程序；CTest
+使用 `vectorPathSvgVectorImportTests` 套件参数单独启动进程，测试隔离方式保持不变：
 
 ### 26.1 `vectorizesSolidBitmapAsOneRegion()`
 

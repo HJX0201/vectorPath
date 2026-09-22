@@ -1,3 +1,4 @@
+#include "vp_test_runner.h"
 #include "vp_theme_manager.h"
 
 #include <QApplication>
@@ -39,5 +40,5 @@ void VpUiScaleTest::persistsScaleAndUpdatesFont()
 
 } // namespace Vp
 
-QTEST_MAIN(Vp::VpUiScaleTest)
+VECTORPATH_TEST_ENTRY(Vp::VpUiScaleTest, vpRunVpUiScaleTest)
 #include "vp_ui_scale_test.moc"

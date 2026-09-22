@@ -17,10 +17,6 @@ struct VpDesignToken
     QColor accent_hover;
     QColor danger;
     QColor canvas;
-    int small_spacing = 4;
-    int spacing = 8;
-    int corner_radius = 5;
-    int animation_duration = 140;
 };
 
 enum class VpThemeMode

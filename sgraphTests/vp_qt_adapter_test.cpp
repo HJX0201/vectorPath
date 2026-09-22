@@ -1,4 +1,5 @@
 #include "vp_qt_text.h"
+#include "vp_test_runner.h"
 
 #include <QTest>
 
@@ -33,5 +34,5 @@ class VpQtAdapterTest final : public QObject
 
 } // namespace Vp
 
-QTEST_APPLESS_MAIN(Vp::VpQtAdapterTest)
+VECTORPATH_TEST_ENTRY(Vp::VpQtAdapterTest, vpRunVpQtAdapterTest)
 #include "vp_qt_adapter_test.moc"

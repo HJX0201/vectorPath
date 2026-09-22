@@ -1,4 +1,5 @@
 #include "vp_dialog_service.h"
+#include "vp_test_runner.h"
 
 #include <QApplication>
 #include <QDialog>
@@ -116,6 +117,6 @@ void VpDialogSizePolicyTest::preservesLargerExplicitMinimum()
     QCOMPARE(dialog.minimumHeight(), 420);
 }
 
-QTEST_MAIN(VpDialogSizePolicyTest)
+VECTORPATH_TEST_ENTRY(VpDialogSizePolicyTest, vpRunVpDialogSizePolicyTest)
 
 #include "vp_dialog_size_policy_test.moc"

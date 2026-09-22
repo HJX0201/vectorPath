@@ -2,6 +2,7 @@
 #include "vp_document_transaction.h"
 #include "vp_dxf_codec.h"
 #include "vp_qt_text.h"
+#include "vp_test_runner.h"
 
 #include <QDataStream>
 #include <QFile>
@@ -494,5 +495,5 @@ void VpCadDocumentTest::drawingSettingsUndoRedoAndFormatting()
 
 } // namespace Vp
 
-QTEST_APPLESS_MAIN(Vp::VpCadDocumentTest)
+VECTORPATH_TEST_ENTRY(Vp::VpCadDocumentTest, vpRunVpCadDocumentTest)
 #include "vp_cad_document_test.moc"

@@ -27,12 +27,12 @@ def parse_arguments() -> argparse.Namespace:
 def main() -> int:
     arguments = parse_arguments()
     root = Path(__file__).resolve().parents[1]
-    wrapper = root / "sgraphBuildTools" / (
-        f"vp_build_{arguments.bits}_release.py"
-    )
+    wrapper = root / "sgraphBuildTools" / "vp_build.py"
     build_command = [
         sys.executable,
         str(wrapper),
+        "--bits", arguments.bits,
+        "--benchmarks",
         "--jobs",
         arguments.jobs,
     ]

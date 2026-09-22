@@ -337,29 +337,49 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--qt-dir", help="显式指定 Qt 套件根目录")
     parser.add_argument("--clean", action="store_true", help="先删除对应输出目录")
     parser.add_argument("--run", action="store_true", help="构建完成后启动应用")
-    parser.add_argument("--no-test", action="store_true", help="不构建和运行测试")
+    parser.add_argument("--bits", choices=("32", "64"), default="64")
+    parser.add_argument("--config", choices=("Debug", "Release"), default="Release")
+    parser.add_argument("--core", action="store_true", help="仅构建无 Qt 核心")
+    parser.add_argument("--test", action="store_true", help="构建并运行测试")
+    parser.add_argument("--benchmarks", action="store_true", help="构建可选性能基准")
     parser.add_argument("--package", action="store_true", help="生成便携 ZIP")
     return parser.parse_args()
 
 
-def run_build(bits: str, configuration: str) -> int:
+def run_build() -> int:
     arguments = parse_arguments()
+    bits = arguments.bits
+    configuration = arguments.config
     root = repo_root()
-    build_dir = root / "build" / bits / configuration
+    build_root = root / "build"
+    if arguments.core:
+        build_root = build_root / "core"
+        if arguments.run or arguments.package:
+            raise RuntimeError("--core 不能与 --run 或 --package 同时使用")
+    build_dir = build_root / bits / configuration
+    resolved_build = build_dir.resolve()
+    allowed_build_root = root.resolve() / "build"
+    if not resolved_build.is_relative_to(allowed_build_root) or resolved_build == allowed_build_root:
+        raise RuntimeError("构建目录必须位于项目 build 内")
     if arguments.clean and build_dir.exists():
         shutil.rmtree(build_dir)
     build_dir.mkdir(parents=True, exist_ok=True)
 
-    qt_dir = find_qt(arguments.qt_dir, bits, configuration)
+    qt_dir = None if arguments.core else find_qt(arguments.qt_dir, bits, configuration)
     environment = visual_studio_environment(bits)
-    environment["PATH"] = f"{qt_dir / 'bin'};{environment.get('PATH', '')}"
+    if qt_dir:
+        environment["PATH"] = f"{qt_dir / 'bin'};{environment.get('PATH', '')}"
 
     cmake = shutil.which("cmake", path=environment.get("PATH"))
     ninja = shutil.which("ninja", path=environment.get("PATH"))
     if not cmake or not ninja:
         raise RuntimeError("找不到 CMake 或 Ninja，请先安装完整编译工具链。")
 
-    tests = "OFF" if arguments.no_test else "ON"
+    tests = "ON" if arguments.test else "OFF"
+    benchmarks = "ON" if arguments.benchmarks else "OFF"
+    desktop = "OFF" if arguments.core else "ON"
+    dependency_options = ([f"-DCMAKE_PREFIX_PATH={qt_dir}"] if qt_dir else
+                          ["-DCMAKE_DISABLE_FIND_PACKAGE_Qt5=ON"])
     subprocess.run(
         [
             cmake,
@@ -371,9 +391,10 @@ def run_build(bits: str, configuration: str) -> int:
             "Ninja",
             f"-DCMAKE_MAKE_PROGRAM={ninja}",
             f"-DCMAKE_BUILD_TYPE={configuration}",
-            f"-DCMAKE_PREFIX_PATH={qt_dir}",
+            *dependency_options,
             f"-DVECTORPATH_BUILD_TESTS={tests}",
-            "-DVECTORPATH_BUILD_DESKTOP=ON",
+            f"-DVECTORPATH_BUILD_DESKTOP={desktop}",
+            f"-DVECTORPATH_BUILD_BENCHMARKS={benchmarks}",
         ],
         check=True,
         env=environment,
@@ -384,12 +405,16 @@ def run_build(bits: str, configuration: str) -> int:
         check=True,
         env=environment,
     )
-    if not arguments.no_test:
+    if arguments.test:
         subprocess.run(
-            ["ctest", "--test-dir", str(build_dir), "--output-on-failure", "-j", jobs],
+            [str(Path(cmake).with_name("ctest.exe")), "--test-dir", str(build_dir), "--output-on-failure", "-j", jobs],
             check=True,
             env=environment,
         )
+
+    if arguments.core:
+        print(f"[OK] Core: {build_dir}")
+        return 0
 
     manifest = write_runtime_manifest(build_dir, bits, configuration)
     print(f"[OK] {executable_path(build_dir)}")
@@ -405,9 +430,9 @@ def run_build(bits: str, configuration: str) -> int:
     return 0
 
 
-def main(bits: str, configuration: str) -> None:
+def main() -> None:
     try:
-        raise SystemExit(run_build(bits, configuration))
+        raise SystemExit(run_build())
     except (OSError, RuntimeError, subprocess.CalledProcessError) as error:
         print(f"[FAIL] {error}", file=sys.stderr)
         raise SystemExit(1)

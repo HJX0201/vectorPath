@@ -2,6 +2,7 @@
 #include "vp_document_transaction.h"
 #include "vp_dwg_codec.h"
 #include "vp_qt_text.h"
+#include "vp_test_runner.h"
 
 #include <QFile>
 #include <QTemporaryDir>
@@ -63,5 +64,5 @@ void VpDwgCodecTest::r2000RoundTrip()
     QVERIFY(read_result.value().hasWarnings());
 }
 
-QTEST_MAIN(VpDwgCodecTest)
+VECTORPATH_TEST_ENTRY(VpDwgCodecTest, vpRunVpDwgCodecTest)
 #include "vp_dwg_codec_test.moc"

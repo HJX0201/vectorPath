@@ -1,7 +1,7 @@
 schema_version: 1
 baseline: autocad_2026_core
 implementation: vectorPath
-audited: 2026-07-25
+audited: 2026-09-23
 meaning:
   complete: usable_end_to_end_and_tested
   partial: usable_subset_or_missing_persistence_interchange
@@ -10,10 +10,10 @@ meaning:
   out_of_scope: explicitly_excluded_product_specific_capability
   blocked_by_sdk: design_ready_but_dependency_unavailable_or_unverified
 summary:
-  complete: 32
-  partial: 8
+  complete: 24
+  partial: 13
   stub: 2
-  missing: 24
+  missing: 27
   out_of_scope: 3
   blocked_by_sdk: 2
 gaps:
@@ -81,10 +81,18 @@ gaps:
   - {id: ACAD.REFERENCE.UNDERLAY_IMPORT, status: blocked_by_sdk, priority: P2, dependency: poppler_qt5}
   - {id: ACAD.DATA.EXTRACT, status: missing, priority: P2}
   - {id: ACAD.DATA.LINK, status: missing, priority: P2}
-  - {id: ACAD.LAYOUT.SPACE, status: complete, priority: P0}
-  - {id: ACAD.LAYOUT.VIEWPORT, status: complete, priority: P0}
-  - {id: ACAD.OUTPUT.PAGE_SETUP, status: complete, priority: P0}
-  - {id: ACAD.OUTPUT.PLOT, status: complete, priority: P0}
+  - {id: ACAD.LAYOUT.SPACE, status: missing, priority: P0,
+     missing: [paper_space, layout_lifecycle, entity_space_isolation, layout_persistence],
+     note: current_workspace_has_only_a_model_view_no_layout_model_or_commands}
+  - {id: ACAD.LAYOUT.VIEWPORT, status: missing, priority: P0,
+     missing: [layout_viewport_model, creation_preview, viewport_scale, viewport_lock],
+     note: no_current_layout_viewport_implementation}
+  - {id: ACAD.OUTPUT.PAGE_SETUP, status: partial, priority: P0,
+     missing: [paper_setup, orientation, margins, print_scale, plot_style_application],
+     note: only_ctb_stb_parsing_and_plotstyle_stylesmanager_file_management_remain}
+  - {id: ACAD.OUTPUT.PLOT, status: missing, priority: P0,
+     missing: [print_preview, system_printer_output, pdf_output, batch_publish],
+     note: no_callable_print_or_export_pipeline_in_current_source}
   - {id: ACAD.COLLABORATE.COMPARE, status: missing, priority: P2}
   - {id: ACAD.COLLABORATE.TRACE, status: missing, priority: P2}
   - {id: ACAD.COLLABORATE.SHARE, status: missing, priority: P2}

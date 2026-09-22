@@ -1,6 +1,7 @@
 #include "vp_cad_document.h"
 #include "vp_document_transaction.h"
 #include "vp_dxf_codec.h"
+#include "vp_test_runner.h"
 #include "vp_toolpath.h"
 #include "vp_toolpath_document.h"
 
@@ -246,5 +247,5 @@ void VpToolpathSortTest::clockwiseArcPersistenceAndDxfDegradation()
 
 } // namespace Vp
 
-QTEST_MAIN(Vp::VpToolpathSortTest)
+VECTORPATH_TEST_ENTRY(Vp::VpToolpathSortTest, vpRunVpToolpathSortTest)
 #include "vp_toolpath_sort_test.moc"

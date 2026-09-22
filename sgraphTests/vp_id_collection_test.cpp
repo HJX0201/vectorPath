@@ -108,7 +108,7 @@ void randomizedReferenceComparison()
 } // namespace
 } // namespace Vp
 
-int main()
+int vpRunIdCollectionTests()
 {
     try
     {

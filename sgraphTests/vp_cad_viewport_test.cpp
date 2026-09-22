@@ -3,6 +3,7 @@
 #include "vp_cad_viewport_geometry.h"
 #include "vp_document_transaction.h"
 #include "vp_object_snap.h"
+#include "vp_test_runner.h"
 
 #include <QtTest>
 #include <algorithm>
@@ -704,5 +705,5 @@ void VpCadViewportTest::objectSnapGeometry()
 
 } // namespace Vp
 
-QTEST_MAIN(Vp::VpCadViewportTest)
+VECTORPATH_TEST_ENTRY(Vp::VpCadViewportTest, vpRunVpCadViewportTest)
 #include "vp_cad_viewport_test.moc"

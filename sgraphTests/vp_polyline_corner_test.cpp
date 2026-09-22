@@ -4,6 +4,7 @@
 #include "vp_document_transaction.h"
 #include "vp_dxf_codec.h"
 #include "vp_object_snap.h"
+#include "vp_test_runner.h"
 
 #include <QTemporaryDir>
 #include <QtTest>
@@ -356,5 +357,5 @@ void VpPolylineCornerTest::polylineEditOperationsAndJoin()
 
 } // namespace Vp
 
-QTEST_MAIN(Vp::VpPolylineCornerTest)
+VECTORPATH_TEST_ENTRY(Vp::VpPolylineCornerTest, vpRunVpPolylineCornerTest)
 #include "vp_polyline_corner_test.moc"

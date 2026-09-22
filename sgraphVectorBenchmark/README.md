@@ -35,7 +35,14 @@ python sgraphVectorBenchmark/vp_run_benchmark.py --cases 5000
 python sgraphVectorBenchmark/vp_run_benchmark.py --cases 20 --repetitions 1 --threads 2
 ```
 
-脚本先调用项目标准构建入口，因此同样要求本机安装 Qt 5.12.10，并支持
-`--qt-dir`、`--bits 32|64` 和 `--jobs`。
+脚本内部调用统一入口 `sgraphBuildTools/vp_build.py --benchmarks`，再运行所选规模的
+位图基准；同样要求本机安装 Qt 5.12.10，并支持 `--qt-dir`、`--bits 32|64` 和 `--jobs`。
+默认应用构建不生成本项目。若只需普通开发验证与小型位图检查，可在仓库根目录执行：
+
+```powershell
+python sgraphBuildTools/vp_build.py --test --benchmarks
+```
+
+这会在 38 项普通套件之外运行 smoke 和输出布局两项；正式历史数据和报告不会被覆盖。
 
 已验收的历史结果及测试口径见 [`results/README.md`](results/README.md)。

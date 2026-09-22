@@ -161,7 +161,7 @@ void checkTrackingAcquisitionAndReset()
 } // namespace
 } // namespace Vp
 
-int main()
+int vpRunDraftingStateTests()
 {
     try
     {

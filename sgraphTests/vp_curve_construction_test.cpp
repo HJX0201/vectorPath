@@ -2,6 +2,7 @@
 #include "vp_cad_viewport.h"
 #include "vp_cad_viewport_geometry.h"
 #include "vp_document_transaction.h"
+#include "vp_test_runner.h"
 
 #include <QtTest>
 #include <cmath>
@@ -305,5 +306,5 @@ void VpCurveConstructionTest::tangentCircleMixedInteractionAndUndo()
 
 } // namespace Vp
 
-QTEST_MAIN(Vp::VpCurveConstructionTest)
+VECTORPATH_TEST_ENTRY(Vp::VpCurveConstructionTest, vpRunVpCurveConstructionTest)
 #include "vp_curve_construction_test.moc"

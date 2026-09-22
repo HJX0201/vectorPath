@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-int main()
+int vpRunCoreResultTests()
 {
     using namespace Vp;
     auto success = VpResult<std::unique_ptr<int>>::success(std::make_unique<int>(42));

@@ -3,6 +3,7 @@
 #include "vp_cad_viewport_geometry.h"
 #include "vp_document_transaction.h"
 #include "vp_dxf_codec.h"
+#include "vp_test_runner.h"
 
 #include <QTemporaryDir>
 #include <QtTest>
@@ -153,5 +154,5 @@ void VpAnnotationTest::mtextDxfCompatibility()
 
 } // namespace Vp
 
-QTEST_MAIN(Vp::VpAnnotationTest)
+VECTORPATH_TEST_ENTRY(Vp::VpAnnotationTest, vpRunVpAnnotationTest)
 #include "vp_annotation_test.moc"

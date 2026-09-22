@@ -2,6 +2,7 @@
 #include "vp_cad_viewport.h"
 #include "vp_cad_viewport_geometry.h"
 #include "vp_document_transaction.h"
+#include "vp_test_runner.h"
 
 #include <QtTest>
 #include <cmath>
@@ -119,5 +120,5 @@ void VpCurveOffsetTest::viewportOffsetAndUndo()
 
 } // namespace Vp
 
-QTEST_MAIN(Vp::VpCurveOffsetTest)
+VECTORPATH_TEST_ENTRY(Vp::VpCurveOffsetTest, vpRunVpCurveOffsetTest)
 #include "vp_curve_offset_test.moc"

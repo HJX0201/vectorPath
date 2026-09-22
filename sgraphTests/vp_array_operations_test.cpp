@@ -3,6 +3,7 @@
 #include "vp_cad_viewport_geometry.h"
 #include "vp_document_transaction.h"
 #include "vp_dxf_codec.h"
+#include "vp_test_runner.h"
 
 #include <QTemporaryDir>
 #include <QtTest>
@@ -202,5 +203,5 @@ void VpArrayOperationsTest::associativeArrayPersistence()
 
 } // namespace Vp
 
-QTEST_MAIN(Vp::VpArrayOperationsTest)
+VECTORPATH_TEST_ENTRY(Vp::VpArrayOperationsTest, vpRunVpArrayOperationsTest)
 #include "vp_array_operations_test.moc"

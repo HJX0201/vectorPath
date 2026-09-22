@@ -1,4 +1,5 @@
 #include "vp_standard_shape.h"
+#include "vp_test_runner.h"
 
 #include <QtTest>
 #include <cmath>
@@ -48,5 +49,5 @@ void VpStandardShapeTest::createsAlternatingStarRadii()
 
 } // namespace Vp
 
-QTEST_APPLESS_MAIN(Vp::VpStandardShapeTest)
+VECTORPATH_TEST_ENTRY(Vp::VpStandardShapeTest, vpRunVpStandardShapeTest)
 #include "vp_standard_shape_test.moc"

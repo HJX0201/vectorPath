@@ -5,6 +5,7 @@
 #include "vp_qt_text.h"
 #include "vp_svg_document_operations.h"
 #include "vp_svg_parser.h"
+#include "vp_test_runner.h"
 #include "vp_vector_document_import.h"
 #include "vp_vector_fill.h"
 
@@ -446,6 +447,6 @@ void VpSvgVectorImportTest::persistsAndExportsImportedLineEntities()
 
 } // namespace Vp
 
-QTEST_APPLESS_MAIN(Vp::VpSvgVectorImportTest)
+VECTORPATH_TEST_ENTRY(Vp::VpSvgVectorImportTest, vpRunVpSvgVectorImportTest)
 
 #include "vp_svg_vector_import_test.moc"

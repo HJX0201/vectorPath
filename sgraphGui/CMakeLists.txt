@@ -1,4 +1,6 @@
 add_library(smartGui STATIC
+    vp_application_settings_migration.h
+    vp_application_settings_migration.cpp
     sgraphDesignSystem/vp_design_token.h
     sgraphDesignSystem/vp_theme_manager.h
     sgraphDesignSystem/vp_theme_manager.cpp
@@ -26,7 +28,6 @@ add_library(smartGui STATIC
     sgraphDesignSystem/vp_theme_dark.json
     sgraphDesignSystem/vp_theme_light.json
     sgraphDesignSystem/vp_theme_high_contrast.json
-    sgraphDesignSystem/vp_design_metrics.json
     vp_command_line_widget.h
     vp_command_line_widget.cpp
     vp_cad_workspace_widget.h

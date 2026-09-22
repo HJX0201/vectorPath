@@ -1,4 +1,6 @@
 add_library(smartGeometryCore STATIC
+    vp_drafting_state.h
+    vp_drafting_state.cpp
     vp_geometry_types.h
     vp_geometry_types.cpp
     vp_curve_entities.h
@@ -24,6 +26,9 @@ set_target_properties(smartGeometryCore PROPERTIES
 
 if(VECTORPATH_BUILD_DESKTOP)
     add_library(smartGeometry STATIC
+        vp_qt_geometry.h
+        vp_qt_geometry.cpp
+        vp_qt_text.h
         vp_entity.h
         vp_dimension_geometry.h
         vp_dimension_geometry.cpp

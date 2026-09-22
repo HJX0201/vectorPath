@@ -3,6 +3,7 @@
 #include "vp_document_transaction.h"
 #include "vp_dxf_codec.h"
 #include "vp_hatch_geometry.h"
+#include "vp_test_runner.h"
 
 #include <QTemporaryDir>
 #include <QtTest>
@@ -122,5 +123,5 @@ void VpHatchTest::nativeAndDxfRoundTrip()
 
 } // namespace Vp
 
-QTEST_MAIN(Vp::VpHatchTest)
+VECTORPATH_TEST_ENTRY(Vp::VpHatchTest, vpRunVpHatchTest)
 #include "vp_hatch_test.moc"

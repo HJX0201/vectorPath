@@ -170,7 +170,7 @@ void polygonBooleanOperationsAndErrors()
 } // namespace
 } // namespace Vp
 
-int main()
+int vpRunGeometryCoreTests()
 {
     try
     {

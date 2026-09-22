@@ -1,5 +1,6 @@
 #include "vp_cad_document.h"
 #include "vp_document_transaction.h"
+#include "vp_test_runner.h"
 
 #include <QtTest>
 
@@ -211,5 +212,5 @@ void VpDocumentHistoryTest::emptyAndCancelledTransactionsDoNotNotify()
 
 } // namespace Vp
 
-QTEST_GUILESS_MAIN(Vp::VpDocumentHistoryTest)
+VECTORPATH_TEST_ENTRY(Vp::VpDocumentHistoryTest, vpRunVpDocumentHistoryTest)
 #include "vp_document_history_test.moc"

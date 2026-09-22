@@ -13,52 +13,13 @@ namespace Vp
 namespace
 {
 
-void writePair(QTextStream& stream, int group_code, const QString& value)
-{
-    stream << group_code << "\n" << value << "\n";
-}
-
-void writePair(QTextStream& stream, int group_code, double value)
-{
-    stream << group_code << "\n" << QString::number(value, 'g', 16) << "\n";
-}
-
-std::optional<double> findDouble(const std::vector<VpDxfPair>& pairs, int group_code)
-{
-    for (const VpDxfPair& pair : pairs)
-    {
-        if (pair.group_code == group_code)
-        {
-            bool is_valid = false;
-            const double value = pair.value.toDouble(&is_valid);
-            if (is_valid)
-            {
-                return value;
-            }
-        }
-    }
-    return std::nullopt;
-}
-
-std::optional<QString> findString(const std::vector<VpDxfPair>& pairs, int group_code)
-{
-    for (const VpDxfPair& pair : pairs)
-    {
-        if (pair.group_code == group_code)
-        {
-            return pair.value;
-        }
-    }
-    return std::nullopt;
-}
-
 void writeEntityCommon(QTextStream& stream, const VpEntityRecord& entity)
 {
-    writePair(stream, 8, entity.layer_name);
+    writeDxfPair(stream, 8, entity.layer_name);
     const int dxf_line_width = entity.line_width_mm < 0.0
                                    ? -1
                                    : static_cast<int>(std::round(entity.line_width_mm * 100.0));
-    writePair(stream, 370, QString::number(dxf_line_width));
+    writeDxfPair(stream, 370, QString::number(dxf_line_width));
 }
 
 } // namespace
@@ -111,11 +72,11 @@ VpResult<VpHatchEntity> readDxfHatch(const std::vector<VpDxfPair>& entity_pairs)
         hatch.island_boundaries.assign(std::make_move_iterator(loops.begin() + 1),
                                        std::make_move_iterator(loops.end()));
     }
-    hatch.pattern_name = findString(entity_pairs, 2).value_or(QStringLiteral("ANSI31"));
-    hatch.pattern_scale = findDouble(entity_pairs, 41).value_or(1.0);
-    hatch.pattern_angle = findDouble(entity_pairs, 52).value_or(45.0);
-    const bool is_gradient = findDouble(entity_pairs, 450).value_or(0.0) > 0.5;
-    const bool is_solid = findDouble(entity_pairs, 70).value_or(0.0) > 0.5;
+    hatch.pattern_name = findDxfString(entity_pairs, 2).value_or(QStringLiteral("ANSI31"));
+    hatch.pattern_scale = findDxfDouble(entity_pairs, 41).value_or(1.0);
+    hatch.pattern_angle = findDxfDouble(entity_pairs, 52).value_or(45.0);
+    const bool is_gradient = findDxfDouble(entity_pairs, 450).value_or(0.0) > 0.5;
+    const bool is_solid = findDxfDouble(entity_pairs, 70).value_or(0.0) > 0.5;
     hatch.fill_type = is_gradient ? VpHatchFillType::Gradient
                                   : (is_solid ? VpHatchFillType::Solid : VpHatchFillType::Pattern);
     if (!gradient_colors.empty())
@@ -134,57 +95,57 @@ VpResult<VpHatchEntity> readDxfHatch(const std::vector<VpDxfPair>& entity_pairs)
 void writeDxfHatch(QTextStream& stream, const VpEntityRecord& entity)
 {
     const auto& hatch = std::get<VpHatchEntity>(entity.geometry);
-    writePair(stream, 0, QStringLiteral("HATCH"));
+    writeDxfPair(stream, 0, QStringLiteral("HATCH"));
     writeEntityCommon(stream, entity);
-    writePair(stream, 100, QStringLiteral("AcDbHatch"));
-    writePair(stream, 10, 0.0);
-    writePair(stream, 20, 0.0);
-    writePair(stream, 30, 0.0);
-    writePair(stream, 2,
-              hatch.fill_type == VpHatchFillType::Solid ? QStringLiteral("SOLID")
-                                                        : hatch.pattern_name);
-    writePair(stream, 70,
-              hatch.fill_type == VpHatchFillType::Solid ? QStringLiteral("1")
-                                                        : QStringLiteral("0"));
-    writePair(stream, 71,
-              hatch.associative_boundary_id == 0 ? QStringLiteral("0") : QStringLiteral("1"));
-    writePair(stream, 91, QString::number(hatch.island_boundaries.size() + 1));
+    writeDxfPair(stream, 100, QStringLiteral("AcDbHatch"));
+    writeDxfPair(stream, 10, 0.0);
+    writeDxfPair(stream, 20, 0.0);
+    writeDxfPair(stream, 30, 0.0);
+    writeDxfPair(stream, 2,
+                 hatch.fill_type == VpHatchFillType::Solid ? QStringLiteral("SOLID")
+                                                           : hatch.pattern_name);
+    writeDxfPair(stream, 70,
+                 hatch.fill_type == VpHatchFillType::Solid ? QStringLiteral("1")
+                                                           : QStringLiteral("0"));
+    writeDxfPair(stream, 71,
+                 hatch.associative_boundary_id == 0 ? QStringLiteral("0") : QStringLiteral("1"));
+    writeDxfPair(stream, 91, QString::number(hatch.island_boundaries.size() + 1));
     const auto write_loop = [&stream](const std::vector<VpPoint2d>& loop, bool is_outer)
     {
-        writePair(stream, 92, is_outer ? QStringLiteral("3") : QStringLiteral("16"));
-        writePair(stream, 93, QString::number(loop.size()));
+        writeDxfPair(stream, 92, is_outer ? QStringLiteral("3") : QStringLiteral("16"));
+        writeDxfPair(stream, 93, QString::number(loop.size()));
         for (const VpPoint2d& point : loop)
         {
-            writePair(stream, 10, point.x);
-            writePair(stream, 20, point.y);
+            writeDxfPair(stream, 10, point.x);
+            writeDxfPair(stream, 20, point.y);
         }
-        writePair(stream, 97, QStringLiteral("0"));
+        writeDxfPair(stream, 97, QStringLiteral("0"));
     };
     write_loop(hatch.boundary, true);
     for (const std::vector<VpPoint2d>& island : hatch.island_boundaries)
     {
         write_loop(island, false);
     }
-    writePair(stream, 75, QStringLiteral("0"));
-    writePair(stream, 76, QStringLiteral("1"));
-    writePair(stream, 52, hatch.pattern_angle);
-    writePair(stream, 41, hatch.pattern_scale);
-    writePair(stream, 77, QStringLiteral("0"));
+    writeDxfPair(stream, 75, QStringLiteral("0"));
+    writeDxfPair(stream, 76, QStringLiteral("1"));
+    writeDxfPair(stream, 52, hatch.pattern_angle);
+    writeDxfPair(stream, 41, hatch.pattern_scale);
+    writeDxfPair(stream, 77, QStringLiteral("0"));
     if (hatch.fill_type == VpHatchFillType::Gradient)
     {
         const auto true_color = [](const QColor& color)
         {
             return (color.red() << 16) | (color.green() << 8) | color.blue();
         };
-        writePair(stream, 450, QStringLiteral("1"));
-        writePair(stream, 460, hatch.pattern_angle * 3.14159265358979323846 / 180.0);
-        writePair(stream, 452, QStringLiteral("0"));
-        writePair(stream, 453, QStringLiteral("2"));
-        writePair(stream, 463, 0.0);
-        writePair(stream, 421, QString::number(true_color(hatch.gradient_start)));
-        writePair(stream, 463, 1.0);
-        writePair(stream, 421, QString::number(true_color(hatch.gradient_end)));
-        writePair(stream, 470, QStringLiteral("LINEAR"));
+        writeDxfPair(stream, 450, QStringLiteral("1"));
+        writeDxfPair(stream, 460, hatch.pattern_angle * 3.14159265358979323846 / 180.0);
+        writeDxfPair(stream, 452, QStringLiteral("0"));
+        writeDxfPair(stream, 453, QStringLiteral("2"));
+        writeDxfPair(stream, 463, 0.0);
+        writeDxfPair(stream, 421, QString::number(true_color(hatch.gradient_start)));
+        writeDxfPair(stream, 463, 1.0);
+        writeDxfPair(stream, 421, QString::number(true_color(hatch.gradient_end)));
+        writeDxfPair(stream, 470, QStringLiteral("LINEAR"));
     }
 }
 

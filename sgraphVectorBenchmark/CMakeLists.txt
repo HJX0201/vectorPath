@@ -28,6 +28,10 @@ if(WIN32)
     target_link_libraries(smartBitmapVectorBenchmark PRIVATE Psapi)
 endif()
 
+if(NOT VECTORPATH_BUILD_TESTS)
+    return()
+endif()
+
 set(SGRAPH_BENCHMARK_SMOKE_OUTPUT
     "${CMAKE_CURRENT_BINARY_DIR}/bitmap_benchmark_smoke"
 )

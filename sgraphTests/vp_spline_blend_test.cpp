@@ -5,6 +5,7 @@
 #include "vp_dxf_codec.h"
 #include "vp_object_snap.h"
 #include "vp_spline_geometry.h"
+#include "vp_test_runner.h"
 
 #include <QTemporaryDir>
 #include <QtTest>
@@ -189,5 +190,5 @@ void VpSplineBlendTest::interactiveSplineAndUndo()
 
 } // namespace Vp
 
-QTEST_MAIN(Vp::VpSplineBlendTest)
+VECTORPATH_TEST_ENTRY(Vp::VpSplineBlendTest, vpRunVpSplineBlendTest)
 #include "vp_spline_blend_test.moc"

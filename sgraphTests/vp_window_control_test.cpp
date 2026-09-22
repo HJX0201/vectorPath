@@ -2,6 +2,7 @@
 #include "vp_cad_viewport.h"
 #include "vp_icon_provider.h"
 #include "vp_shortcut_dialog.h"
+#include "vp_test_runner.h"
 #include "vp_theme_manager.h"
 #include "vp_vector_import_dialog.h"
 
@@ -357,6 +358,6 @@ void VpWindowControlTest::remembersEntityDisplayOptionsImmediately()
     settings.remove(QStringLiteral("display/sequenceVisible"));
 }
 
-QTEST_MAIN(VpWindowControlTest)
+VECTORPATH_TEST_ENTRY(VpWindowControlTest, vpRunVpWindowControlTest)
 
 #include "vp_window_control_test.moc"

@@ -1,7 +1,7 @@
 # vectorPath 完整代码架构与文件参考
 
 > 适用版本：`v0.2.0-alpha.1`<br>
-> 原始全量核对日期：2026-08-05；核心边界、构建与文件路径更新：2026-09-22<br>
+> 原始全量核对日期：2026-08-05；核心边界、构建与文件路径更新：2026-09-22；布局/输出证据校正：2026-09-23<br>
 > 技术栈：C++17、Qt 5.12.10、CMake、Ninja、QOpenGLWidget、QPainter<br>
 > 读者：项目维护者、功能开发者、测试人员、代码评审者和需要系统理解项目的学习者
 
@@ -42,6 +42,7 @@ vectorPath 是 Windows 二维 CAD/CAM 学习与技术展示项目。它覆盖二
 - 位图算法内部并行不等于界面异步；
 - DWG 通过同步 LibreDWG 子进程转换，默认最长等待 120 秒；
 - DXF 导入还不是完整原子操作；
+- 当前只有模型视图，没有图纸空间/布局视口；输出只保留 CTB/STB 样式管理，页面设置、打印和 PDF 发布未实现；
 - 撤销历史没有内存预算，保存点只使用 modified 布尔值；
 - 项目采用 source-available 许可，不能直接称为 OSI 开源软件。
 
@@ -54,17 +55,15 @@ vectorPath 是 Windows 二维 CAD/CAM 学习与技术展示项目。它覆盖二
 vectorPath/
 ├─ sgraphApp/              进程入口、翻译和应用启动
 ├─ sgraphCore/             纯 C++ 结果类型与 ID 集合辅助函数
-├─ sgraphGeometry/         纯 GeometryCore 与仍含 Qt 的实体/算法聚合
-├─ sgraphQtAdapters/       文本、点、错误显示和设置迁移的 Qt 边界
-├─ sgraphInteraction/      纯 C++ 栅格、正交和追踪状态
+├─ sgraphGeometry/         纯几何/辅助绘图核心与 Qt 桌面几何适配
 ├─ sgraphDocument/         文档、事务、历史、样式、持久化、恢复
-├─ sgraphCommands/         命令接口、命令目录和坐标解析
+├─ sgraphCommands/         命令目录、别名和坐标解析
 ├─ sgraphIo/               DXF/DWG/SVG/位图编解码与兼容报告
 ├─ sgraphRender/           视口、绘制、捕捉、选择和交互状态
 ├─ sgraphGui/              主窗口、Ribbon、停靠面板、对话框、主题
 ├─ sgraphTests/            纯核心与 Qt 单元、集成测试
 ├─ sgraphVectorBenchmark/  位图基准、正确性验证和报告
-├─ sgraphBuildTools/       桌面四配置与无 Qt 核心构建、部署和打包
+├─ sgraphBuildTools/       一个入口选择应用、核心、测试和性能基准
 ├─ sgraphThirdParty/       SARibbon、Qt ADS、Clipper2、LibreDWG 等
 ├─ sgraphDocs/             用户、开发、测试和功能证据文档
 ├─ .github/                CI、Issue 和 PR 模板
@@ -82,11 +81,6 @@ vectorPath/
 flowchart LR
     Core["smartCore（纯 C++）"] --> GeometryCore["smartGeometryCore（纯 C++）"]
     GeometryCore --> Geometry["smartGeometry（Qt 聚合）"]
-    GeometryCore --> Interaction["smartInteraction（纯 C++）"]
-    GeometryCore --> Adapters["smartQtAdapters（Qt）"]
-    Core --> Adapters
-    Adapters --> Document["smartDocument"]
-    Interaction --> Render["smartRender"]
     Core --> Document["smartDocument"]
     Geometry --> Document
     Geometry --> Commands["smartCommands"]
@@ -110,11 +104,11 @@ flowchart LR
 ```
 
 图中箭头由被依赖目标指向使用者。`smartGeometryCore` 仅编译一份纯算法，桌面聚合 PUBLIC
-链接复用；Qt 适配层和辅助绘图状态层依赖核心，核心不反向包含它们。
+链接复用；辅助绘图状态由纯核心编译，Qt 点/文本适配由桌面聚合编译，核心不包含 Qt 适配头。
 
-`VECTORPATH_BUILD_DESKTOP` 默认 `ON`；关闭后不查找 Qt，只构建 Core、GeometryCore、
-Interaction、Clipper2 和相应纯测试。文本与颜色实体、Document、命令以及完整编辑交互仍
-依赖 Qt，原重构计划尚未全部完成。
+`VECTORPATH_BUILD_DESKTOP` 默认 `ON`；关闭后不查找 Qt，只构建 Core、GeometryCore 和
+Clipper2。测试和性能基准默认关闭，按需启用；纯核心测试不加载 Qt。文本与颜色实体、
+Document、命令以及完整编辑交互仍依赖 Qt，原重构计划尚未全部完成。
 
 基础层不应依赖 GUI；Geometry 不持有文档；Document 不依赖视口；IO 通过文档公开接口或
 中间值结构工作。当前 `VpCadViewport` 和 `VpCadMainWindow` 在运行时仍承担较多命令编排，
@@ -213,7 +207,7 @@ Qt 父子对象树负责大部分 QWidget 生命周期；主窗口用 `unique_pt
 
 OpenGL 3.3 请求只描述上下文配置，不代表实体使用现代 OpenGL 管线绘制。
 
-## 8. 基础核心、Qt 适配与辅助绘图状态
+## 8. 基础核心与边界适配
 
 ### 8.1 `sgraphCore` 文件清单
 
@@ -235,39 +229,40 @@ OpenGL 3.3 请求只描述上下文配置，不代表实体使用现代 OpenGL �
   没有断言、异常或类型保护；错误没有稳定错误码和嵌套原因。
 - **使用者**：纯布尔运算及现有原生 IO、DXF/DWG、SVG、位图、填充和二进制读取。
 
-### 8.3 `sgraphQtAdapters` 与设置迁移
+### 8.3 Qt 基础适配与设置迁移
+
+Qt 适配不再建立独立目录或目标；点、文本和错误显示编入现有 `smartGeometry` 的桌面源列表，
+设置迁移归入 `smartGui`，都不进入 `smartCore` 或 `smartGeometryCore`。
 
 | 文件 | 类型/入口 | 作用、关系与边界 |
 | --- | --- | --- |
-| `sgraphQtAdapters/CMakeLists.txt` | `smartQtAdapters` | 仅桌面构建，依赖 `smartCore`、`smartGeometryCore` 和 Qt Core。 |
-| `sgraphQtAdapters/vp_qt_text.h` | `toCoreText()`、`toQtText()`、`toQtError()` | 保留 UTF-16 代码单元的文本转换及本地编码异常显示。 |
-| `sgraphQtAdapters/vp_qt_geometry.h` | `toQtPoint()`、`toCorePoint()`、`formatPoint()` | QPointF 与纯坐标之间的边界转换及坐标显示接口。 |
-| `sgraphQtAdapters/vp_qt_geometry.cpp` | Qt 几何适配实现 | 保留点坐标和原有格式精度，不承担核心几何算法。 |
-| `sgraphQtAdapters/vp_application_settings_migration.h` | `migrateMissingApplicationSettings()` | 声明 QSettings 缺失键迁移函数。 |
-| `sgraphQtAdapters/vp_application_settings_migration.cpp` | 迁移实现 | 同步两端设置，只复制新位置不存在的旧键，错误返回 `-1`。 |
+| `sgraphGeometry/vp_qt_text.h` | `toCoreText()`、`toQtText()`、`toQtError()` | 保留 UTF-16 代码单元的转换及本地编码异常显示，仅桌面使用。 |
+| `sgraphGeometry/vp_qt_geometry.h` | `toQtPoint()`、`toCorePoint()`、`formatPoint()` | QPointF 边界转换及坐标显示接口，纯点头不包含此头。 |
+| `sgraphGeometry/vp_qt_geometry.cpp` | Qt 几何适配实现 | 编入桌面 `smartGeometry`，保留点坐标和原有格式精度。 |
+| `sgraphGui/vp_application_settings_migration.h` | `migrateMissingApplicationSettings()` | 声明 QSettings 缺失键迁移函数，应用与桌面测试调用。 |
+| `sgraphGui/vp_application_settings_migration.cpp` | 设置迁移实现 | 编入 `smartGui`；同步两端设置，只复制新位置不存在的旧键，错误返回 `-1`。 |
 
-`migrateMissingApplicationSettings()` 先 `sync()` 旧、新 QSettings；任一状态异常返回 `-1`。
-随后遍历旧键，只在新设置不含该键时复制并计数，最后再次同步。迁移策略保持不变，源码已由
-`sgraphCore` 移至适配层；应用启动继续使用同一入口。
+设置迁移先 `sync()` 两端 QSettings，再复制缺失键并计数；保留原有策略，不覆盖用户已建立
+的新设置。Document 不依赖设置迁移，因此此次归入 Gui 不增加文档到界面的反向依赖。
 
-### 8.4 `sgraphInteraction`：已抽离的辅助绘图状态
+### 8.4 纯辅助绘图状态
 
 | 文件 | 类型/入口 | 作用、关系与边界 |
 | --- | --- | --- |
-| `sgraphInteraction/CMakeLists.txt` | `smartInteraction` | 纯 C++ 静态库，PUBLIC 链接 `smartGeometryCore`。 |
-| `sgraphInteraction/vp_drafting_state.h` | `VpDraftingState`、`VpGridBasis` | 栅格基、间距和旋转、正交、追踪点状态及约束接口。 |
-| `sgraphInteraction/vp_drafting_state.cpp` | 辅助绘图实现 | 接收世界坐标和显式容差，完成栅格/正交约束与追踪捕捉；不访问 QWidget 或文档。 |
+| `sgraphGeometry/vp_drafting_state.h` | `VpDraftingState`、`VpGridBasis` | 栅格基、间距/旋转、正交、追踪点状态及约束接口。 |
+| `sgraphGeometry/vp_drafting_state.cpp` | 辅助绘图实现 | 编入 `smartGeometryCore`，接收世界坐标和显式容差，不访问 QWidget 或文档。 |
 
-视口仍负责屏幕转换、事件转发、渲染和文档集成。此层目前只承接辅助绘图状态；工具切换、
-选择、夹点、完整动态预览与事务交互并未全部迁入。
+视口直接包含纯状态头，负责屏幕转换、事件转发、渲染和文档集成。工具切换、选择、夹点、
+完整动态预览与事务交互仍未全部迁移；这次只收拢文件归属，不撤销已建立的纯 C++ 边界。
 
-## 9. `sgraphGeometry`：纯核心与桌面实体聚合
+## 9. `sgraphGeometry`：几何与绘图基础
 
 ### 9.1 模块职责和依赖
 
 `smartGeometryCore` PUBLIC 依赖 `smartCore`，PRIVATE 依赖 Clipper2；其点、曲线、标准
-形状、布尔和多边形接口不包含 Qt。`smartGeometry` PUBLIC 链接核心及 Qt Core/Gui，暂时
-保留文本与颜色实体、标注、填充完整检查及刀路；桌面与独立核心使用相同曲线类型和算法源文件。
+形状、布尔、多边形和辅助绘图状态接口不包含 Qt。`smartGeometry` PUBLIC 链接核心及 Qt
+Core/Gui，包含文本与颜色实体、标注、填充完整检查、刀路及 Qt 点/文本适配；两个目标通过
+显式源列表保持边界，桌面与独立核心使用相同曲线类型和算法。
 
 禁止在 Geometry 中弹对话框、读写 QSettings、发文档信号或直接修改 `VpCadDocument`。
 
@@ -407,7 +402,7 @@ Document 依赖 Core 和 Geometry，是业务状态的唯一权威来源。`VpCa
 | `sgraphDocument/vp_document_recovery_manager.h` | `VpRecoveryEntry`、`VpDocumentRecoveryManager` | 恢复目录、候选条目、定时副本和清理接口。 |
 | `sgraphDocument/vp_document_recovery_manager.cpp` | 恢复实现 | 生成 `.vectorpath.sv$`，扫描/保存/删除恢复候选。 |
 | `sgraphDocument/vp_plot_style_table.h` | `VpPlotStyleTable` 等 | STB/CTB 类打印样式记录、加载和查询接口。 |
-| `sgraphDocument/vp_plot_style_table.cpp` | 打印样式实现 | 解析和保存样式表，保留 vectorPath/smartCam/smartCad 文件名兼容。 |
+| `sgraphDocument/vp_plot_style_table.cpp` | 打印样式基础实现 | 解压解析 CTB/STB，提供颜色/线宽映射辅助及旧名称兼容；不实现页面设置或打印导出。 |
 | `sgraphDocument/vp_toolpath_document.h` | `VpToolpathDocumentSortResult` | 将纯刀路排序应用到文档的接口。 |
 | `sgraphDocument/vp_toolpath_document.cpp` | 刀路提交实现 | 选取实体、调用 Geometry 排序并通过事务写回实体顺序/方向。 |
 
@@ -499,14 +494,13 @@ manifest，再按格式版本读取图层、状态、样式、实体和关联数
 文档、设置迁移、恢复、审计、DWG、标注、尺寸、填充、图层颜色、刀路和 SVG 导入测试覆盖
 主要路径。重点技术债是历史内存预算、保存点模型、DXF 导入原子性和更严格的实体不变量验证。
 
-## 11. `sgraphCommands`：命令契约和坐标输入
+## 11. `sgraphCommands`：命令目录和坐标输入
 
 ### 11.1 文件清单
 
 | 文件 | 类型/关键函数 | 作用、关系与边界 |
 | --- | --- | --- |
 | `sgraphCommands/CMakeLists.txt` | `smartCommands` | 链接 Geometry、Document 和 Qt Core，向 Render/GUI 提供命令基础。 |
-| `sgraphCommands/vp_i_cad_command.h` | `VpCommandContext`、`VpICadCommand` | 定义可开始、接收点、取消的命令接口。 |
 | `sgraphCommands/vp_coordinate_input.h` | `VpCoordinateInputMode`、`VpCoordinateInput` | 坐标输入结果、模式和解析接口。 |
 | `sgraphCommands/vp_coordinate_input.cpp` | `parseCoordinateInput()` | 解析绝对/相对/极坐标文本，返回成功状态或错误。 |
 | `sgraphCommands/vp_command_catalog.h` | 命令目录接口 | 返回全部补全项和按前缀匹配的候选。 |
@@ -514,10 +508,8 @@ manifest，再按格式版本读取图层、状态、样式、实体和关联数
 
 ### 11.2 类型和调用关系
 
-`VpCommandContext` 当前只携带 `VpCadDocument*` 与光标世界坐标。`VpICadCommand` 要求实现
-`id()`、`displayName()`、`begin()`、`acceptPoint()` 和 `cancel()`；接口表达理想的命令对象
-边界，但当前很多工具仍由 `VpCadMainWindow::executeCommand()` 分发并由 `VpCadViewport` 状态机
-执行，并未全部实例化为 VpICadCommand。
+实际命令由 `VpCadMainWindow::executeCommand()` 分发，视口状态机执行交互；模块提供目录、
+补全和坐标解析。已删除无人实现或调用的命令接口声明，不再将空接口视为自动化能力证据。
 
 `VpCoordinateInputMode` 区分不同坐标语法；`VpCoordinateInput` 保存解析是否成功、坐标/距离角度
 值和错误信息。解析函数只负责语法，不应直接移动光标或写文档。
@@ -652,8 +644,7 @@ Render 依赖 Commands、Document、Geometry 和 Qt OpenGL/Widgets。它把文�
 | `sgraphRender/vp_cad_viewport.cpp` | 构造与基础绑定 | 初始化焦点/鼠标、绑定文档信号、设置工具和通用命令取消。 |
 | `sgraphRender/vp_cad_viewport_geometry.h` | 变换/编辑纯函数 | 实体平移、旋转、缩放、镜像、多段线状态、分解、圆角等共享几何接口。 |
 | `sgraphRender/vp_cad_viewport_geometry.cpp` | 共享几何实现 | 对 geometry 变体执行通用实体变换，供预览和事务提交复用。 |
-| `sgraphRender/vp_cad_viewport_drafting.h` | `VpGridBasis` | 旋转栅格基和栅格捕捉接口。 |
-| `sgraphRender/vp_cad_viewport_drafting.cpp` | 绘图辅助实现 | 构造旋转基向量，将世界点量化到指定间距。 |
+| `sgraphRender/vp_cad_viewport_drafting.cpp` | 绘图辅助接入 | 将栅格设置委托给 `VpDraftingState`，保留视口通知和重绘。 |
 | `sgraphRender/vp_object_snap.h` | 捕捉枚举/结果 | 捕捉类型、位掩码模式、点和实体关联结果。 |
 | `sgraphRender/vp_object_snap.cpp` | 捕捉算法 | 从实体端点、中心、节点等候选中按容差选择结果。 |
 | `sgraphRender/vp_curve_offset.h` | 曲线偏移接口 | 对支持实体计算偏移结果和错误。 |
@@ -806,9 +797,9 @@ GUI 依赖全部自研库、SARibbon、Qt ADS 和 Qt Widgets/Svg/PrintSupport。
 | `vp_cad_main_window_drafting.cpp` | 绘图辅助 UI | 对象捕捉、正交、网格、追踪等 Action 与视口状态同步。 |
 | `vp_cad_main_window_display.cpp` | 显示选项 | 节点、方向、顺序、线宽等显示开关。 |
 | `vp_cad_main_window_view.cpp` | 视图命令 | 缩放范围和视图相关 Ribbon 配置。 |
-| `vp_cad_main_window_file.cpp` | 新建、打开、保存、布局设置 | 路由扩展名、关闭确认、窗口标题、工作区持久化。 |
+| `vp_cad_main_window_file.cpp` | 新建、打开、保存、工作区设置 | 路由扩展名、关闭确认、窗口标题、工作区持久化。 |
 | `vp_cad_main_window_vector_import.cpp` | SVG/位图导入 | 打开导入对话框，将中间几何替换为新文档实体。 |
-| `vp_cad_main_window_plot.cpp` | 打印/输出 | 打印样式管理、输出命令和兼容提示。 |
+| `vp_cad_main_window_plot.cpp` | 打印样式管理 | PLOTSTYLE/STYLESMANAGER 的样式详情、导入和删除；没有打印、预览或 PDF 输出入口。 |
 | `vp_cad_main_window_recovery.cpp` | 恢复入口 | 创建恢复副本、展示候选并恢复原路径。 |
 | `vp_cad_main_window_audit.cpp` | 审计入口 | 运行只读或修复审计，汇总报告给用户。 |
 | `vp_cad_main_window_layer.cpp` | 图层 UI | 图层停靠操作、清空图层、颜色和当前层同步。 |
@@ -849,7 +840,6 @@ GUI 依赖全部自研库、SARibbon、Qt ADS 和 Qt Widgets/Svg/PrintSupport。
 | 文件 | 类型/作用 | 说明 |
 | --- | --- | --- |
 | `sgraphDesignSystem/vp_design_token.h` | `VpDesignToken`、`VpThemeMode` | 集中颜色、间距、尺寸和主题枚举，减少控件硬编码。 |
-| `sgraphDesignSystem/vp_design_metrics.json` | 尺寸 token 数据 | 控件高度、间距、图标尺寸等可缩放设计参数。 |
 | `sgraphDesignSystem/vp_theme_manager.h/.cpp` | `VpThemeManager` | 加载主题 JSON、应用样式表、保存模式并发出主题变化。 |
 | `sgraphDesignSystem/vp_theme_dark.json` | 深色主题 | 当前默认颜色与控件样式数据。 |
 | `sgraphDesignSystem/vp_theme_light.json` | 浅色主题 | 浅色模式数据。 |
@@ -1195,12 +1185,15 @@ smartBitmapVectorBenchmark
 
 ## 27. `sgraphTests`：纯核心与桌面测试
 
-`sgraphTests/CMakeLists.txt` 始终注册结果、几何、ID 集合与辅助绘图状态的纯 C++ 测试。
-桌面开启时再注册 Qt Test；需要 QWidget 的测试设置 `QT_QPA_PLATFORM=offscreen`，
-PATH 注入 Qt 和 Qt ADS DLL 目录。纯测试不启动 QApplication，也不加载 Qt DLL。
+`VECTORPATH_BUILD_TESTS` 默认 OFF。开启后，4 个纯核心套件共用 `vectorPathCoreTests`，
+桌面模式再将 34 个 Qt 套件编入 `vectorPathDesktopTests`，普通测试只生成两个可执行程序。
+CTest 保留 38 个原套件名称，每项以套件参数启动独立进程；Qt 运行器按套件初始化所需应用类型，
+需要 QWidget 时设置 `QT_QPA_PLATFORM=offscreen`。纯测试不创建 Qt 应用，也不加载 Qt DLL。
 
 | 测试文件 | CTest/领域 | 主要场景 |
 | --- | --- | --- |
+| `vp_core_test_main.cpp` | `vectorPathCoreTests` | 按参数分派纯核心套件，注册表在构建目录生成。 |
+| `vp_desktop_test_main.cpp`、`vp_test_runner.h` | `vectorPathDesktopTests` | 按参数与应用类型运行单个 Qt 套件，注册表在构建目录生成。 |
 | `vp_core_result_test.cpp` | `vectorPathCoreResultTests` | 纯结果成功/失败、UTF-16 和原生错误字节。 |
 | `vp_geometry_core_test.cpp` | `vectorPathGeometryCoreTests` | 曲线采样边界、多边形面积/包含、五种布尔操作、错误与异常。 |
 | `vp_id_collection_test.cpp` | `vectorPathIdCollectionTests` | 稳定过滤、重复/缺失 ID、随机输入和零实体负载复制。 |
@@ -1240,8 +1233,9 @@ PATH 注入 Qt 和 Qt ADS DLL 目录。纯测试不启动 QApplication，也不�
 | `vp_quick_entity_operation_test.cpp` | `vectorPathQuickEntityOperationTests` | 快捷变换、选择要求、事务和错误结果。 |
 | `vp_svg_vector_import_test.cpp` | `vectorPathSvgVectorImportTests` | SVG path/区域/颜色层、位图核心、填充、去重和确定性。 |
 
-桌面配置另含位图基准 smoke 和输出布局测试；纯核心配置不注册这些 Qt 依赖测试。
-具体测试清单以对应构建目录的 `ctest -N` 为准，验证结果见本次测试报告。
+仅当桌面同时开启测试和性能基准时，注册位图 smoke 与输出布局两项，合计 40 项；
+纯核心只运行 4 个套件。性能程序默认不构建，只有 `--benchmarks` 不会执行 CTest。
+具体清单以对应构建目录的 `ctest -N` 为准，验证结果与测试程序数量应分别记录。
 
 ## 28. `sgraphVectorBenchmark`：位图正确性与性能基准
 
@@ -1249,7 +1243,7 @@ PATH 注入 Qt 和 Qt ADS DLL 目录。纯测试不启动 QApplication，也不�
 
 | 文件 | 类型/入口 | 作用、输入输出和关系 |
 | --- | --- | --- |
-| `sgraphVectorBenchmark/CMakeLists.txt` | `smartBitmapVectorBenchmark`、2 个 CTest | 链接 smartIo/Qt Concurrent/Psapi；定义 fixture/root；注册 20 case smoke 和布局检查。 |
+| `sgraphVectorBenchmark/CMakeLists.txt` | 可选 `smartBitmapVectorBenchmark` | 仅桌面开启基准时构建；同时开启测试才注册 20 case smoke 与布局检查。 |
 | `sgraphVectorBenchmark/README.md` | 基准说明 | 运行参数、结果目录、正式/冒烟示例和口径。 |
 | `sgraphVectorBenchmark/fixtures/README.md` | fixture 说明 | 说明固定输入或夹具目录用途。 |
 | `sgraphVectorBenchmark/results/README.md` | 历史结果说明 | 约定日期序号目录、保留范围和不覆盖策略。 |
@@ -1292,73 +1286,69 @@ options/seed
 
 ## 29. 构建脚本、CMake 和发布
 
-### 29.1 构建文件清单
+### 29.1 唯一构建入口
 
 | 文件 | 作用 |
 | --- | --- |
-| 根 `CMakeLists.txt` | 设置 C++17、AUTOMOC/RCC/UIC、Qt 组件、MSVC 选项、第三方配置、模块顺序和测试开关。 |
-| 各模块 `CMakeLists.txt` | 声明源文件、PUBLIC/PRIVATE 链接和编译定义；新增文件必须登记。 |
-| `vp_build_32_debug.py` | 调用公共驱动，固定 x86 Debug。 |
-| `vp_build_32_release.py` | 调用公共驱动，固定 x86 Release。 |
-| `vp_build_64_debug.py` | 调用公共驱动，固定 x64 Debug。 |
-| `vp_build_64_release.py` | 调用公共驱动，固定 x64 Release。 |
-| `vp_build_common.py` | Qt/VS 查找、CMake/Ninja、CTest、PE 架构、部署、manifest、ZIP 和 SHA-256 总控。 |
-| `vp_build_core.py` | 独立无 Qt 入口；配置、构建纯核心并运行对应 CTest。 |
+| 根 `CMakeLists.txt` | C++17、Qt 门控、模块顺序；桌面默认 ON，测试与基准默认 OFF。 |
+| 各模块 `CMakeLists.txt` | 显式源列表、PUBLIC/PRIVATE 依赖；Qt 适配不进入纯核心源列表。 |
+| `sgraphBuildTools/vp_build.py` | 唯一构建入口，默认构建 64 位 Release 应用。 |
+| `sgraphBuildTools/vp_build_common.py` | 参数解析、Qt/VS 查找、CMake/Ninja、可选 CTest、部署和打包。 |
 
-根选项 `VECTORPATH_BUILD_DESKTOP` 默认 ON；关闭后跳过 Qt 查找、自动生成和桌面目标。
-`VECTORPATH_BUILD_TESTS` 默认 ON。旧 `SMARTCAM_BUILD_TESTS`、
-`SMARTCAD_BUILD_TESTS` 被定义时映射到新变量并发出弃用提示，只承担过渡兼容。
+```powershell
+python sgraphBuildTools/vp_build.py
+python sgraphBuildTools/vp_build.py --bits 32 --config Debug --test
+python sgraphBuildTools/vp_build.py --core --test
+python sgraphBuildTools/vp_build.py --test --benchmarks
+```
 
-核心入口 `python sgraphBuildTools/vp_build_core.py --config Release --bits 64 --jobs 4`
-支持 `--config Debug|Release`、`--bits 32|64`、正整数 `--jobs`，默认值分别为 Release、64、4。
-输出到 `build/core/<位数>/<配置>`，设置 DESKTOP=OFF、TESTS=ON，并用
-`CMAKE_DISABLE_FIND_PACKAGE_Qt5=ON` 显式禁止 Qt 查找；不执行桌面部署或打包。
+`--bits 32|64`、`--config Debug|Release` 选择架构和配置；`--core` 关闭桌面并显式禁用 Qt
+查找。`--test` 构建并运行测试；`--benchmarks` 开启性能程序，只有与 `--test` 同用才运行
+注册的基准检查。其余参数为 `--jobs auto|N`、`--qt-dir`、`--clean`、`--run`、`--package`。
+`--core` 不能与 `--run` 或 `--package` 同用。
 
-### 29.2 `vp_build_common.py` 关键函数
+CMake 对应开关为 `VECTORPATH_BUILD_DESKTOP`、`VECTORPATH_BUILD_TESTS`、
+`VECTORPATH_BUILD_BENCHMARKS`。旧 `SMARTCAM_BUILD_TESTS`、`SMARTCAD_BUILD_TESTS` 只承担
+一个版本的映射兼容；新调用方使用当前开关。
+
+### 29.2 公共驱动
 
 | 函数组 | 作用和失败边界 |
 | --- | --- |
-| `repo_root()` | 从脚本路径稳定定位仓库根，不依赖调用目录。 |
-| `pe_architecture()` | 解析 PE 头 machine 字段，验证 exe/DLL 为 x86 或 x64。 |
-| Qt candidate/validate/find | 搜索显式目录、环境变量和常见安装位置；验证 Qt5Config、核心 DLL、qmake/windeployqt、版本和架构。 |
-| VS environment | 查找 Visual Studio/vcvarsall，建立与目标架构一致的 MSVC 环境。 |
-| `runtime_files()` / `file_origin()` | 枚举部署文件并标注项目、Qt、Qt ADS、LibreDWG 来源。 |
-| `write_runtime_manifest()` | 写产品、版本、位数、配置、Qt 版本、相对路径、大小和 SHA-256。 |
-| `create_package()` | 以 deflate level 9 创建便携 ZIP，并写同名 `.sha256`。 |
-| `run_build()` | 配置 CMake、Ninja 构建、可选 CTest、写清单、可选打包/启动。 |
+| `repo_root()` | 从脚本路径定位仓库，不依赖调用目录。 |
+| `pe_architecture()` | 验证 exe/DLL 为目标 x86 或 x64 架构。 |
+| Qt candidate/validate/find | 桌面模式检查 Qt 版本、架构、CMake 配置、DLL 和部署工具；核心模式不调用。 |
+| VS environment | 激活与目标架构一致的 MSVC 环境。 |
+| `runtime_files()` / `file_origin()` | 枚举应用运行文件并标注来源。 |
+| `write_runtime_manifest()` | 写产品、版本、架构、文件大小及 SHA-256。 |
+| `create_package()` | 生成便携 ZIP 和同名 `.sha256`。 |
+| `run_build()` | 配置目标模式，构建，按需运行测试、打包与启动。 |
 
-命令参数包括 `--jobs`、`--qt-dir`、`--clean`、`--run`、`--no-test`、`--package`。默认不要
-跳过测试；`--clean` 是删除对应明确 build 配置目录，执行前需确认目标路径。
+`--clean` 只清理本次模式、位数和配置的 build 目录。默认不运行测试不代表交付可跳过验证，
+开发变更应显式使用 `--test`，位图/基准变更再开启 `--benchmarks`。
 
 ### 29.3 输出、部署和架构
 
-```text
-build/32/Debug
-build/32/Release
-build/64/Debug
-build/64/Release
-```
+桌面输出为 `build/<位数>/<配置>`，核心输出为 `build/core/<位数>/<配置>`。桌面要求
+Qt 5.12.10 且架构匹配，32 位应用是真正 x86；核心输出不包含应用和 Qt 运行库。
 
-脚本要求 Qt 5.12.10 且 Qt 架构与目标一致。主程序 32 位构建是真正 x86。Release/Debug 的
-Qt DLL 名不同。windeployqt 部署 Core/Gui/Widgets/OpenGL/Svg/PrintSupport/Concurrent、
-platforms、imageformats、styles、printsupport、translations 等；Qt ADS 动态库由 App CMake
-后构建复制。64 位发布可含独立 LibreDWG x64 工具。
-
-包名使用 `vectorPath-0.2.0-alpha.1-windows-x64.zip` 等格式；运行清单和哈希必须从最终文件
-生成。验收应在干净解压目录启动，不能只验证开发 build 目录。
+windeployqt 部署桌面所需 Qt DLL 和插件，App 构建复制 Qt ADS 和 LibreDWG 工具。
+便携包使用 `vectorPath-0.2.0-alpha.1-windows-x64.zip` 等名称；manifest 和哈希从最终文件
+生成。正式位图测量入口仍为 `sgraphVectorBenchmark/vp_run_benchmark.py`，内部通过统一
+构建入口开启性能目标；正式报告和固定样例继续保留。
 
 ## 30. GitHub Actions
 
 | 文件 | 作用 |
 | --- | --- |
-| `.github/workflows/windows-ci.yml` | Windows Release x86/x64 矩阵，配置、构建和 CTest；当前不覆盖 Debug。 |
+| `.github/workflows/windows-ci.yml` | 无 Qt 核心 Debug/Release 与桌面 Release x86/x64；全部调用统一入口，显式开启测试，桌面同时开启基准。 |
 | `.github/ISSUE_TEMPLATE/bug_report.yml` | 要求版本、环境、复现、期望/实际和附件。 |
 | `.github/ISSUE_TEMPLATE/feature_request.yml` | 收集场景、目标、范围和验收。 |
 | `.github/ISSUE_TEMPLATE/config.yml` | Issue 模板选择与空白 Issue 策略。 |
 | `.github/PULL_REQUEST_TEMPLATE.md` | 变更说明、测试、兼容和检查清单。 |
 
-CI 不能替代本地四配置和人工界面验收。后续应补 Debug CI、clang-tidy/静态分析、SBOM、签名
-和自动 Release 工作流。
+CI 不能替代本地配置验证和人工界面验收。桌面 Debug CI、clang-tidy/静态分析、SBOM、签名
+和自动 Release 工作流仍可后续完善。
 
 ---
 
@@ -1387,7 +1377,7 @@ CI 不能替代本地四配置和人工界面验收。后续应补 Debug CI、cl
 | 文件 | 权威内容与维护责任 |
 | --- | --- |
 | `ARCHITECTURE.md` | 快速架构概览；详细内容以本文为准。 |
-| `BUILDING.md` | 环境、Qt 查找、四配置桌面与无 Qt 核心构建和常见错误。 |
+| `BUILDING.md` | 统一构建入口、模式/测试/基准开关、工具链与常见错误。 |
 | `USER_GUIDE.md` | 面向普通用户的简明操作。 |
 | `TEST_RESULTS.md` | 已执行测试和性能结果记录，必须注明配置和日期。 |
 | `vp_coding_style.md` | C++ 命名、格式、文件和 Qt 使用规范。 |
@@ -1436,7 +1426,7 @@ CI 不能替代本地四配置和人工界面验收。后续应补 Debug CI、cl
 | `VpEntityType` 及文字/尺寸/Hatch/阵列枚举 | `sgraphGeometry/vp_entity.h` | 实体分类和持久化语义。 |
 | 六种纯曲线 geometry 结构 | `sgraphGeometry/vp_curve_entities.h` | 曲线参数；GeometryCore 与桌面共用。 |
 | 其余实体 geometry 与聚合 | `sgraphGeometry/vp_entity.h` | 仍含 Qt 文本和颜色；Document/Render/IO。 |
-| `VpDraftingState`、`VpGridBasis` | `sgraphInteraction/vp_drafting_state.h` | 无 Qt 的栅格、正交和追踪状态。 |
+| `VpDraftingState`、`VpGridBasis` | `sgraphGeometry/vp_drafting_state.h` | 无 Qt 的栅格、正交和追踪状态。 |
 | `VpEntityRecord` | `sgraphGeometry/vp_entity.h` | ID、类型、geometry、图层和显示属性聚合。 |
 | `VpPolygonBooleanOperation` | `sgraphGeometry/vp_polygon_boolean.h` | Clipper2 布尔操作选择。 |
 | `VpStandardShapeType` | `sgraphGeometry/vp_standard_shape.h` | 标准形状模板。 |
@@ -1457,7 +1447,6 @@ CI 不能替代本地四配置和人工界面验收。后续应补 Debug CI、cl
 | `VpLoadedDocumentStyles` | `sgraphDocument/vp_document_style_io.h` | 样式反序列化临时结果。 |
 | `VpPlotStyleTableType` / `VpPlotStyleRecord` / `VpPlotStyleTable` | `sgraphDocument/vp_plot_style_table.h` | STB/CTB 类型、单项记录、解析和查询。 |
 | `VpToolpathDocumentSortResult` | `sgraphDocument/vp_toolpath_document.h` | 文档刀路提交统计。 |
-| `VpCommandContext` / `VpICadCommand` | `sgraphCommands/vp_i_cad_command.h` | 命令对象契约。 |
 | `VpCoordinateInputMode` / `VpCoordinateInput` | `sgraphCommands/vp_coordinate_input.h` | 坐标解析结果。 |
 | `VpIFileCodec` | `sgraphIo/vp_i_file_codec.h` | 外部文件 codec 接口。 |
 | `VpFileCompatibilityReport` | `sgraphIo/vp_file_compatibility_report.h` | 格式警告和统计。 |
@@ -1478,7 +1467,6 @@ CI 不能替代本地四配置和人工界面验收。后续应补 Debug CI、cl
 | `VpCadViewport` | `sgraphRender/vp_cad_viewport.h` | 绘制、输入、选择、预览和提交。 |
 | `VpToolMode`、构造/夹点枚举和 `VpGripHandle` | `sgraphRender/vp_cad_viewport.h` | 视口交互状态。 |
 | `VpObjectSnapType` / `VpObjectSnapMode` / `VpObjectSnapResult` | `sgraphRender/vp_object_snap.h` | 捕捉候选类型、位掩码模式和最终结果。 |
-| `VpGridBasis` | `sgraphRender/vp_cad_viewport_drafting.h` | 旋转网格基。 |
 | `VpVector3` / `VpLinearConstraint` | `sgraphRender/vp_circle_tangent_math.h` | 相切圆内部代数。 |
 | `VpCadMainWindow` | `sgraphGui/vp_cad_main_window.h` | 应用 GUI 总编排和会话所有权。 |
 | `VpCadWorkspaceWidget` | `sgraphGui/vp_cad_workspace_widget.h` | 视口/标签/快速栏容器。 |
@@ -1508,15 +1496,13 @@ sgraphApp/vp_chinese_ui_translator.h
 sgraphApp/vp_main.cpp
 sgraphCore/CMakeLists.txt
 sgraphCore/vp_id_collection.h
-sgraphQtAdapters/CMakeLists.txt
-sgraphQtAdapters/vp_application_settings_migration.cpp
-sgraphQtAdapters/vp_application_settings_migration.h
-sgraphQtAdapters/vp_qt_text.h
-sgraphQtAdapters/vp_qt_geometry.cpp
-sgraphQtAdapters/vp_qt_geometry.h
-sgraphInteraction/CMakeLists.txt
-sgraphInteraction/vp_drafting_state.cpp
-sgraphInteraction/vp_drafting_state.h
+sgraphGui/vp_application_settings_migration.cpp
+sgraphGui/vp_application_settings_migration.h
+sgraphGeometry/vp_qt_text.h
+sgraphGeometry/vp_qt_geometry.cpp
+sgraphGeometry/vp_qt_geometry.h
+sgraphGeometry/vp_drafting_state.cpp
+sgraphGeometry/vp_drafting_state.h
 sgraphCore/vp_result.h
 sgraphGeometry/CMakeLists.txt
 sgraphGeometry/vp_curve_entities.h
@@ -1583,7 +1569,6 @@ sgraphCommands/vp_command_catalog.cpp
 sgraphCommands/vp_command_catalog.h
 sgraphCommands/vp_coordinate_input.cpp
 sgraphCommands/vp_coordinate_input.h
-sgraphCommands/vp_i_cad_command.h
 sgraphIo/CMakeLists.txt
 sgraphIo/vp_bitmap_contour_stitcher.cpp
 sgraphIo/vp_bitmap_run_vectorizer.cpp
@@ -1648,7 +1633,6 @@ sgraphRender/vp_cad_viewport_curve_join.cpp
 sgraphRender/vp_cad_viewport_curve_trim.cpp
 sgraphRender/vp_cad_viewport_dimension.cpp
 sgraphRender/vp_cad_viewport_drafting.cpp
-sgraphRender/vp_cad_viewport_drafting.h
 sgraphRender/vp_cad_viewport_entity_overlay.cpp
 sgraphRender/vp_cad_viewport_entity_render.cpp
 sgraphRender/vp_cad_viewport_events.cpp
@@ -1747,7 +1731,6 @@ sgraphGui/vp_toolpath_sort_dialog.cpp
 sgraphGui/vp_toolpath_sort_dialog.h
 sgraphGui/vp_vector_import_dialog.cpp
 sgraphGui/vp_vector_import_dialog.h
-sgraphGui/sgraphDesignSystem/vp_design_metrics.json
 sgraphGui/sgraphDesignSystem/vp_design_token.h
 sgraphGui/sgraphDesignSystem/vp_dimension_icon.cpp
 sgraphGui/sgraphDesignSystem/vp_dimension_icon.h
@@ -1783,6 +1766,9 @@ sgraphGui/sgraphDesignSystem/vp_theme_manager.h
 sgraphTests/CMakeLists.txt
 sgraphTests/vp_annotation_test.cpp
 sgraphTests/vp_application_settings_migration_test.cpp
+sgraphTests/vp_core_test_main.cpp
+sgraphTests/vp_desktop_test_main.cpp
+sgraphTests/vp_test_runner.h
 sgraphTests/vp_core_result_test.cpp
 sgraphTests/vp_geometry_core_test.cpp
 sgraphTests/vp_id_collection_test.cpp
@@ -1837,12 +1823,8 @@ sgraphVectorBenchmark/src/vp_bitmap_flood_baseline.cpp
 sgraphVectorBenchmark/src/vp_bitmap_flood_baseline.h
 sgraphVectorBenchmark/src/vp_bitmap_vector_benchmark.cpp
 sgraphVectorBenchmark/tests/vp_verify_output_layout.cmake
-sgraphBuildTools/vp_build_32_debug.py
-sgraphBuildTools/vp_build_32_release.py
-sgraphBuildTools/vp_build_64_debug.py
-sgraphBuildTools/vp_build_64_release.py
+sgraphBuildTools/vp_build.py
 sgraphBuildTools/vp_build_common.py
-sgraphBuildTools/vp_build_core.py
 ```
 
 ## 36. 功能—实现—事务—测试证据表

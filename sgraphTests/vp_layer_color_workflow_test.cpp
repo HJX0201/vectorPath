@@ -1,5 +1,6 @@
 #include "vp_cad_document.h"
 #include "vp_document_transaction.h"
+#include "vp_test_runner.h"
 
 #include <QtTest>
 #include <algorithm>
@@ -104,5 +105,5 @@ void VpLayerColorWorkflowTest::mergesSameColorLayersAtomically()
 
 } // namespace Vp
 
-QTEST_APPLESS_MAIN(Vp::VpLayerColorWorkflowTest)
+VECTORPATH_TEST_ENTRY(Vp::VpLayerColorWorkflowTest, vpRunVpLayerColorWorkflowTest)
 #include "vp_layer_color_workflow_test.moc"

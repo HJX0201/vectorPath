@@ -1,6 +1,6 @@
 schema_version: 1
 product: vectorPath
-audited: 2026-07-25
+audited: 2026-09-23
 rules:
   implemented_requires: [callable_ui_or_command, working_domain_logic, undo_when_mutating]
   complete_requires: [implemented, persistence_when_applicable, automated_test]
@@ -9,14 +9,15 @@ features:
     status: partial
     evidence: [sgraphGui/sgraphDesignSystem/vp_theme_manager.cpp,
                sgraphGui/sgraphDesignSystem/vp_icon_provider.cpp,
-               sgraphGui/sgraphDesignSystem/s_window_control_icon.cpp,
+               sgraphGui/vp_cad_main_window.cpp,
+               sgraphTests/vp_window_control_test.cpp,
                sgraphGui/vp_dialog_service.cpp,
                sgraphGui/vp_cad_main_window_ui_scale.cpp,
                sgraphApp/vp_chinese_ui_translator.cpp,
                sgraphTests/vp_dialog_size_policy_test.cpp,
                sgraphTests/vp_ui_scale_test.cpp]
     provides: [light_theme, dark_theme, high_contrast, unified_theme_menu,
-               theme_icons, dedicated_ui_scale_icon, unified_window_control_icons,
+               theme_icons, dedicated_ui_scale_icon, native_window_frame_controls,
                qt_and_saribbon_chinese_translation, chinese_standard_dialog_buttons, high_dpi,
                standard_dialog_minimum_size, input_dialog_minimum_size,
                message_dialog_minimum_size, larger_existing_size_preservation,
@@ -343,6 +344,8 @@ features:
     status: partial
     evidence: [sgraphRender/vp_cad_viewport_selection.cpp,
                sgraphRender/vp_cad_viewport_drafting.cpp,
+               sgraphGeometry/vp_drafting_state.cpp,
+               sgraphTests/vp_drafting_state_test.cpp,
                sgraphRender/vp_cad_viewport_render.cpp,
                sgraphRender/vp_cad_viewport_entity_overlay.cpp,
                sgraphRender/vp_object_snap.cpp,
@@ -388,46 +391,30 @@ features:
                sgraphRender/vp_cad_viewport_events.cpp,
                sgraphRender/vp_cad_viewport_entity_overlay.cpp,
                sgraphGui/vp_cad_main_window_display.cpp]
-    provides: [wheel_zoom, pan, auto_zoom, model_space, persistent_paper_space,
-               paper_background, printable_area, node_display, machining_direction_display,
-               one_based_document_sequence_display]
+    provides: [wheel_zoom, pan, auto_zoom, model_space, node_display,
+               machining_direction_display, one_based_document_sequence_display]
     missing: [named_views, model_multi_viewports, view_history]
     note: named_views_view_history_and_manual_regeneration_removed_by_user_request
   - id: SMARTCAD.LAYOUTS
-    status: partial
-    evidence: [sgraphDocument/s_layout_record.h,
-               sgraphDocument/s_layout_binary_io.cpp,
-               sgraphDocument/s_cad_document_layout.cpp,
-               sgraphDocument/vp_cad_document_io.cpp,
-               sgraphGui/vp_cad_workspace_widget.cpp,
-               sgraphGui/vp_cad_main_window_command.cpp,
-               sgraphTests/s_layout_test.cpp]
-    provides: [model_paper_space, entity_space_isolation, create_delete_rename_copy_layout,
-               model_layout_tilemode_commands, ribbon_actions, transactional_undo_redo,
-               smartcad_v22_roundtrip, paper_setup_record, layout_viewport_record,
-               viewport_scale_and_lock_persistence, mview_dynamic_rectangle_preview,
-               clipped_model_rendering, vpscale_and_vplock_commands, viewport_identifiers]
-    missing: [viewport_layer_overrides]
+    status: missing
+    evidence: []
+    provides: []
+    missing: [paper_space, layout_lifecycle, entity_space_isolation,
+              layout_viewports, viewport_scale_and_lock, viewport_layer_overrides,
+              layout_persistence_and_tests]
+    note: no_layout_model_or_command_implementation_in_current_source
   - id: SMARTCAD.OUTPUT
-    status: complete
-    evidence: [sgraphDocument/s_layout_record.h,
-               sgraphDocument/s_layout_binary_io.cpp,
-               sgraphDocument/vp_plot_style_table.cpp,
-               sgraphRender/s_cad_viewport_plot.cpp,
-               sgraphGui/s_plot_service.cpp,
+    status: partial
+    evidence: [sgraphDocument/vp_plot_style_table.cpp,
                sgraphGui/vp_cad_main_window_plot.cpp,
-               sgraphGui/sgraphDesignSystem/vp_output_icon.cpp,
-               sgraphTests/s_plot_test.cpp]
-    provides: [a0_a4_and_ansi_paper_presets, orientation, margins, plot_scale_record,
-               centered_and_lineweight_options, dynamic_page_preview, transactional_page_setup,
-               smartcad_v22_page_setup_roundtrip, vector_layout_rendering,
-               nonplottable_layer_filter, monochrome_and_grayscale_style_application,
-               compressed_ctb_stb_parser, color_dependent_aci_mapping,
-               named_stb_normal_style, plot_style_color_screening_and_lineweight_application,
-               atomic_plot_style_import, plot_style_manager,
-               print_preview, system_printer_output, pdf_output, multi_layout_pdf_publish,
-               pagesetup_plotstyle_stylesmanager_plot_print_preview_exportpdf_pdfout_publish_commands,
-               ribbon_actions_and_theme_icons]
+               sgraphGui/vp_cad_main_window_execute.cpp]
+    provides: [compressed_ctb_stb_parser, color_and_linewidth_mapping_helpers,
+               plot_style_metadata_display, atomic_plot_style_import,
+               plot_style_file_removal, plotstyle_stylesmanager_commands]
+    missing: [paper_setup, page_orientation_and_margins, print_scale,
+              print_preview, system_printer_output, pdf_output, batch_publish,
+              callable_plot_style_application, automated_plot_style_tests]
+    note: plot_style_manager_is_callable_but_no_page_setup_or_print_export_pipeline_exists
   - id: SMARTCAD.CAM.TOOLPATH_SIMULATION
     status: complete
     evidence: [sgraphGeometry/vp_toolpath.h,
@@ -512,10 +499,10 @@ features:
     note: all_5000_generated_release_cases_passed_exact_raster_roundtrip_and_svg_reparse
   - id: SMARTCAD.AUTOMATION
     status: missing
-    evidence: [sgraphCommands/vp_i_cad_command.h]
-    provides: [command_interface_contract]
+    evidence: []
+    provides: []
     missing: [script_execution, autolisp, plugin_loader, cui, public_sdk]
-    note: script_and_plugin_entry_points_removed_by_user_request
+    note: script_and_plugin_entry_points_removed_by_user_request_unused_contract_removed
   - id: SMARTCAD.3D
     status: out_of_scope
     evidence: []

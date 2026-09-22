@@ -1,4 +1,5 @@
 #include "vp_application_settings_migration.h"
+#include "vp_test_runner.h"
 
 #include <QSettings>
 #include <QTemporaryDir>
@@ -89,6 +90,7 @@ void VpApplicationSettingsMigrationTest::reportsDestinationWriteFailure()
 
 } // namespace Vp
 
-QTEST_APPLESS_MAIN(Vp::VpApplicationSettingsMigrationTest)
+VECTORPATH_TEST_ENTRY(Vp::VpApplicationSettingsMigrationTest,
+                      vpRunVpApplicationSettingsMigrationTest)
 
 #include "vp_application_settings_migration_test.moc"

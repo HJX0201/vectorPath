@@ -4,6 +4,7 @@
 #include "vp_command_catalog.h"
 #include "vp_document_transaction.h"
 #include "vp_quick_entity_operation.h"
+#include "vp_test_runner.h"
 
 #include <QToolBar>
 #include <QtTest>
@@ -226,5 +227,5 @@ void VpQuickEntityOperationTest::quickBarStaysInsideWorkspaceAndCommandsAreDisco
 
 } // namespace Vp
 
-QTEST_MAIN(Vp::VpQuickEntityOperationTest)
+VECTORPATH_TEST_ENTRY(Vp::VpQuickEntityOperationTest, vpRunVpQuickEntityOperationTest)
 #include "vp_quick_entity_operation_test.moc"

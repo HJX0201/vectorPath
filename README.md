@@ -58,28 +58,31 @@ SVG 字节。
 
 ## 快速构建
 
-仓库**不包含 Qt SDK**。请先安装 Qt 5.12.10 MSVC 套件、Visual Studio 2022 C++ 工具、
-CMake、Ninja 和 Python 3，然后运行：
+唯一构建入口为 `sgraphBuildTools/vp_build.py`。默认构建 64 位 Release 应用，测试与性能
+基准默认关闭。桌面构建需本机安装 Qt 5.12.10 MSVC 套件、Visual Studio 2022 C++ 工具、
+CMake、Ninja 和 Python 3；仓库不包含 Qt SDK。
 
 ```powershell
-python sgraphBuildTools/vp_build_64_release.py --clean
+python sgraphBuildTools/vp_build.py
+python sgraphBuildTools/vp_build.py --bits 32 --config Debug
 ```
 
-脚本会自动查找 Qt、激活 Visual Studio 编译环境、编译和运行测试，并使用所找到 Qt 的
-`windeployqt` 把运行所需 DLL 和插件复制到 `build/64/Release`。32 位入口：
+脚本自动查找 Qt、激活 Visual Studio 环境并编译应用，将运行库部署到
+`build/<位数>/<配置>`。需要测试或无 Qt 核心时显式开启：
 
 ```powershell
-python sgraphBuildTools/vp_build_32_release.py --clean
+python sgraphBuildTools/vp_build.py --test
+python sgraphBuildTools/vp_build.py --core --test
+python sgraphBuildTools/vp_build.py --test --benchmarks
 ```
 
-如果 Qt 不在常用路径，可显式指定：
+普通测试共用 `vectorPathCoreTests` 和 `vectorPathDesktopTests` 两个程序，38 个 CTest
+套件仍各自启动独立进程。开启位图基准检查后共 40 项；无 Qt 模式仅运行 4 个核心套件。
+`--benchmarks` 只开启基准构建，搭配 `--test` 才运行注册的基准检查。
 
-```powershell
-python sgraphBuildTools/vp_build_64_release.py --qt-dir C:\Qt\Qt5.12.10\5.12.10\msvc2017_64
-```
-
-也可设置 `SGRAPH_QT64_DIR`、`SGRAPH_QT32_DIR` 或 `QTDIR`。详细说明见
-[`sgraphDocs/BUILDING.md`](sgraphDocs/BUILDING.md)。
+Qt 不在常用路径时可传 `--qt-dir C:\Qt\Qt5.12.10\5.12.10\msvc2017_64`，或设置
+`SGRAPH_QT64_DIR`、`SGRAPH_QT32_DIR`、`QTDIR`。完整参数和当前核心边界见
+[构建说明](sgraphDocs/BUILDING.md)及[架构说明](sgraphDocs/ARCHITECTURE.md)。
 
 ## 文档
 

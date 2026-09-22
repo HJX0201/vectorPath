@@ -1,6 +1,6 @@
 # 纯 C++ 核心重构进度
 
-更新日期：2026-09-22。命名空间 `Vp`，自研类型前缀 `Vp`，文件前缀 `vp_`。
+更新日期：2026-09-23。命名空间 `Vp`，自研类型前缀 `Vp`，文件前缀 `vp_`。
 
 ## 当前交付：基础核心、辅助绘图状态和实体集合优化
 
@@ -13,18 +13,34 @@
 | 基础值与几何 | `smartCore`、`smartGeometryCore` 可独立构建；结果文本、点、六类曲线、基础多边形及布尔算法已脱离 Qt |
 | 文档与历史 | ID 集合删除已抽到核心，删除/撤销/重做共用；历史快照优化完成；文档对象、样式和持久化仍依赖 Qt |
 | 命令与交互 | `VpDraftingState` 已接管栅格、正交、追踪状态与运算；完整选择、夹点、工具命令及预览迁移仍待完成 |
-| Qt 边界 | `smartQtAdapters` 集中点、文本、错误诊断转换及旧设置迁移；其余颜色、事件、文件边界尚待迁移 |
-| 构建与检查 | 新增关闭桌面的构建入口和无 Qt CI；核心头和核心消费者不暴露 Qt/Clipper 类型 |
+| Qt 边界 | 点、文本、错误转换编入 `smartGeometry` 桌面目标；设置迁移位于 `sgraphGui`；其余颜色、事件、文件边界尚待迁移 |
+| 构建与检查 | 统一入口按需选择应用、核心、测试和基准；无 Qt CI 保留，纯核心头和消费者不暴露 Qt/Clipper 类型 |
 
 无 Qt 核心入口：
 
 ```powershell
-python sgraphBuildTools/vp_build_core.py
-python sgraphBuildTools/vp_build_core.py --config Debug
+python sgraphBuildTools/vp_build.py --core --test
+python sgraphBuildTools/vp_build.py --core --test --config Debug
 ```
 
 两者显式关闭 `VECTORPATH_BUILD_DESKTOP`，禁用 Qt5 包发现，构建并运行核心测试。
-桌面构建入口保持不变。CI 配置已添加无 Qt Debug/Release 任务，本地成功不等同远端 CI 已运行。
+同一入口不带参数时只构建 64 位 Release 应用，测试和性能基准默认关闭。CI 已改用统一入口，
+显式开启所需测试；本地成功不等同远端 CI 已运行。
+
+## 项目组织收拢（2026-09-22 至 2026-09-23）
+
+- 辅助绘图状态并入 `sgraphGeometry/vp_drafting_state.*`，由 `smartGeometryCore` 编译。
+- Qt 点/文本适配并入 `sgraphGeometry/vp_qt_geometry.*`、`vp_qt_text.h`，仅由桌面
+  `smartGeometry` 编译；设置迁移移到 `sgraphGui/vp_application_settings_migration.*`。
+- 移除两个独立辅助目录与库目标，保留明确的无 Qt 源列表；未使用命令接口、转发头和
+  无读取者的设计数据已删除，相应自动化实现证据清空，功能仍标记为 missing。
+- 五个旧构建包装入口合并为 `sgraphBuildTools/vp_build.py`，通过 `--bits`、`--config`、
+  `--core`、`--test`、`--benchmarks` 选择内容。
+- 38 个普通测试项目收拢为 `vectorPathCoreTests`、`vectorPathDesktopTests` 两个程序，
+  CTest 仍按 38 个套件分进程运行；同时启用位图基准检查时为 40 项，无 Qt 模式为 4 项。
+- 固定基准样例和历史报告保留；性能项目通过 `--benchmarks` 按需构建，不作为默认应用依赖。
+
+下面保留本轮项目收拢前的重构验证与性能记录，不能将其当作收拢后的新一次执行结果。
 
 ## 本阶段行为约束与验证
 
@@ -39,7 +55,7 @@ python sgraphBuildTools/vp_build_core.py --config Debug
   CTest；文档历史测试覆盖 7 类事务/通知行为，集合测试包含 200 组固定种子对照。
 - 实际界面截图不由工具采集；当前验证为自动测试和进程启动，不声称完成人工视觉验收。
 
-2026-09-22 本地最终验证：
+2026-09-22 收拢前阶段验证（历史记录）：
 
 | 配置 | 构建与测试 | 启动 |
 | --- | --- | --- |
@@ -52,7 +68,38 @@ python sgraphBuildTools/vp_build_core.py --config Debug
 全部 293 个自研 C++ 文件通过项目 clang-format 检查，最大 728 行；
 `git diff --check` 通过，第三方目录无改动。核心构建图未包含 Qt 头文件或链接依赖。
 
-## 性能与内存
+## 项目收拢后的验证与磁盘占用（2026-09-23）
+
+本轮收拢后的实际验证与上面的历史记录分开统计：
+
+| 配置 | 构建与测试 | 启动 |
+| --- | --- | --- |
+| 桌面 x64 Release，开启测试与基准 | 40/40 CTest 通过 | 通过 |
+| 桌面 x64 Debug，开启测试与基准 | 40/40 CTest 通过 | 通过 |
+| 桌面 x86 Release，开启测试与基准 | 40/40 CTest 通过 | 通过 |
+| 无 Qt 核心 x64 Release，开启测试 | 4/4 CTest 通过 | 控制台测试通过 |
+| 无 Qt 核心 x64 Debug，开启测试 | 4/4 CTest 通过 | 控制台测试通过 |
+
+- 不带参数的默认应用构建通过；其构建图没有测试、基准或已合并的两个旧库目标。
+- 纯核心构建图不含 Qt 头文件和链接依赖。两个测试程序分别列出 4/34 个套件；无效套件
+  返回码为 2，Qt 测试参数透传实测通过。
+- 本轮 51 个改动 C++ 文件均不超过 800 行，最大 709 行。三种桌面配置均通过进程启动，
+  不把此结果视为人工截图验收。
+- 已清理旧 38 个测试目标的调试文件、350 个自动生成目录、8 个旧模块构建目录及独立缓存。
+
+| 本机磁盘项目 | 清理前 | 清理后 |
+| --- | ---: | ---: |
+| Debug 测试目录 | 1,442.33 MiB | 166.29 MiB |
+| 整个 `build` | 2,611.5 MiB | 1,277.39 MiB |
+
+Debug 测试目录磁盘占用减少约 88.5%，整个 build 释放约 1.30 GiB。以上是本机构建产物的
+磁盘占用变化，不是应用运行内存或运行速度测量。
+
+本轮还校正了功能元数据：布局与布局视口缺失，页面设置仅保留样式管理子集，打印/PDF
+输出没有可调用实现；打印能力不再标为 complete。原生窗口边框取代了失效自绘图标证据，
+三维 P3 仍为暂停的 out_of_scope。
+
+## 历史性能与内存记录
 
 批量删除原先对每个删除项遍历并压缩一次实体数组，且闭包按值复制整个实体。
 现在先建立 ID 集合，再做一次稳定压缩；单 ID 保留不建哈希表的快速路径。
@@ -75,10 +122,10 @@ python sgraphBuildTools/vp_build_core.py --config Debug
 1.2951 ms；原始输出位于本地 `build/vp_id_collection_benchmark.csv`，不进入 Git。
 
 可复现基准源：`sgraphTests/vp_id_collection_benchmark.cpp`；正式构建目标
-`vectorPathIdCollectionBenchmark` 默认不构建、不计入测试时间门槛：
+`vectorPathIdCollectionBenchmark` 默认不构建、不计入测试时间门槛；当前复现命令为：
 
 ```powershell
-cmake --build build/core/64/Release --target vectorPathIdCollectionBenchmark
+python sgraphBuildTools/vp_build.py --core --benchmarks
 build/core/64/Release/sgraphTests/vectorPathIdCollectionBenchmark.exe
 ```
 

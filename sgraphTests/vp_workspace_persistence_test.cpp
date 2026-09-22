@@ -1,6 +1,7 @@
 #include "vp_cad_main_window.h"
 #include "vp_cad_viewport.h"
 #include "vp_command_line_widget.h"
+#include "vp_test_runner.h"
 #include "vp_theme_manager.h"
 
 #include <DockWidget.h>
@@ -121,6 +122,6 @@ void VpWorkspacePersistenceTest::usesReferenceUiProportions()
     QVERIFY(large_button_count >= 60);
 }
 
-QTEST_MAIN(VpWorkspacePersistenceTest)
+VECTORPATH_TEST_ENTRY(VpWorkspacePersistenceTest, vpRunVpWorkspacePersistenceTest)
 
 #include "vp_workspace_persistence_test.moc"

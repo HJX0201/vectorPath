@@ -2,6 +2,7 @@
 #include "vp_cad_viewport.h"
 #include "vp_document_transaction.h"
 #include "vp_spline_edit.h"
+#include "vp_test_runner.h"
 
 #include <QtTest>
 
@@ -110,5 +111,5 @@ void VpSplineEditTest::viewportPointPreviewWorkflow()
 
 } // namespace Vp
 
-QTEST_MAIN(Vp::VpSplineEditTest)
+VECTORPATH_TEST_ENTRY(Vp::VpSplineEditTest, vpRunVpSplineEditTest)
 #include "vp_spline_edit_test.moc"

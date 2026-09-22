@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vp_cad_viewport_drafting.h"
+#include "vp_drafting_state.h"
 #include "vp_entity.h"
 #include "vp_geometry_types.h"
 #include "vp_object_snap.h"

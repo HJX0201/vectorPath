@@ -4,6 +4,7 @@
 #include "vp_dimension_geometry.h"
 #include "vp_document_transaction.h"
 #include "vp_dxf_codec.h"
+#include "vp_test_runner.h"
 
 #include <QTemporaryDir>
 #include <QtTest>
@@ -253,5 +254,5 @@ void VpDimensionTest::explodeAllDimensionTypes()
 
 } // namespace Vp
 
-QTEST_MAIN(Vp::VpDimensionTest)
+VECTORPATH_TEST_ENTRY(Vp::VpDimensionTest, vpRunVpDimensionTest)
 #include "vp_dimension_test.moc"

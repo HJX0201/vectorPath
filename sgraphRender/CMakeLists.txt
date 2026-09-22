@@ -1,6 +1,5 @@
 add_library(smartRender STATIC
     vp_cad_viewport.h
-    vp_cad_viewport_drafting.h
     vp_cad_viewport_geometry.h
     vp_cad_viewport_geometry.cpp
     vp_curve_offset.h
@@ -71,7 +70,6 @@ target_link_libraries(smartRender
         smartCommands
         smartDocument
         smartGeometry
-        smartInteraction
         Qt5::Core
         Qt5::Gui
         Qt5::Widgets

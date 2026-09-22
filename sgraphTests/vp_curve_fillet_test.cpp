@@ -2,6 +2,7 @@
 #include "vp_cad_viewport.h"
 #include "vp_cad_viewport_geometry.h"
 #include "vp_document_transaction.h"
+#include "vp_test_runner.h"
 
 #include <QtTest>
 
@@ -157,5 +158,5 @@ void VpCurveFilletTest::arcArcChamferGeometry()
 
 } // namespace Vp
 
-QTEST_MAIN(Vp::VpCurveFilletTest)
+VECTORPATH_TEST_ENTRY(Vp::VpCurveFilletTest, vpRunVpCurveFilletTest)
 #include "vp_curve_fillet_test.moc"

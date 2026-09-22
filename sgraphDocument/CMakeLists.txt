@@ -35,4 +35,4 @@ add_library(smartDocument STATIC
 )
 
 target_include_directories(smartDocument PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(smartDocument PUBLIC smartCore smartGeometry smartQtAdapters Qt5::Core Qt5::Gui)
+target_link_libraries(smartDocument PUBLIC smartCore smartGeometry Qt5::Core Qt5::Gui)

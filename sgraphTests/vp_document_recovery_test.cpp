@@ -1,6 +1,7 @@
 #include "vp_cad_document.h"
 #include "vp_document_recovery_manager.h"
 #include "vp_document_transaction.h"
+#include "vp_test_runner.h"
 
 #include <QFileInfo>
 #include <QTemporaryDir>
@@ -83,5 +84,5 @@ void VpDocumentRecoveryTest::namedDocumentKeepsActivePathAndModifiedState()
 
 } // namespace Vp
 
-QTEST_MAIN(Vp::VpDocumentRecoveryTest)
+VECTORPATH_TEST_ENTRY(Vp::VpDocumentRecoveryTest, vpRunVpDocumentRecoveryTest)
 #include "vp_document_recovery_test.moc"

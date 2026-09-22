@@ -20,7 +20,7 @@ jobs:
           persist-credentials: false
       - name: Build and test without Qt
         shell: pwsh
-        run: python sgraphBuildTools/vp_build_core.py --config ${{ matrix.config }} --jobs 4
+        run: python sgraphBuildTools/vp_build.py --core --test --config ${{ matrix.config }} --jobs 4
 
   build:
     runs-on: windows-2022
@@ -29,10 +29,10 @@ jobs:
       matrix:
         include:
           - bits: "64"
-            config: release
+            config: Release
             qt_arch: win64_msvc2017_64
           - bits: "32"
-            config: release
+            config: Release
             qt_arch: win32_msvc2017
 
     steps:
@@ -51,5 +51,5 @@ jobs:
         shell: pwsh
         run: |
           $qtDir = (& qmake -query QT_INSTALL_PREFIX).Trim()
-          python "sgraphBuildTools/vp_build_${{ matrix.bits }}_${{ matrix.config }}.py" `
-            --qt-dir $qtDir --clean --jobs 4
+          python sgraphBuildTools/vp_build.py --bits ${{ matrix.bits }} --config ${{ matrix.config }} `
+            --qt-dir $qtDir --clean --jobs 4 --test --benchmarks

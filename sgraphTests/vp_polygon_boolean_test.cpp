@@ -1,5 +1,6 @@
 #include "vp_polygon_boolean.h"
 #include "vp_qt_text.h"
+#include "vp_test_runner.h"
 
 #include <QtTest>
 #include <cmath>
@@ -68,5 +69,5 @@ void VpPolygonBooleanTest::clipsOverlappingRectangles()
 
 } // namespace Vp
 
-QTEST_APPLESS_MAIN(Vp::VpPolygonBooleanTest)
+VECTORPATH_TEST_ENTRY(Vp::VpPolygonBooleanTest, vpRunVpPolygonBooleanTest)
 #include "vp_polygon_boolean_test.moc"

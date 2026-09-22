@@ -1,6 +1,7 @@
 #include "vp_cad_main_window.h"
 #include "vp_shortcut_dialog.h"
 #include "vp_shortcut_manager.h"
+#include "vp_test_runner.h"
 #include "vp_theme_manager.h"
 
 #include <QAction>
@@ -142,6 +143,6 @@ void VpShortcutManagerTest::exposesModernShortcutDialog()
     QCOMPARE(new_action->shortcut(), QKeySequence::New);
 }
 
-QTEST_MAIN(VpShortcutManagerTest)
+VECTORPATH_TEST_ENTRY(VpShortcutManagerTest, vpRunVpShortcutManagerTest)
 
 #include "vp_shortcut_manager_test.moc"

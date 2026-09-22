@@ -4,6 +4,7 @@
 #include "vp_coordinate_input.h"
 #include "vp_document_transaction.h"
 #include "vp_object_snap.h"
+#include "vp_test_runner.h"
 
 #include <QtTest>
 
@@ -163,5 +164,5 @@ void VpPrecisionSnapTest::commandCompletionAndActiveKeywords()
 
 } // namespace Vp
 
-QTEST_MAIN(Vp::VpPrecisionSnapTest)
+VECTORPATH_TEST_ENTRY(Vp::VpPrecisionSnapTest, vpRunVpPrecisionSnapTest)
 #include "vp_precision_snap_test.moc"

@@ -1,5 +1,6 @@
 #include "vp_command_catalog.h"
 #include "vp_command_line_widget.h"
+#include "vp_test_runner.h"
 
 #include <QCompleter>
 #include <QLineEdit>
@@ -58,5 +59,5 @@ void VpCommandLineWidgetTest::removedBlockCommandsAreNotAdvertised()
 
 } // namespace Vp
 
-QTEST_MAIN(Vp::VpCommandLineWidgetTest)
+VECTORPATH_TEST_ENTRY(Vp::VpCommandLineWidgetTest, vpRunVpCommandLineWidgetTest)
 #include "vp_command_line_widget_test.moc"

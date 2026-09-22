@@ -1,6 +1,7 @@
 #include "vp_cad_document.h"
 #include "vp_cad_viewport.h"
 #include "vp_document_transaction.h"
+#include "vp_test_runner.h"
 #include "vp_toolpath_simulation_controller.h"
 
 #include <QtTest>
@@ -73,5 +74,5 @@ void VpToolpathSimulationTest::documentChangeInvalidatesSimulation()
     QCOMPARE(controller.motionCount(), std::size_t(0));
 }
 
-QTEST_MAIN(VpToolpathSimulationTest)
+VECTORPATH_TEST_ENTRY(VpToolpathSimulationTest, vpRunVpToolpathSimulationTest)
 #include "vp_toolpath_simulation_test.moc"
