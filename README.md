@@ -86,6 +86,7 @@ Qt 不在常用路径时可传 `--qt-dir C:\Qt\Qt5.12.10\5.12.10\msvc2017_64`，
 
 ## 文档
 
+- [运行性能与内存优化计划](sgraphDocs/vp_performance_memory_plan.md)
 - [完整代码架构与文件参考](sgraphDocs/CODEBASE_REFERENCE.md)
 - [位图矢量化详尽源码与调用关系](sgraphDocs/BITMAP_VECTORIZATION_SOURCE_REFERENCE.md)
 - [使用说明](sgraphDocs/USER_GUIDE.md)
