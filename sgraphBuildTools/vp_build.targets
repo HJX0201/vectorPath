@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Qt/MSBuild 3.5.0 requires this input even for projects without resources. -->
+  <Target Name="VpInitializeQtInputs" BeforeTargets="QtVars"
+    Condition="'$(VpUseQt)' == 'true' and '@(QtRcc)' == '' and '$(QtQmlStaticImportFile)' != '' and !Exists('$(QtQmlStaticImportFile)')">
+    <MakeDir Directories="$([System.IO.Path]::GetDirectoryName('$(QtQmlStaticImportFile)'))" />
+    <WriteLinesToFile File="$(QtQmlStaticImportFile)" Lines="QmlObject { }" Overwrite="true" WriteOnlyWhenDifferent="true" />
+  </Target>
+  <Target Name="VpValidateQt" BeforeTargets="PrepareForBuild" Condition="'$(VpUseQt)' == 'true'">
+    <Error Condition="!Exists('$(QtMsBuild)\qt.targets')" Text="Qt/MSBuild is missing. Install Qt VS Tools, or set QtMsBuild to the official Qt/MSBuild directory." />
+    <Error Condition="!Exists('$(VpQtDir)\bin\qmake.exe')" Text="Qt 5.12.10 is missing. Set VpQtDir in vp_local.props or SGRAPH_QT32_DIR / SGRAPH_QT64_DIR." />
+    <Exec Command="&quot;$(VpQtDir)\bin\qmake.exe&quot; -query QT_VERSION" ConsoleToMSBuild="true" StandardOutputImportance="Low">
+      <Output TaskParameter="ConsoleOutput" ItemName="VpQtVersion" />
+    </Exec>
+    <Error Condition="'@(VpQtVersion)' != '5.12.10'" Text="Qt version must be 5.12.10; found @(VpQtVersion)." />
+  </Target>
+  <Target Name="VpDeployRuntime" AfterTargets="Build" Condition="'$(VpDeployRuntime)' == 'true'">
+    <MakeDir Directories="$(VpOutputDir)translations;$(VpOutputDir)libredwg" />
+    <Copy SourceFiles="$(VpQtDir)\translations\qt_zh_CN.qm" DestinationFolder="$(VpOutputDir)translations" SkipUnchangedFiles="true" />
+    <ItemGroup>
+      <VpLibreDwgFiles Include="$(VpRootDir)sgraphThirdParty\libredwg-0.14-win64\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(VpLibreDwgFiles)" DestinationFiles="@(VpLibreDwgFiles->'$(VpOutputDir)libredwg\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+    <Exec WorkingDirectory="$(VpOutputDir)" EnvironmentVariables="VCINSTALLDIR=$(VCInstallDir);VCToolsRedistDir=$(VCToolsRedistDir)"
+      Command="&quot;$(VpQtDir)\bin\windeployqt.exe&quot; --$(QtBuildConfig) --no-translations --no-system-d3d-compiler &quot;$(TargetFileName)&quot;" />
+  </Target>
+</Project>

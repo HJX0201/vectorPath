@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- 构建入口迁移为原生 `vectorPath.sln` 和模块 `.vcxproj`，支持 Win32/x64、Debug/Release；
+  自研 CMake 入口移除，遗留版本保留在提交 `12fb231`。
+- Qt/MSBuild 负责 moc/rcc；保留按需构建的两个测试程序和基准，输出统一到 `build/msbuild`。
+- 四种桌面配置各通过 40 项检查，无 Qt 核心 Debug/Release 各通过 4 项检查。
+
 ## 0.2.0-alpha.1 - 2026-07-31
 
 - 产品由 smartGraphics 完整改名为 vectorPath（开发过程中曾使用 smartCam 中间名称），

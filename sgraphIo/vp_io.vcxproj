@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="Current">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A1C9EC06-F7F3-5CE7-A329-F2802BC8FDD1}</ProjectGuid>
+    <ProjectName>smartIo</ProjectName>
+    <Keyword>QtVS_v304</Keyword>
+    <RootNamespace>Vp</RootNamespace>
+    <VpTargetName>smartIo</VpTargetName>
+    <VpUseQt>true</VpUseQt>
+  </PropertyGroup>
+  <Import Project="..\sgraphBuildTools\vp_defaults.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset Condition="'$(PlatformToolset)' == ''">v143</PlatformToolset>
+    <UseDebugLibraries Condition="'$(Configuration)' == 'Debug'">true</UseDebugLibraries>
+    <UseDebugLibraries Condition="'$(Configuration)' != 'Debug'">false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" Condition="Exists('$(QtMsBuild)\qt_defaults.props')" />
+  </ImportGroup>
+  <PropertyGroup Label="QtSettings">
+    <VpIncludeDirs>$(VpRootDir)sgraphIo;$(VpRootDir)sgraphDocument;$(VpRootDir)sgraphGeometry;$(VpRootDir)sgraphCore;$(VpRootDir)sgraphThirdParty\Clipper2\Clipper2Lib\include</VpIncludeDirs>
+    <VpDefinitions>CLIPPER2_MAX_DECIMAL_PRECISION=8</VpDefinitions>
+    <QtModules>core;gui;concurrent</QtModules>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="..\sgraphBuildTools\vp_common.props" />
+    <Import Project="$(QtMsBuild)\Qt.props" Condition="Exists('$(QtMsBuild)\Qt.props')" />
+  </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="vp_dxf_codec.cpp" />
+    <ClCompile Include="vp_dxf_pair.cpp" />
+    <ClCompile Include="vp_dxf_entity_io.cpp" />
+    <ClCompile Include="vp_dxf_table_io.cpp" />
+    <ClCompile Include="vp_dwg_codec.cpp" />
+    <ClCompile Include="vp_dwg_dxf_adapter.cpp" />
+    <ClCompile Include="vp_dxf_hatch_io.cpp" />
+    <ClCompile Include="vp_svg_path_parser.cpp" />
+    <ClCompile Include="vp_svg_parser.cpp" />
+    <ClCompile Include="vp_vector_fill.cpp" />
+    <ClCompile Include="vp_bitmap_vectorizer.cpp" />
+    <ClCompile Include="vp_bitmap_contour_stitcher.cpp" />
+    <ClCompile Include="vp_bitmap_run_vectorizer.cpp" />
+    <ClCompile Include="vp_vector_document_import.cpp" />
+    <ClCompile Include="vp_svg_document_operations.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="vp_file_compatibility_report.h" />
+    <ClInclude Include="vp_i_file_codec.h" />
+    <ClInclude Include="vp_dxf_codec.h" />
+    <ClInclude Include="vp_dxf_pair.h" />
+    <ClInclude Include="vp_dxf_entity_io.h" />
+    <ClInclude Include="vp_dxf_table_io.h" />
+    <ClInclude Include="vp_dwg_codec.h" />
+    <ClInclude Include="vp_dwg_dxf_adapter.h" />
+    <ClInclude Include="vp_dxf_hatch_io.h" />
+    <ClInclude Include="vp_svg_path_parser.h" />
+    <ClInclude Include="vp_svg_vector_data.h" />
+    <ClInclude Include="vp_svg_parser.h" />
+    <ClInclude Include="vp_vector_fill.h" />
+    <ClInclude Include="vp_bitmap_vectorizer.h" />
+    <ClInclude Include="vp_bitmap_vector_private.h" />
+    <ClInclude Include="vp_vector_document_import.h" />
+    <ClInclude Include="vp_svg_document_operations.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\sgraphDocument\vp_document.vcxproj">
+      <Project>{0FB76100-7DBC-58FD-BC1F-FDC87131973D}</Project>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\sgraphThirdParty\vp_clipper2.vcxproj">
+      <Project>{F3A8AEB8-7BAF-53AA-A39A-20BD883F05F3}</Project>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(QtMsBuild)\qt.targets" Condition="Exists('$(QtMsBuild)\qt.targets')" />
+    <Import Project="..\sgraphBuildTools\vp_build.targets" />
+  </ImportGroup>
+</Project>

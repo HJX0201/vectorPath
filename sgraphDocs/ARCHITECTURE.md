@@ -18,10 +18,11 @@ flowchart TD
     GeometryCore --> Clipper["Clipper2（私有算法依赖）"]
 ```
 
-`VECTORPATH_BUILD_DESKTOP` 默认 ON；关闭后不查找 Qt，也不构建 Qt 桌面目标。
-`VECTORPATH_BUILD_TESTS` 和 `VECTORPATH_BUILD_BENCHMARKS` 默认 OFF。
-唯一构建入口为 `sgraphBuildTools/vp_build.py`：默认构建应用，`--core` 构建纯核心，
-`--test` 开启测试，`--benchmarks` 开启性能项目，详见 [BUILDING.md](BUILDING.md)。
+根 `vectorPath.sln` 是原生 Visual Studio 入口；各模块 `.vcxproj` 显式登记源文件和依赖。
+默认“生成解决方案”只构建应用及依赖，两个测试程序与性能项目可单独生成。
+命令行入口为 `sgraphBuildTools/vp_build.py`：直接调用 MSBuild，`--core` 构建纯核心且不查找
+Qt 或 Qt/MSBuild；`--test` 开启测试，`--benchmarks` 开启性能项目。
+最后的 CMake 入口留在 Git 提交 `12fb231`，当前不调用 vendor 自带 CMake，详见 [BUILDING.md](BUILDING.md)。
 
 ## 模块职责
 
@@ -36,10 +37,10 @@ flowchart TD
 - `sgraphRender`：视口、选择、对象捕捉、预览和绘制编辑；把辅助绘图状态交给纯核心。
 - `sgraphGui`：Ribbon、工作区、主题、对话框、主窗口和旧 QSettings 缺失键迁移。
 - `sgraphApp`：应用组装、Qt 配置、翻译和设置迁移调用。
-- `sgraphTests`：两个普通测试可执行程序，保留 38 个分进程 CTest 套件及可选集合基准。
+- `sgraphTests`：两个普通测试可执行程序，保留 38 个分进程套件及可选集合基准。
 - `sgraphVectorBenchmark`：按需构建的位图生成器、基准和输出检查；样本与报告仅本地生成，结果目录全部忽略。
-- `sgraphBuildTools`：一个 Python 构建入口和公共驱动，通过参数选择目标架构、配置与模式。
-- `sgraphThirdParty`：原样引入的第三方源码与运行组件。
+- `sgraphBuildTools`：共享 MSBuild 属性、原生工程构建辅助文件、Python 驱动和分进程测试入口。
+- `sgraphThirdParty`：原样引入的第三方源码与运行组件；`vp_*.vcxproj` 在该目录统一接入上游源码。
 
 ## 值类型与交互约定
 
@@ -70,5 +71,5 @@ flowchart TD
 - 首次启动依次读取的旧设置位置 `smartCamLearning/smartCam`、
   `smartCadLearning/smartGraphics`，以及旧 `smartCam.stb`、`smartCad.stb` 打印样式名。
 - 已持久化的 Qt object name、状态栏样式选择器和 DXF XDATA 应用名 `SMARTCAD`。
-- 保留一个版本的 `SMARTCAM_BUILD_TESTS`、`SMARTCAD_BUILD_TESTS` 构建变量兼容映射。
+- 旧 CMake 构建变量已随自研 CMake 入口退出；命令行测试使用 `--test`。
 - CAD 功能目录中的稳定 `SMARTCAD.*` 功能 ID，以及历史版本记录中的兼容标识。

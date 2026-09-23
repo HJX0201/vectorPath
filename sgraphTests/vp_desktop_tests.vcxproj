@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="Current">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C7566ADC-2C07-5E2F-87E0-E6B45DD8EF0C}</ProjectGuid>
+    <ProjectName>vectorPathDesktopTests</ProjectName>
+    <Keyword>QtVS_v304</Keyword>
+    <RootNamespace>Vp</RootNamespace>
+    <VpTargetName>vectorPathDesktopTests</VpTargetName>
+    <VpUseQt>true</VpUseQt>
+  </PropertyGroup>
+  <Import Project="..\sgraphBuildTools\vp_defaults.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset Condition="'$(PlatformToolset)' == ''">v143</PlatformToolset>
+    <UseDebugLibraries Condition="'$(Configuration)' == 'Debug'">true</UseDebugLibraries>
+    <UseDebugLibraries Condition="'$(Configuration)' != 'Debug'">false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" Condition="Exists('$(QtMsBuild)\qt_defaults.props')" />
+  </ImportGroup>
+  <PropertyGroup Label="QtSettings">
+    <VpIncludeDirs>$(VpRootDir)sgraphTests;$(VpRootDir)sgraphGui;$(VpRootDir)sgraphGui\sgraphDesignSystem;$(VpRootDir)sgraphRender;$(VpRootDir)sgraphCommands;$(VpRootDir)sgraphDocument;$(VpRootDir)sgraphGeometry;$(VpRootDir)sgraphCore;$(VpRootDir)sgraphThirdParty\Clipper2\Clipper2Lib\include;$(VpRootDir)sgraphIo;$(VpRootDir)sgraphThirdParty\SARibbon-2.9.0\src\SARibbonBar;$(VpRootDir)sgraphThirdParty\SARibbon-2.9.0\src\SARibbonBar\colorWidgets;$(VpRootDir)sgraphThirdParty\Qt-Advanced-Docking-System-4.4.1\src</VpIncludeDirs>
+    <VpDefinitions>CLIPPER2_MAX_DECIMAL_PRECISION=8;SA_RIBBON_BAR_NO_EXPORT;SA_COLOR_WIDGETS_NO_DLL;SARIBBON_USE_3RDPARTY_FRAMELESSHELPER=0</VpDefinitions>
+    <QtModules>core;gui;widgets;testlib;svg;printsupport;opengl;concurrent</QtModules>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="..\sgraphBuildTools\vp_common.props" />
+    <Import Project="$(QtMsBuild)\Qt.props" Condition="Exists('$(QtMsBuild)\Qt.props')" />
+  </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="vp_desktop_test_main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="vp_test_runner.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="vp_qt_adapter_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_document_history_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_cad_document_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_application_settings_migration_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_dwg_codec_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_document_recovery_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_document_audit_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_cad_viewport_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_curve_offset_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_array_operations_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_curve_fillet_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_spline_blend_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_spline_edit_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_annotation_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_dimension_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_hatch_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_polyline_corner_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_grip_edit_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_precision_snap_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_command_line_widget_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_window_control_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_workspace_persistence_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_ellipse_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_curve_construction_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_shortcut_manager_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_dialog_size_policy_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_standard_shape_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_layer_color_workflow_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_polygon_boolean_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_ui_scale_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_toolpath_sort_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_toolpath_simulation_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_quick_entity_operation_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+    <QtMoc Include="vp_svg_vector_import_test.cpp">
+      <DynamicSource>input</DynamicSource>
+      <QtMocFileName>%(Filename).moc</QtMocFileName>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vp_desktop_test_registry.inc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\sgraphGui\vp_gui.vcxproj">
+      <Project>{1D9FC94A-F681-57AC-9403-E913BA702DF1}</Project>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\sgraphRender\vp_render.vcxproj">
+      <Project>{1E0EB8B0-EDD4-5A65-85A3-51251883161F}</Project>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\sgraphCommands\vp_commands.vcxproj">
+      <Project>{C1524D1C-3737-5D2F-8546-1A4FAF6373AA}</Project>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\sgraphDocument\vp_document.vcxproj">
+      <Project>{0FB76100-7DBC-58FD-BC1F-FDC87131973D}</Project>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\sgraphGeometry\vp_geometry.vcxproj">
+      <Project>{4978BDD5-33B7-5F69-B674-2D52A073C67C}</Project>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\sgraphGeometry\vp_geometry_core.vcxproj">
+      <Project>{64850208-FEAB-5B2C-82B8-7722ED641D62}</Project>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\sgraphCore\vp_core.vcxproj">
+      <Project>{387E7461-62C9-5522-8E10-B5D761D7E8A5}</Project>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\sgraphThirdParty\vp_clipper2.vcxproj">
+      <Project>{F3A8AEB8-7BAF-53AA-A39A-20BD883F05F3}</Project>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\sgraphIo\vp_io.vcxproj">
+      <Project>{A1C9EC06-F7F3-5CE7-A329-F2802BC8FDD1}</Project>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\sgraphThirdParty\vp_saribbon.vcxproj">
+      <Project>{C19F9EFD-08E1-5352-BE40-C84B1F454770}</Project>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\sgraphThirdParty\vp_qtads.vcxproj">
+      <Project>{7C075CD7-AC58-5246-A749-A5A64DBA2FBA}</Project>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(QtMsBuild)\qt.targets" Condition="Exists('$(QtMsBuild)\qt.targets')" />
+    <Import Project="..\sgraphBuildTools\vp_build.targets" />
+  </ImportGroup>
+</Project>

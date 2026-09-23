@@ -117,7 +117,7 @@ flowchart TD
 | `sgraphIo/vp_bitmap_run_vectorizer.cpp` | 游程、并行、连接、并查集、边生成和总控 | 调用 contour stitcher 与 SVG writer |
 | `sgraphIo/vp_bitmap_contour_stitcher.cpp` | 边方向、压缩、闭环、简化和规范化 | 接收原始边，输出 `VpBitmapContour` |
 | `sgraphIo/vp_bitmap_vectorizer.cpp` | 颜色格式、SVG 序列化和 QByteArray 包装 | 接收规范轮廓，输出稳定 SVG |
-| `sgraphIo/CMakeLists.txt` | 将以上源文件编入 `smartIo`，链接 Qt Concurrent | 根 CMake、smartGui、benchmark |
+| `sgraphIo/vp_io.vcxproj` | 将以上源文件编入 `smartIo`，链接 Qt Concurrent | 原生解决方案、smartGui、benchmark |
 
 ### 4.2 Benchmark 与专项测试
 
@@ -130,8 +130,8 @@ flowchart TD
 | `vp_bitmap_benchmark_report.h/.cpp` | 聚合、分位数和 HTML 报告 |
 | `vp_bitmap_vector_benchmark.cpp` | 三算法轮换执行、中位数、峰值工作集、失败产物和退出码 |
 | `sgraphVectorBenchmark/vp_run_benchmark.py` | Release x64 构建和 benchmark 启动入口 |
-| `sgraphVectorBenchmark/CMakeLists.txt` | benchmark target、smoke 和布局 CTest |
-| `tests/vp_verify_output_layout.cmake` | 成功输出只保留 manifest 与 HTML |
+| `sgraphVectorBenchmark/vp_bitmap_benchmark.vcxproj` | 原生 benchmark 项目，默认不参与解决方案生成 |
+| `sgraphBuildTools/vp_test.py` | 执行 smoke 并验证最终输出只保留 manifest 与 HTML |
 | `sgraphTests/vp_svg_vector_import_test.cpp` | 4 个位图核心专项 Qt Test |
 
 运行和本地输出约定位于 benchmark 的 `README.md`。仓库仅保留运行入口、生成器和验证代码，
@@ -1095,7 +1095,7 @@ VpResult<QString> writeBitmapBenchmarkReport(
 累计小于 flood”选择结论口径；写入包含 CSS、排序 JS、环境/参数、卡片和表格的 HTML。标题
 使用 `results.size()` 实际数量，不再写死 1000。文件无法写入时返回 failure；成功返回报告路径。
 
-## 25. Python、CMake 与输出布局
+## 25. Python、MSBuild 与输出布局
 
 ### 25.1 `vp_run_benchmark.py::parse_arguments()`
 
@@ -1106,28 +1106,28 @@ VpResult<QString> writeBitmapBenchmarkReport(
 
 定位仓库根，调用统一入口 `sgraphBuildTools/vp_build.py --bits <位数> --benchmarks`
 构建 Release benchmark，再启动生成的程序并返回退出码。默认位数为 64；构建步骤使用
-`check=True`，失败直接终止，默认不运行普通 CTest。
+`check=True`，失败直接终止，默认不运行普通套件测试。
 
-### 25.3 Benchmark CMake
+### 25.3 Benchmark 原生工程
 
 `smartBitmapVectorBenchmark` 链接 smartIo、Qt Core/Gui/Concurrent；Windows 额外链接 Psapi。
-编译定义注入 benchmark root，不依赖固定图片目录。项目仅在桌面开启 `VECTORPATH_BUILD_BENCHMARKS`
-时构建；同时开启 `VECTORPATH_BUILD_TESTS` 才注册以下 CTest：
+工程定义注入 benchmark root，不依赖固定图片目录。项目默认不参与解决方案生成，
+可右键单独构建，或由 `--benchmarks` 构建；同时使用 `--test` 才通过 `vp_test.py` 运行：
 
 - `vectorPathBitmapVectorBenchmarkSmoke`：20 case、seed 20260727、2 线程、1 次、smoke；
 - `vectorPathBitmapBenchmarkOutputLayout`：依赖 smoke，检查最终目录。
 
-### 25.4 `vp_verify_output_layout.cmake`
+### 25.4 `vp_test.py::verify_benchmark_layout()`
 
 要求 manifest 和 HTML 存在；cases 和 failures 不存在；顶层条目排序后必须恰好为这两个文件。
-任一不满足 `FATAL_ERROR`。
+同时检查 manifest 的样本数和条目数均为 20。任一不满足即报告检查失败并使测试入口返回非零退出码。
 
 注意：manifest 中的 `file` 记录描述运行期输入路径，而成功结束后 cases 已清理；manifest 是
 可追溯元数据，不是长期 PNG 包。
 
 ## 26. 专项 Qt Test
 
-位图专项位于 `VpSvgVectorImportTest`，编入共享的 `vectorPathDesktopTests` 程序；CTest
+位图专项位于 `VpSvgVectorImportTest`，编入共享的 `vectorPathDesktopTests` 程序；`vp_test.py`
 使用 `vectorPathSvgVectorImportTests` 套件参数单独启动进程，测试隔离方式保持不变：
 
 ### 26.1 `vectorizesSolidBitmapAsOneRegion()`
@@ -1251,7 +1251,7 @@ VpResult<QString> writeBitmapBenchmarkReport(
 - 修改 SVG 格式：更新 parser 验证、字节确定性和 GUI 消费边界；
 - 修改 generator：保留 seed 可复现性并更新类别/尺寸说明；
 - 修改计时：明确是否增加预热、保留哪次 metrics、如何取中位数；
-- 修改输出清理：同步布局 CTest 和 results README。
+- 修改输出清理：同步 `vp_test.py` 的布局检查和 benchmark README。
 
 ## 32. 相关文档
 
@@ -1434,7 +1434,7 @@ def main() -> int
 
 ### 34.1 生产算法与构建登记
 
-- `sgraphIo/CMakeLists.txt`
+- `sgraphIo/vp_io.vcxproj`
 - `sgraphIo/vp_bitmap_vectorizer.h`
 - `sgraphIo/vp_bitmap_vector_private.h`
 - `sgraphIo/vp_bitmap_vectorizer.cpp`
@@ -1443,7 +1443,7 @@ def main() -> int
 
 ### 34.2 Benchmark 类型、实现与运行入口
 
-- `sgraphVectorBenchmark/CMakeLists.txt`
+- `sgraphVectorBenchmark/vp_bitmap_benchmark.vcxproj`
 - `sgraphVectorBenchmark/vp_run_benchmark.py`
 - `sgraphVectorBenchmark/src/vp_bitmap_benchmark_types.h`
 - `sgraphVectorBenchmark/src/vp_bitmap_benchmark_generator.h`
@@ -1455,7 +1455,7 @@ def main() -> int
 - `sgraphVectorBenchmark/src/vp_bitmap_benchmark_report.h`
 - `sgraphVectorBenchmark/src/vp_bitmap_benchmark_report.cpp`
 - `sgraphVectorBenchmark/src/vp_bitmap_vector_benchmark.cpp`
-- `sgraphVectorBenchmark/tests/vp_verify_output_layout.cmake`
+- `sgraphBuildTools/vp_test.py`
 
 ### 34.3 专项测试与辅助资料
 

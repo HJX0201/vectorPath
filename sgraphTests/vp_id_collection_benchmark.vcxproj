@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="Current">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{79AF1491-CEFF-538A-9B07-EEBB69596A7C}</ProjectGuid>
+    <ProjectName>vectorPathIdCollectionBenchmark</ProjectName>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Vp</RootNamespace>
+    <VpTargetName>vectorPathIdCollectionBenchmark</VpTargetName>
+    <VpUseQt>false</VpUseQt>
+  </PropertyGroup>
+  <Import Project="..\sgraphBuildTools\vp_defaults.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset Condition="'$(PlatformToolset)' == ''">v143</PlatformToolset>
+    <UseDebugLibraries Condition="'$(Configuration)' == 'Debug'">true</UseDebugLibraries>
+    <UseDebugLibraries Condition="'$(Configuration)' != 'Debug'">false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <PropertyGroup Label="UserMacros">
+    <VpIncludeDirs>$(VpRootDir)sgraphTests;$(VpRootDir)sgraphCore</VpIncludeDirs>
+    <VpDefinitions />
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="..\sgraphBuildTools\vp_common.props" />
+  </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="vp_id_collection_benchmark.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\sgraphCore\vp_core.vcxproj">
+      <Project>{387E7461-62C9-5522-8E10-B5D761D7E8A5}</Project>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\sgraphBuildTools\vp_build.targets" />
+  </ImportGroup>
+</Project>

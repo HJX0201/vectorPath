@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{F68E561F-CE24-5B88-8083-A445ABEE7FD6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{1EA25E50-EDEB-55BA-B56E-6BC067152F0F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{4418232F-C09D-53F4-AE67-B5D8B390244B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other Files">
+      <UniqueIdentifier>{C08DE3FF-BFA4-59C2-8FB4-53EAE9A648FD}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="vp_desktop_test_main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="vp_test_runner.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="vp_qt_adapter_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_document_history_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_cad_document_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_application_settings_migration_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_dwg_codec_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_document_recovery_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_document_audit_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_cad_viewport_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_curve_offset_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_array_operations_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_curve_fillet_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_spline_blend_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_spline_edit_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_annotation_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_dimension_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_hatch_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_polyline_corner_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_grip_edit_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_precision_snap_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_command_line_widget_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_window_control_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_workspace_persistence_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_ellipse_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_curve_construction_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_shortcut_manager_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_dialog_size_policy_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_standard_shape_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_layer_color_workflow_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_polygon_boolean_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_ui_scale_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_toolpath_sort_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_toolpath_simulation_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_quick_entity_operation_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_svg_vector_import_test.cpp">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vp_desktop_test_registry.inc">
+      <Filter>Other Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>

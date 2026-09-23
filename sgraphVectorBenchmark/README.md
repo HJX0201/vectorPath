@@ -4,7 +4,7 @@
 数据清单和 HTML 报告不纳入 Git。
 
 - `src`：样本生成、flood fill 基线、水平游程算法调用、正确性验证和 HTML 报告生成代码。
-- `tests`：成功运行输出结构的自动验收。
+- `../sgraphBuildTools/vp_test.py`：运行 smoke 并验收成功输出结构。
 - `results`：运行时自动创建的本地输出目录，已加入 `.gitignore`。
 
 所有样本均由代码生成；“合成图案变体”也不依赖外部图片。仓库原有固定图片及两批
@@ -40,7 +40,9 @@ python sgraphVectorBenchmark/vp_run_benchmark.py --cases 20 --repetitions 1 --th
 ```
 
 脚本内部调用统一入口 `sgraphBuildTools/vp_build.py --benchmarks`，再运行所选规模的
-位图基准；同样要求本机安装 Qt 5.12.10，并支持 `--qt-dir`、`--bits 32|64` 和 `--jobs`。
+位图基准；直接通过 MSBuild 编译原生 `vp_bitmap_benchmark.vcxproj`，要求本机安装
+Qt 5.12.10、Qt/MSBuild 与 Python 3.10+，支持 `--qt-dir`、`--bits 32|64` 和 `--jobs`。
+程序输出位于 `build/msbuild/<位数>/Release/smartBitmapVectorBenchmark.exe`。
 默认应用构建不生成本项目。若只需普通开发验证与小型位图检查，可在仓库根目录执行：
 
 ```powershell

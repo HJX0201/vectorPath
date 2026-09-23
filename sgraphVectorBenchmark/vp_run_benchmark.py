@@ -17,7 +17,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--seed", type=int, default=20260727)
     parser.add_argument("--threads", default="0", help="0 表示自动")
     parser.add_argument("--repetitions", type=int, default=3)
-    parser.add_argument("--jobs", default="auto")
+    parser.add_argument("--jobs", default="auto", help="MSBuild 项目并行数，默认 auto")
     parser.add_argument("--qt-dir")
     parser.add_argument("--output")
     parser.add_argument("--clean", action="store_true")
@@ -44,21 +44,14 @@ def main() -> int:
 
     tools_directory = root / "sgraphBuildTools"
     sys.path.insert(0, str(tools_directory))
-    from vp_build_common import find_qt
+    from vp_build_common import build_output_directory, find_qt
 
     qt_directory = find_qt(arguments.qt_dir, arguments.bits, "Release")
     environment = os.environ.copy()
     environment["PATH"] = (
         f"{qt_directory / 'bin'}{os.pathsep}{environment.get('PATH', '')}"
     )
-    executable = (
-        root
-        / "build"
-        / arguments.bits
-        / "Release"
-        / "sgraphVectorBenchmark"
-        / "smartBitmapVectorBenchmark.exe"
-    )
+    executable = build_output_directory(arguments.bits, "Release") / "smartBitmapVectorBenchmark.exe"
     command = [
         str(executable),
         "--cases",

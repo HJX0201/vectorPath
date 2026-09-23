@@ -110,11 +110,17 @@ def expanded_qt_candidates(explicit: str | None, bits: str) -> list[Path]:
 
 def validate_qt(candidate: Path, bits: str, configuration: str) -> tuple[bool, str]:
     qmake = candidate / "bin" / "qmake.exe"
-    qt_config = candidate / "lib" / "cmake" / "Qt5" / "Qt5Config.cmake"
+    headers = candidate / "include" / "QtCore" / "qglobal.h"
     core_name = "Qt5Cored.dll" if configuration == "Debug" else "Qt5Core.dll"
     core = candidate / "bin" / core_name
     deployer = candidate / "bin" / "windeployqt.exe"
-    missing = [path.name for path in (qmake, qt_config, core, deployer) if not path.exists()]
+    moc = candidate / "bin" / "moc.exe"
+    rcc = candidate / "bin" / "rcc.exe"
+    core_library = candidate / "lib" / ("Qt5Cored.lib" if configuration == "Debug" else "Qt5Core.lib")
+    missing = [
+        path.name for path in (qmake, headers, core, core_library, deployer, moc, rcc)
+        if not path.exists()
+    ]
     if missing:
         return False, f"缺少 {', '.join(missing)}"
     try:
@@ -135,7 +141,7 @@ def find_qt(explicit: str | None, bits: str, configuration: str) -> Path:
         valid, reason = validate_qt(candidate, bits, configuration)
         inspected.append(f"  {candidate}: {reason}")
         if valid:
-            print(f"[Qt] {candidate}")
+            print(f"[Qt] {candidate}", flush=True)
             return candidate
     details = "\n".join(inspected) if inspected else "  未发现候选目录"
     variable = f"SGRAPH_QT{bits}_DIR"
@@ -209,6 +215,61 @@ def visual_studio_environment(bits: str) -> dict[str, str]:
             if canonical not in environment:
                 environment[canonical] = value
     return environment
+
+
+def find_msbuild(environment: dict[str, str]) -> Path:
+    available = shutil.which("MSBuild.exe", path=environment.get("PATH"))
+    if available:
+        return Path(available)
+    installation = environment.get("VSINSTALLDIR")
+    base = Path(installation) if installation else find_vcvarsall().parents[3]
+    for relative in ("MSBuild/Current/Bin/amd64/MSBuild.exe", "MSBuild/Current/Bin/MSBuild.exe"):
+        candidate = base / relative
+        if candidate.is_file():
+            return candidate
+    raise RuntimeError("找不到 Visual Studio MSBuild，请安装 C++ 桌面开发工具。")
+
+
+def find_qt_msbuild() -> Path:
+    candidates = []
+    explicit = os.environ.get("QtMsBuild") or os.environ.get("QTMSBUILD")
+    if explicit:
+        candidates.append(Path(explicit))
+    local_app_data = os.environ.get("LOCALAPPDATA")
+    if local_app_data:
+        candidates.append(Path(local_app_data) / "QtMsBuild")
+    required = ("qt_defaults.props", "Qt.props", "qt.targets")
+    inspected = []
+    for candidate in candidates:
+        missing = [name for name in required if not (candidate / name).is_file()]
+        if not missing:
+            print(f"[QtMsBuild] {candidate}", flush=True)
+            return candidate.resolve()
+        inspected.append(f"  {candidate}: 缺少 {', '.join(missing)}")
+    details = "\n".join(inspected) if inspected else "  未发现候选目录"
+    raise RuntimeError(
+        f"找不到完整的 Qt MSBuild 集成文件。\n{details}\n"
+        "请安装 Qt Visual Studio Tools/Qt MSBuild，并设置 QtMsBuild 环境变量。"
+    )
+
+
+def build_output_directory(bits: str, configuration: str, core: bool = False) -> Path:
+    directory = repo_root() / "build" / "msbuild"
+    if core:
+        directory /= "core"
+    return directory / bits / configuration
+
+
+def parallel_jobs(value: str) -> int:
+    if value == "auto":
+        return os.cpu_count() or 1
+    try:
+        jobs = int(value)
+    except ValueError as error:
+        raise RuntimeError("--jobs 必须为 auto 或正整数") from error
+    if jobs < 1:
+        raise RuntimeError("--jobs 必须为 auto 或正整数")
+    return jobs
 
 
 def executable_path(build_dir: Path) -> Path:
@@ -333,7 +394,7 @@ def create_package(build_dir: Path, bits: str, configuration: str) -> Path:
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="构建 vectorPath")
-    parser.add_argument("--jobs", default="auto", help="并行数，默认 auto")
+    parser.add_argument("--jobs", default="auto", help="MSBuild 项目并行数，默认 auto；每项目单编译进程")
     parser.add_argument("--qt-dir", help="显式指定 Qt 套件根目录")
     parser.add_argument("--clean", action="store_true", help="先删除对应输出目录")
     parser.add_argument("--run", action="store_true", help="构建完成后启动应用")
@@ -351,81 +412,75 @@ def run_build() -> int:
     bits = arguments.bits
     configuration = arguments.config
     root = repo_root()
-    build_root = root / "build"
-    if arguments.core:
-        build_root = build_root / "core"
-        if arguments.run or arguments.package:
-            raise RuntimeError("--core 不能与 --run 或 --package 同时使用")
-    build_dir = build_root / bits / configuration
+    jobs = parallel_jobs(arguments.jobs)
+    if arguments.core and (arguments.run or arguments.package):
+        raise RuntimeError("--core 不能与 --run 或 --package 同时使用")
+    build_dir = build_output_directory(bits, configuration, arguments.core)
     resolved_build = build_dir.resolve()
-    allowed_build_root = root.resolve() / "build"
+    allowed_build_root = root.resolve() / "build" / "msbuild"
     if not resolved_build.is_relative_to(allowed_build_root) or resolved_build == allowed_build_root:
-        raise RuntimeError("构建目录必须位于项目 build 内")
+        raise RuntimeError("构建目录必须位于项目 build/msbuild 内")
+
+    environment = visual_studio_environment(bits)
+    msbuild = find_msbuild(environment)
+    qt_dir = None
+    properties = [
+        f"/p:Configuration={configuration}",
+        f"/p:Platform={'Win32' if bits == '32' else 'x64'}",
+        f"/p:VpCoreOnly={'true' if arguments.core else 'false'}",
+        "/p:BuildProjectReferences=true",
+        "/p:VpCompilerProcesses=1",
+    ]
+    if not arguments.core:
+        qt_dir = find_qt(arguments.qt_dir, bits, configuration)
+        qt_msbuild = find_qt_msbuild()
+        properties.extend((f"/p:VpQtDir={qt_dir}", f"/p:QtMsBuild={qt_msbuild}"))
+        environment["PATH"] = f"{qt_dir / 'bin'};{environment.get('PATH', '')}"
+    environment["PATH"] = f"{build_dir};{environment.get('PATH', '')}"
+
+    if arguments.core:
+        projects = [root / "sgraphGeometry" / "vp_geometry_core.vcxproj"]
+        if arguments.test:
+            projects = [root / "sgraphTests" / "vp_core_tests.vcxproj"]
+    else:
+        projects = [root / "vectorPath.sln"]
+        if arguments.test:
+            projects.extend((root / "sgraphTests" / "vp_core_tests.vcxproj",
+                             root / "sgraphTests" / "vp_desktop_tests.vcxproj"))
+    if arguments.benchmarks:
+        projects.append(root / "sgraphTests" / "vp_id_collection_benchmark.vcxproj")
+        if not arguments.core:
+            projects.append(root / "sgraphVectorBenchmark" / "vp_bitmap_benchmark.vcxproj")
+    missing = [str(project.relative_to(root)) for project in projects if not project.is_file()]
+    if missing:
+        raise RuntimeError(f"缺少原生 Visual Studio 工程：{', '.join(missing)}")
     if arguments.clean and build_dir.exists():
         shutil.rmtree(build_dir)
     build_dir.mkdir(parents=True, exist_ok=True)
 
-    qt_dir = None if arguments.core else find_qt(arguments.qt_dir, bits, configuration)
-    environment = visual_studio_environment(bits)
-    if qt_dir:
-        environment["PATH"] = f"{qt_dir / 'bin'};{environment.get('PATH', '')}"
-
-    cmake = shutil.which("cmake", path=environment.get("PATH"))
-    ninja = shutil.which("ninja", path=environment.get("PATH"))
-    if not cmake or not ninja:
-        raise RuntimeError("找不到 CMake 或 Ninja，请先安装完整编译工具链。")
-
-    tests = "ON" if arguments.test else "OFF"
-    benchmarks = "ON" if arguments.benchmarks else "OFF"
-    desktop = "OFF" if arguments.core else "ON"
-    dependency_options = ([f"-DCMAKE_PREFIX_PATH={qt_dir}"] if qt_dir else
-                          ["-DCMAKE_DISABLE_FIND_PACKAGE_Qt5=ON"])
-    subprocess.run(
-        [
-            cmake,
-            "-S",
-            str(root),
-            "-B",
-            str(build_dir),
-            "-G",
-            "Ninja",
-            f"-DCMAKE_MAKE_PROGRAM={ninja}",
-            f"-DCMAKE_BUILD_TYPE={configuration}",
-            *dependency_options,
-            f"-DVECTORPATH_BUILD_TESTS={tests}",
-            f"-DVECTORPATH_BUILD_DESKTOP={desktop}",
-            f"-DVECTORPATH_BUILD_BENCHMARKS={benchmarks}",
-        ],
-        check=True,
-        env=environment,
-    )
-    jobs = str(os.cpu_count() or 1) if arguments.jobs == "auto" else arguments.jobs
-    subprocess.run(
-        [cmake, "--build", str(build_dir), "--parallel", jobs],
-        check=True,
-        env=environment,
-    )
-    if arguments.test:
+    for project in projects:
         subprocess.run(
-            [str(Path(cmake).with_name("ctest.exe")), "--test-dir", str(build_dir), "--output-on-failure", "-j", jobs],
-            check=True,
-            env=environment,
+            [str(msbuild), str(project), "/nologo", "/t:Build", f"/m:{jobs}",
+             "/verbosity:minimal", *properties],
+            check=True, env=environment, cwd=root,
         )
+    if arguments.test:
+        from vp_test import run_tests
+        run_tests(root, build_dir, environment, jobs,
+                  desktop=not arguments.core, benchmarks=arguments.benchmarks, qt_dir=qt_dir)
 
     if arguments.core:
-        print(f"[OK] Core: {build_dir}")
+        print(f"[OK] Core: {build_dir}", flush=True)
         return 0
 
     manifest = write_runtime_manifest(build_dir, bits, configuration)
-    print(f"[OK] {executable_path(build_dir)}")
-    print(f"[OK] {manifest}")
+    print(f"[OK] {executable_path(build_dir)}", flush=True)
+    print(f"[OK] {manifest}", flush=True)
     if arguments.package:
-        print(f"[OK] {create_package(build_dir, bits, configuration)}")
+        print(f"[OK] {create_package(build_dir, bits, configuration)}", flush=True)
     if arguments.run:
         subprocess.Popen(
-            [str(executable_path(build_dir))],
-            cwd=build_dir,
-            env=environment,
+            [str(executable_path(build_dir))], cwd=build_dir, env=environment,
         )
     return 0
 
@@ -434,5 +489,5 @@ def main() -> None:
     try:
         raise SystemExit(run_build())
     except (OSError, RuntimeError, subprocess.CalledProcessError) as error:
-        print(f"[FAIL] {error}", file=sys.stderr)
+        print(f"[FAIL] {error}", file=sys.stderr, flush=True)
         raise SystemExit(1)

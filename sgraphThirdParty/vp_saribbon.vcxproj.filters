@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{CE0F688E-5C92-58AE-BE2E-3950E745D13F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{6B77E765-A4AF-5F00-9E34-8DB83B7FE7D3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{E60E6323-BBDF-5380-9EC9-3D136CDFB528}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other Files">
+      <UniqueIdentifier>{4A3B384C-2302-59DD-92B1-6751A4F64F0C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SAFramelessHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonActionsManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonApplicationButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonApplicationWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonBarLayout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonButtonGroupWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonButtonLayoutStrategy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCategory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCategoryLayout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonColorToolButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonContextCategory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCtrlContainer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCustomizeData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCustomizeDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCustomizeWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonElementFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonElementManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonGallery.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonGalleryGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonGalleryItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonLineWidgetContainer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonMainWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonPanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonPanelItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonPanelLayout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonPanelOptionButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonQuickAccessBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonSeparatorWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonStackedWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonSystemButtonBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonTabBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonThemeManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonThemePalette.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonTitleIconWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonToolButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\colorWidgets\SAColorGridWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\colorWidgets\SAColorMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\colorWidgets\SAColorPaletteGridWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\colorWidgets\SAColorToolButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonBarVersionInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonButtonLayoutStrategy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCustomizeData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonElementFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonElementManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonGalleryItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonGlobal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonLineWidgetContainer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonPanelItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonQt5Compat.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonThemeManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonThemePalette.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\colorWidgets\SAColorWidgetsGlobal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SAFramelessHelper.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonActionsManager.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonApplicationButton.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonApplicationWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonBar.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonBarLayout.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonButtonGroupWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCategory.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCategoryLayout.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonColorToolButton.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonContextCategory.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCtrlContainer.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCustomizeDialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCustomizeWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonGallery.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonGalleryGroup.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonMainWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonMenu.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonPanel.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonPanelLayout.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonPanelOptionButton.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonQuickAccessBar.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonSeparatorWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonStackedWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonSystemButtonBar.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonTabBar.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonTitleIconWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonToolButton.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\colorWidgets\SAColorGridWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\colorWidgets\SAColorMenu.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\colorWidgets\SAColorPaletteGridWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\colorWidgets\SAColorToolButton.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonResource.qrc">
+      <Filter>Resources</Filter>
+    </QtRcc>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{60BFA9EF-2236-5A81-8EBE-9245FB7CA8E8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{1AD959D8-9DDB-5DF5-B14C-187E9012E4A9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{7BF8C598-B95D-5566-87CF-F22E8C7C7A4C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other Files">
+      <UniqueIdentifier>{8A8E1B4A-1EBB-5ECD-AE32-1B8037C00289}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="vp_result.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vp_id_collection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="Current">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F3A8AEB8-7BAF-53AA-A39A-20BD883F05F3}</ProjectGuid>
+    <ProjectName>Clipper2</ProjectName>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Vp</RootNamespace>
+    <VpTargetName>Clipper2</VpTargetName>
+    <VpUseQt>false</VpUseQt>
+  </PropertyGroup>
+  <Import Project="..\sgraphBuildTools\vp_defaults.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset Condition="'$(PlatformToolset)' == ''">v143</PlatformToolset>
+    <UseDebugLibraries Condition="'$(Configuration)' == 'Debug'">true</UseDebugLibraries>
+    <UseDebugLibraries Condition="'$(Configuration)' != 'Debug'">false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <PropertyGroup Label="UserMacros">
+    <VpIncludeDirs>$(VpRootDir)sgraphThirdParty\Clipper2\Clipper2Lib\include</VpIncludeDirs>
+    <VpDefinitions>CLIPPER2_MAX_DECIMAL_PRECISION=8</VpDefinitions>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="..\sgraphBuildTools\vp_common.props" />
+  </ImportGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Clipper2\Clipper2Lib\src\clipper.engine.cpp" />
+    <ClCompile Include="Clipper2\Clipper2Lib\src\clipper.offset.cpp" />
+    <ClCompile Include="Clipper2\Clipper2Lib\src\clipper.rectclip.cpp" />
+    <ClCompile Include="Clipper2\Clipper2Lib\src\clipper.triangulation.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Clipper2\Clipper2Lib\include\clipper2\clipper.core.h" />
+    <ClInclude Include="Clipper2\Clipper2Lib\include\clipper2\clipper.engine.h" />
+    <ClInclude Include="Clipper2\Clipper2Lib\include\clipper2\clipper.export.h" />
+    <ClInclude Include="Clipper2\Clipper2Lib\include\clipper2\clipper.h" />
+    <ClInclude Include="Clipper2\Clipper2Lib\include\clipper2\clipper.minkowski.h" />
+    <ClInclude Include="Clipper2\Clipper2Lib\include\clipper2\clipper.offset.h" />
+    <ClInclude Include="Clipper2\Clipper2Lib\include\clipper2\clipper.rectclip.h" />
+    <ClInclude Include="Clipper2\Clipper2Lib\include\clipper2\clipper.triangulation.h" />
+    <ClInclude Include="Clipper2\Clipper2Lib\include\clipper2\clipper.version.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\sgraphBuildTools\vp_build.targets" />
+  </ImportGroup>
+</Project>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="Current">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{45DF7B4F-62D4-535D-8A88-13C568A55345}</ProjectGuid>
+    <ProjectName>smartBitmapVectorBenchmark</ProjectName>
+    <Keyword>QtVS_v304</Keyword>
+    <RootNamespace>Vp</RootNamespace>
+    <VpTargetName>smartBitmapVectorBenchmark</VpTargetName>
+    <VpUseQt>true</VpUseQt>
+  </PropertyGroup>
+  <Import Project="..\sgraphBuildTools\vp_defaults.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset Condition="'$(PlatformToolset)' == ''">v143</PlatformToolset>
+    <UseDebugLibraries Condition="'$(Configuration)' == 'Debug'">true</UseDebugLibraries>
+    <UseDebugLibraries Condition="'$(Configuration)' != 'Debug'">false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" Condition="Exists('$(QtMsBuild)\qt_defaults.props')" />
+  </ImportGroup>
+  <PropertyGroup Label="QtSettings">
+    <VpAdditionalLibraries>Psapi.lib</VpAdditionalLibraries>
+    <VpIncludeDirs>$(VpRootDir)sgraphVectorBenchmark;$(VpRootDir)sgraphIo;$(VpRootDir)sgraphDocument;$(VpRootDir)sgraphGeometry;$(VpRootDir)sgraphCore;$(VpRootDir)sgraphThirdParty\Clipper2\Clipper2Lib\include</VpIncludeDirs>
+    <VpDefinitions>CLIPPER2_MAX_DECIMAL_PRECISION=8;SGRAPH_BENCHMARK_ROOT="$(VpRootDir.Replace('\','/'))sgraphVectorBenchmark"</VpDefinitions>
+    <QtModules>core;gui;concurrent</QtModules>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="..\sgraphBuildTools\vp_common.props" />
+    <Import Project="$(QtMsBuild)\Qt.props" Condition="Exists('$(QtMsBuild)\Qt.props')" />
+  </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="src\vp_bitmap_benchmark_generator.cpp" />
+    <ClCompile Include="src\vp_bitmap_flood_baseline.cpp" />
+    <ClCompile Include="src\vp_bitmap_benchmark_validation.cpp" />
+    <ClCompile Include="src\vp_bitmap_benchmark_report.cpp" />
+    <ClCompile Include="src\vp_bitmap_vector_benchmark.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\vp_bitmap_benchmark_types.h" />
+    <ClInclude Include="src\vp_bitmap_benchmark_generator.h" />
+    <ClInclude Include="src\vp_bitmap_flood_baseline.h" />
+    <ClInclude Include="src\vp_bitmap_benchmark_validation.h" />
+    <ClInclude Include="src\vp_bitmap_benchmark_report.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\sgraphIo\vp_io.vcxproj">
+      <Project>{A1C9EC06-F7F3-5CE7-A329-F2802BC8FDD1}</Project>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\sgraphDocument\vp_document.vcxproj">
+      <Project>{0FB76100-7DBC-58FD-BC1F-FDC87131973D}</Project>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\sgraphGeometry\vp_geometry.vcxproj">
+      <Project>{4978BDD5-33B7-5F69-B674-2D52A073C67C}</Project>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\sgraphGeometry\vp_geometry_core.vcxproj">
+      <Project>{64850208-FEAB-5B2C-82B8-7722ED641D62}</Project>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\sgraphCore\vp_core.vcxproj">
+      <Project>{387E7461-62C9-5522-8E10-B5D761D7E8A5}</Project>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\sgraphThirdParty\vp_clipper2.vcxproj">
+      <Project>{F3A8AEB8-7BAF-53AA-A39A-20BD883F05F3}</Project>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(QtMsBuild)\qt.targets" Condition="Exists('$(QtMsBuild)\qt.targets')" />
+    <Import Project="..\sgraphBuildTools\vp_build.targets" />
+  </ImportGroup>
+</Project>

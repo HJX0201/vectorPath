@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="Current">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{0FB76100-7DBC-58FD-BC1F-FDC87131973D}</ProjectGuid>
+    <ProjectName>smartDocument</ProjectName>
+    <Keyword>QtVS_v304</Keyword>
+    <RootNamespace>Vp</RootNamespace>
+    <VpTargetName>smartDocument</VpTargetName>
+    <VpUseQt>true</VpUseQt>
+  </PropertyGroup>
+  <Import Project="..\sgraphBuildTools\vp_defaults.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset Condition="'$(PlatformToolset)' == ''">v143</PlatformToolset>
+    <UseDebugLibraries Condition="'$(Configuration)' == 'Debug'">true</UseDebugLibraries>
+    <UseDebugLibraries Condition="'$(Configuration)' != 'Debug'">false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" Condition="Exists('$(QtMsBuild)\qt_defaults.props')" />
+  </ImportGroup>
+  <PropertyGroup Label="QtSettings">
+    <VpIncludeDirs>$(VpRootDir)sgraphDocument;$(VpRootDir)sgraphGeometry;$(VpRootDir)sgraphCore;$(VpRootDir)sgraphThirdParty\Clipper2\Clipper2Lib\include</VpIncludeDirs>
+    <VpDefinitions>CLIPPER2_MAX_DECIMAL_PRECISION=8</VpDefinitions>
+    <QtModules>core;gui</QtModules>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="..\sgraphBuildTools\vp_common.props" />
+    <Import Project="$(QtMsBuild)\Qt.props" Condition="Exists('$(QtMsBuild)\Qt.props')" />
+  </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="vp_associative_array_io.cpp" />
+    <ClCompile Include="vp_drawing_settings.cpp" />
+    <ClCompile Include="vp_dimension_binary_io.cpp" />
+    <ClCompile Include="vp_document_style_io.cpp" />
+    <ClCompile Include="vp_hatch_binary_io.cpp" />
+    <ClCompile Include="vp_entity_binary_io.cpp" />
+    <ClCompile Include="vp_plot_style_table.cpp" />
+    <ClCompile Include="vp_cad_document.cpp" />
+    <ClCompile Include="vp_cad_document_history.cpp" />
+    <ClCompile Include="vp_cad_document_color_layer.cpp" />
+    <ClCompile Include="vp_cad_document_audit.cpp" />
+    <ClCompile Include="vp_cad_document_layer_state.cpp" />
+    <ClCompile Include="vp_cad_document_text_style.cpp" />
+    <ClCompile Include="vp_cad_document_dimension_style.cpp" />
+    <ClCompile Include="vp_cad_document_io.cpp" />
+    <ClCompile Include="vp_document_recovery_manager.cpp" />
+    <ClCompile Include="vp_document_transaction.cpp" />
+    <ClCompile Include="vp_toolpath_document.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="vp_associative_array_io.h" />
+    <ClInclude Include="vp_drawing_settings.h" />
+    <ClInclude Include="vp_dimension_style_record.h" />
+    <ClInclude Include="vp_dimension_binary_io.h" />
+    <ClInclude Include="vp_document_style_io.h" />
+    <ClInclude Include="vp_hatch_binary_io.h" />
+    <ClInclude Include="vp_entity_binary_io.h" />
+    <ClInclude Include="vp_layer_record.h" />
+    <ClInclude Include="vp_plot_style_table.h" />
+    <ClInclude Include="vp_document_audit.h" />
+    <ClInclude Include="vp_text_style_record.h" />
+    <ClInclude Include="vp_document_transaction.h" />
+    <ClInclude Include="vp_toolpath_document.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="vp_cad_document.h" />
+    <QtMoc Include="vp_document_recovery_manager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\sgraphGeometry\vp_geometry.vcxproj">
+      <Project>{4978BDD5-33B7-5F69-B674-2D52A073C67C}</Project>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(QtMsBuild)\qt.targets" Condition="Exists('$(QtMsBuild)\qt.targets')" />
+    <Import Project="..\sgraphBuildTools\vp_build.targets" />
+  </ImportGroup>
+</Project>

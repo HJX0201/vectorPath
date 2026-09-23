@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="Current">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{64850208-FEAB-5B2C-82B8-7722ED641D62}</ProjectGuid>
+    <ProjectName>smartGeometryCore</ProjectName>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Vp</RootNamespace>
+    <VpTargetName>smartGeometryCore</VpTargetName>
+    <VpUseQt>false</VpUseQt>
+  </PropertyGroup>
+  <Import Project="..\sgraphBuildTools\vp_defaults.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset Condition="'$(PlatformToolset)' == ''">v143</PlatformToolset>
+    <UseDebugLibraries Condition="'$(Configuration)' == 'Debug'">true</UseDebugLibraries>
+    <UseDebugLibraries Condition="'$(Configuration)' != 'Debug'">false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <PropertyGroup Label="UserMacros">
+    <VpIncludeDirs>$(VpRootDir)sgraphGeometry;$(VpRootDir)sgraphCore;$(VpRootDir)sgraphThirdParty\Clipper2\Clipper2Lib\include</VpIncludeDirs>
+    <VpDefinitions>CLIPPER2_MAX_DECIMAL_PRECISION=8</VpDefinitions>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="..\sgraphBuildTools\vp_common.props" />
+  </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="vp_drafting_state.cpp" />
+    <ClCompile Include="vp_geometry_types.cpp" />
+    <ClCompile Include="vp_standard_shape.cpp" />
+    <ClCompile Include="vp_polygon_boolean.cpp" />
+    <ClCompile Include="vp_polygon_geometry.cpp" />
+    <ClCompile Include="vp_spline_geometry.cpp" />
+    <ClCompile Include="vp_ellipse_geometry.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="vp_drafting_state.h" />
+    <ClInclude Include="vp_geometry_types.h" />
+    <ClInclude Include="vp_curve_entities.h" />
+    <ClInclude Include="vp_standard_shape.h" />
+    <ClInclude Include="vp_polygon_boolean.h" />
+    <ClInclude Include="vp_polygon_geometry.h" />
+    <ClInclude Include="vp_spline_geometry.h" />
+    <ClInclude Include="vp_ellipse_geometry.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\sgraphCore\vp_core.vcxproj">
+      <Project>{387E7461-62C9-5522-8E10-B5D761D7E8A5}</Project>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\sgraphThirdParty\vp_clipper2.vcxproj">
+      <Project>{F3A8AEB8-7BAF-53AA-A39A-20BD883F05F3}</Project>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\sgraphBuildTools\vp_build.targets" />
+  </ImportGroup>
+</Project>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <OutDir>$(VpOutputDir)</OutDir>
+    <IntDir>$(VpOutputDir)obj\$(MSBuildProjectName)\</IntDir>
+    <OutDir Condition="'$(ConfigurationType)' == 'StaticLibrary'">$(VpOutputDir)lib\</OutDir>
+    <TargetName>$(VpTargetName)</TargetName>
+    <TargetName Condition="'$(VpDebugPostfix)' != '' and '$(Configuration)' == 'Debug'">$(VpTargetName)$(VpDebugPostfix)</TargetName>
+    <LocalDebuggerWorkingDirectory>$(VpOutputDir)</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LinkIncremental Condition="'$(Configuration)' == 'Debug'">true</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)' != 'Debug'">false</LinkIncremental>
+    <QtIntDir>$(IntDir)qt\</QtIntDir>
+    <QtBuildConfig Condition="'$(Configuration)' == 'Debug'">debug</QtBuildConfig>
+    <QtBuildConfig Condition="'$(Configuration)' != 'Debug'">release</QtBuildConfig>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalOptions>/Zc:__cplusplus /utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <WarningLevel>Level4</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ProcessorNumber>$(VpCompilerProcesses)</ProcessorNumber>
+      <AdditionalIncludeDirectories>$(VpIncludeDirs);$(IntDir)qt\moc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>$(VpDefinitions);WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <RuntimeLibrary Condition="'$(Configuration)' == 'Debug'">MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary Condition="'$(Configuration)' != 'Debug'">MultiThreadedDLL</RuntimeLibrary>
+      <Optimization Condition="'$(Configuration)' == 'Debug'">Disabled</Optimization>
+      <Optimization Condition="'$(Configuration)' != 'Debug'">MaxSpeed</Optimization>
+      <PreprocessorDefinitions Condition="'$(Configuration)' == 'Debug'">_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)' != 'Debug'">NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <ImportLibrary>$(VpOutputDir)lib\$(TargetName).lib</ImportLibrary>
+      <AdditionalDependencies>$(VpAdditionalLibraries);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+</Project>

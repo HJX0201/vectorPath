@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="Current">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{1D9FC94A-F681-57AC-9403-E913BA702DF1}</ProjectGuid>
+    <ProjectName>smartGui</ProjectName>
+    <Keyword>QtVS_v304</Keyword>
+    <RootNamespace>Vp</RootNamespace>
+    <VpTargetName>smartGui</VpTargetName>
+    <VpUseQt>true</VpUseQt>
+  </PropertyGroup>
+  <Import Project="..\sgraphBuildTools\vp_defaults.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset Condition="'$(PlatformToolset)' == ''">v143</PlatformToolset>
+    <UseDebugLibraries Condition="'$(Configuration)' == 'Debug'">true</UseDebugLibraries>
+    <UseDebugLibraries Condition="'$(Configuration)' != 'Debug'">false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" Condition="Exists('$(QtMsBuild)\qt_defaults.props')" />
+  </ImportGroup>
+  <PropertyGroup Label="QtSettings">
+    <VpIncludeDirs>$(VpRootDir)sgraphGui;$(VpRootDir)sgraphGui\sgraphDesignSystem;$(VpRootDir)sgraphRender;$(VpRootDir)sgraphCommands;$(VpRootDir)sgraphDocument;$(VpRootDir)sgraphGeometry;$(VpRootDir)sgraphCore;$(VpRootDir)sgraphThirdParty\Clipper2\Clipper2Lib\include;$(VpRootDir)sgraphIo;$(VpRootDir)sgraphThirdParty\SARibbon-2.9.0\src\SARibbonBar;$(VpRootDir)sgraphThirdParty\SARibbon-2.9.0\src\SARibbonBar\colorWidgets;$(VpRootDir)sgraphThirdParty\Qt-Advanced-Docking-System-4.4.1\src</VpIncludeDirs>
+    <VpDefinitions>CLIPPER2_MAX_DECIMAL_PRECISION=8;SA_RIBBON_BAR_NO_EXPORT;SA_COLOR_WIDGETS_NO_DLL;SARIBBON_USE_3RDPARTY_FRAMELESSHELPER=0</VpDefinitions>
+    <QtModules>core;gui;widgets;svg;printsupport;opengl;concurrent</QtModules>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="..\sgraphBuildTools\vp_common.props" />
+    <Import Project="$(QtMsBuild)\Qt.props" Condition="Exists('$(QtMsBuild)\Qt.props')" />
+  </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="vp_application_settings_migration.cpp" />
+    <ClCompile Include="sgraphDesignSystem\vp_theme_manager.cpp" />
+    <ClCompile Include="sgraphDesignSystem\vp_proxy_style.cpp" />
+    <ClCompile Include="sgraphDesignSystem\vp_icon_provider.cpp" />
+    <ClCompile Include="sgraphDesignSystem\vp_file_icon.cpp" />
+    <ClCompile Include="sgraphDesignSystem\vp_import_icon.cpp" />
+    <ClCompile Include="sgraphDesignSystem\vp_icon_names.cpp" />
+    <ClCompile Include="sgraphDesignSystem\vp_dimension_icon.cpp" />
+    <ClCompile Include="sgraphDesignSystem\vp_hatch_icon.cpp" />
+    <ClCompile Include="sgraphDesignSystem\vp_output_icon.cpp" />
+    <ClCompile Include="sgraphDesignSystem\vp_shape_boolean_icon.cpp" />
+    <ClCompile Include="sgraphDesignSystem\vp_specialized_icon.cpp" />
+    <ClCompile Include="sgraphDesignSystem\vp_quick_transform_icon.cpp" />
+    <ClCompile Include="vp_command_line_widget.cpp" />
+    <ClCompile Include="vp_cad_workspace_widget.cpp" />
+    <ClCompile Include="vp_cad_property_ui.cpp" />
+    <ClCompile Include="vp_cad_property_tree.cpp" />
+    <ClCompile Include="vp_shortcut_manager.cpp" />
+    <ClCompile Include="vp_shortcut_dialog.cpp" />
+    <ClCompile Include="vp_dialog_service.cpp" />
+    <ClCompile Include="vp_cad_main_window.cpp" />
+    <ClCompile Include="vp_cad_main_window_command.cpp" />
+    <ClCompile Include="vp_cad_main_window_execute.cpp" />
+    <ClCompile Include="vp_cad_main_window_coordinate.cpp" />
+    <ClCompile Include="vp_cad_main_window_drafting.cpp" />
+    <ClCompile Include="vp_cad_main_window_annotation.cpp" />
+    <ClCompile Include="vp_cad_main_window_dimension.cpp" />
+    <ClCompile Include="vp_cad_main_window_dimension_style.cpp" />
+    <ClCompile Include="vp_cad_main_window_hatch.cpp" />
+    <ClCompile Include="vp_cad_main_window_text_style.cpp" />
+    <ClCompile Include="vp_cad_main_window_setup.cpp" />
+    <ClCompile Include="vp_cad_main_window_units.cpp" />
+    <ClCompile Include="vp_cad_main_window_file.cpp" />
+    <ClCompile Include="vp_cad_main_window_vector_import.cpp" />
+    <ClCompile Include="vp_cad_main_window_recovery.cpp" />
+    <ClCompile Include="vp_cad_main_window_audit.cpp" />
+    <ClCompile Include="vp_cad_main_window_icon.cpp" />
+    <ClCompile Include="vp_cad_main_window_ui_scale.cpp" />
+    <ClCompile Include="vp_cad_main_window_layer.cpp" />
+    <ClCompile Include="vp_cad_main_window_boolean.cpp" />
+    <ClCompile Include="vp_cad_main_window_workspace.cpp" />
+    <ClCompile Include="vp_cad_workspace_proportion.cpp" />
+    <ClCompile Include="vp_cad_main_window_view.cpp" />
+    <ClCompile Include="vp_cad_main_window_display.cpp" />
+    <ClCompile Include="vp_cad_main_window_plot.cpp" />
+    <ClCompile Include="vp_cad_main_window_shortcut.cpp" />
+    <ClCompile Include="vp_cad_main_window_simulation.cpp" />
+    <ClCompile Include="vp_cad_main_window_quick_operation.cpp" />
+    <ClCompile Include="vp_quick_entity_operation.cpp" />
+    <ClCompile Include="vp_selection_context_bar.cpp" />
+    <ClCompile Include="vp_toolpath_sort_dialog.cpp" />
+    <ClCompile Include="vp_toolpath_simulation_controller.cpp" />
+    <ClCompile Include="vp_vector_import_dialog.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="vp_application_settings_migration.h" />
+    <ClInclude Include="sgraphDesignSystem\vp_design_token.h" />
+    <ClInclude Include="sgraphDesignSystem\vp_proxy_style.h" />
+    <ClInclude Include="sgraphDesignSystem\vp_icon_provider.h" />
+    <ClInclude Include="sgraphDesignSystem\vp_file_icon.h" />
+    <ClInclude Include="sgraphDesignSystem\vp_import_icon.h" />
+    <ClInclude Include="sgraphDesignSystem\vp_dimension_icon.h" />
+    <ClInclude Include="sgraphDesignSystem\vp_hatch_icon.h" />
+    <ClInclude Include="sgraphDesignSystem\vp_output_icon.h" />
+    <ClInclude Include="sgraphDesignSystem\vp_shape_boolean_icon.h" />
+    <ClInclude Include="sgraphDesignSystem\vp_specialized_icon.h" />
+    <ClInclude Include="sgraphDesignSystem\vp_quick_transform_icon.h" />
+    <ClInclude Include="vp_cad_property_ui.h" />
+    <ClInclude Include="vp_cad_property_tree.h" />
+    <ClInclude Include="vp_shortcut_manager.h" />
+    <ClInclude Include="vp_shortcut_dialog.h" />
+    <ClInclude Include="vp_dialog_service.h" />
+    <ClInclude Include="vp_quick_entity_operation.h" />
+    <ClInclude Include="vp_selection_context_bar.h" />
+    <ClInclude Include="vp_toolpath_sort_dialog.h" />
+    <ClInclude Include="vp_vector_import_dialog.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="sgraphDesignSystem\vp_theme_manager.h" />
+    <QtMoc Include="vp_command_line_widget.h" />
+    <QtMoc Include="vp_cad_workspace_widget.h" />
+    <QtMoc Include="vp_cad_main_window.h" />
+    <QtMoc Include="vp_toolpath_simulation_controller.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="vp_gui_resources.qrc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="sgraphDesignSystem\vp_theme_dark.json" />
+    <None Include="sgraphDesignSystem\vp_theme_light.json" />
+    <None Include="sgraphDesignSystem\vp_theme_high_contrast.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\sgraphRender\vp_render.vcxproj">
+      <Project>{1E0EB8B0-EDD4-5A65-85A3-51251883161F}</Project>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\sgraphIo\vp_io.vcxproj">
+      <Project>{A1C9EC06-F7F3-5CE7-A329-F2802BC8FDD1}</Project>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\sgraphThirdParty\vp_saribbon.vcxproj">
+      <Project>{C19F9EFD-08E1-5352-BE40-C84B1F454770}</Project>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+    <ProjectReference Include="..\sgraphThirdParty\vp_qtads.vcxproj">
+      <Project>{7C075CD7-AC58-5246-A749-A5A64DBA2FBA}</Project>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(QtMsBuild)\qt.targets" Condition="Exists('$(QtMsBuild)\qt.targets')" />
+    <Import Project="..\sgraphBuildTools\vp_build.targets" />
+  </ImportGroup>
+</Project>

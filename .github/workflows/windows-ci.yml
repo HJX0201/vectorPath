@@ -47,6 +47,24 @@ jobs:
           arch: ${{ matrix.qt_arch }}
           cache: true
 
+      - name: Install pinned Qt MSBuild 3.5.0
+        shell: pwsh
+        run: |
+          $qtMsBuildArchive = Join-Path $env:RUNNER_TEMP 'qt-vsaddin-msbuild-3.5.0.zip'
+          $qtMsBuildDirectory = Join-Path $env:RUNNER_TEMP 'QtMsBuild-3.5.0'
+          Invoke-WebRequest `
+            -Uri 'https://download.qt.io/official_releases/vsaddin/3.5.0/qt-vsaddin-msbuild-3.5.0.zip' `
+            -OutFile $qtMsBuildArchive
+          $expectedHash = 'e6398999d7e2bacf2cb93839ef24e7a1be851dfc7d6e3dc7dc3e57c8efdb4ed8'
+          if ((Get-FileHash -LiteralPath $qtMsBuildArchive -Algorithm SHA256).Hash -ne $expectedHash) {
+            throw 'Qt MSBuild archive SHA-256 mismatch.'
+          }
+          Expand-Archive -LiteralPath $qtMsBuildArchive -DestinationPath $qtMsBuildDirectory
+          if (-not (Test-Path -LiteralPath (Join-Path $qtMsBuildDirectory 'qt.targets'))) {
+            throw 'Qt MSBuild archive does not contain qt.targets.'
+          }
+          "QtMsBuild=$qtMsBuildDirectory" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
       - name: Build and test
         shell: pwsh
         run: |

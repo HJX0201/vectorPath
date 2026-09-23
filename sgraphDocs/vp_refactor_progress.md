@@ -23,7 +23,7 @@ python sgraphBuildTools/vp_build.py --core --test
 python sgraphBuildTools/vp_build.py --core --test --config Debug
 ```
 
-两者显式关闭 `VECTORPATH_BUILD_DESKTOP`，禁用 Qt5 包发现，构建并运行核心测试。
+两者直接构建原生核心工程，不查找 Qt 或 Qt/MSBuild，并逐套件运行核心测试。
 同一入口不带参数时只构建 64 位 Release 应用，测试和性能基准默认关闭。CI 已改用统一入口，
 显式开启所需测试；本地成功不等同远端 CI 已运行。
 
@@ -37,11 +37,19 @@ python sgraphBuildTools/vp_build.py --core --test --config Debug
 - 五个旧构建包装入口合并为 `sgraphBuildTools/vp_build.py`，通过 `--bits`、`--config`、
   `--core`、`--test`、`--benchmarks` 选择内容。
 - 38 个普通测试项目收拢为 `vectorPathCoreTests`、`vectorPathDesktopTests` 两个程序，
-  CTest 仍按 38 个套件分进程运行；同时启用位图基准检查时为 40 项，无 Qt 模式为 4 项。
+  当前由 `vp_test.py` 按 38 个套件分进程运行；同时启用位图基准检查时为 40 项，无 Qt 模式为 4 项。
 - 基准运行入口、生成器和验证代码保留，固定图片及历史 HTML/manifest 已移除；样本和结果
   仅本地生成并忽略。性能项目通过 `--benchmarks` 按需构建，不作为默认应用依赖。
 
-下面保留本轮项目收拢前的重构验证与性能记录，不能将其当作收拢后的新一次执行结果。
+当前工程已迁移为根 `vectorPath.sln`、模块 `.vcxproj` 和共享 MSBuild 属性；默认只生成
+应用及依赖，Python CLI 继续提供按需测试与基准。当前输出为 `build/msbuild` 下的模式、
+架构及配置目录，详见 [BUILDING.md](BUILDING.md)。
+
+原生工程验收已完成：四种桌面配置各 40/40 检查通过并完成隐藏启动；无 Qt 核心
+x64 Debug/Release 各 4/4 通过。连续增量构建没有重编译对象或重新提取 Qt 配置，
+x64 Release 包清单和校验值已验证，详见 [TEST_RESULTS.md](TEST_RESULTS.md)。
+
+以下保留 CMake 阶段的重构验证、旧输出路径与性能记录，不是原生 MSBuild 的新测量结果。
 
 ## 本阶段行为约束与验证
 

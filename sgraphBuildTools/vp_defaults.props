@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Platform Condition="'$(Platform)' == ''">Win32</Platform>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <VpCompilerProcesses Condition="'$(VpCompilerProcesses)' == ''">2</VpCompilerProcesses>
+    <VpRootDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\'))</VpRootDir>
+    <VpBits Condition="'$(Platform)' == 'Win32'">32</VpBits>
+    <VpBits Condition="'$(Platform)' == 'x64'">64</VpBits>
+    <VpOutputRoot>$(VpRootDir)build\msbuild\</VpOutputRoot>
+    <VpOutputRoot Condition="'$(VpCoreOnly)' == 'true'">$(VpOutputRoot)core\</VpOutputRoot>
+    <VpOutputDir>$(VpOutputRoot)$(VpBits)\$(Configuration)\</VpOutputDir>
+    <WindowsTargetPlatformVersion Condition="'$(WindowsTargetPlatformVersion)' == ''">10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(VpUseQt)' == 'true'">
+    <QtMsBuild Condition="'$(QtMsBuild)' == ''">$(LOCALAPPDATA)\QtMsBuild</QtMsBuild>
+    <VpQtDir Condition="'$(VpQtDir)' == '' and '$(Platform)' == 'Win32'">$(SGRAPH_QT32_DIR)</VpQtDir>
+    <VpQtDir Condition="'$(VpQtDir)' == '' and '$(Platform)' == 'x64'">$(SGRAPH_QT64_DIR)</VpQtDir>
+    <VpQtDir Condition="'$(VpQtDir)' == ''">$(QTDIR)</VpQtDir>
+    <VpQtKit Condition="'$(Platform)' == 'Win32'">msvc2017</VpQtKit>
+    <VpQtKit Condition="'$(Platform)' == 'x64'">msvc2017_64</VpQtKit>
+    <VpQtDir Condition="'$(VpQtDir)' == '' and Exists('$(VpRootDir).toolchain\Qt\5.12.10\$(VpQtKit)\bin\qmake.exe')">$(VpRootDir).toolchain\Qt\5.12.10\$(VpQtKit)</VpQtDir>
+    <VpQtDir Condition="'$(VpQtDir)' == '' and Exists('C:\Qt\Qt5.12.10\5.12.10\$(VpQtKit)\bin\qmake.exe')">C:\Qt\Qt5.12.10\5.12.10\$(VpQtKit)</VpQtDir>
+    <VpQtDir Condition="'$(VpQtDir)' == '' and Exists('C:\Qt\5.12.10\$(VpQtKit)\bin\qmake.exe')">C:\Qt\5.12.10\$(VpQtKit)</VpQtDir>
+    <QtLinkNatvisFile>false</QtLinkNatvisFile>
+  </PropertyGroup>
+  <Import Project="$(VpRootDir)vp_local.props" Condition="Exists('$(VpRootDir)vp_local.props')" />
+  <PropertyGroup>
+    <QtInstall Condition="'$(VpUseQt)' == 'true'">$(VpQtDir)</QtInstall>
+  </PropertyGroup>
+</Project>

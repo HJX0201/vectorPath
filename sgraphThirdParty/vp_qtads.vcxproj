@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="Current">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7C075CD7-AC58-5246-A749-A5A64DBA2FBA}</ProjectGuid>
+    <ProjectName>qtadvanceddocking-qt5</ProjectName>
+    <Keyword>QtVS_v304</Keyword>
+    <RootNamespace>Vp</RootNamespace>
+    <VpTargetName>qtadvanceddocking-qt5</VpTargetName>
+    <VpUseQt>true</VpUseQt>
+    <VpDebugPostfix>d</VpDebugPostfix>
+  </PropertyGroup>
+  <Import Project="..\sgraphBuildTools\vp_defaults.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset Condition="'$(PlatformToolset)' == ''">v143</PlatformToolset>
+    <UseDebugLibraries Condition="'$(Configuration)' == 'Debug'">true</UseDebugLibraries>
+    <UseDebugLibraries Condition="'$(Configuration)' != 'Debug'">false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" Condition="Exists('$(QtMsBuild)\qt_defaults.props')" />
+  </ImportGroup>
+  <PropertyGroup Label="QtSettings">
+    <VpIncludeDirs>$(VpRootDir)sgraphThirdParty\Qt-Advanced-Docking-System-4.4.1\src</VpIncludeDirs>
+    <VpDefinitions>ADS_SHARED_EXPORT</VpDefinitions>
+    <QtModules>core;gui;widgets</QtModules>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="..\sgraphBuildTools\vp_common.props" />
+    <Import Project="$(QtMsBuild)\Qt.props" Condition="Exists('$(QtMsBuild)\Qt.props')" />
+  </ImportGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\ads_globals.cpp" />
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockAreaTabBar.cpp" />
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockAreaTitleBar.cpp" />
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockAreaWidget.cpp" />
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockContainerWidget.cpp" />
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockManager.cpp" />
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockOverlay.cpp" />
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockSplitter.cpp" />
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockWidget.cpp" />
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockWidgetTab.cpp" />
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockingStateReader.cpp" />
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockFocusController.cpp" />
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\ElidingLabel.cpp" />
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\FloatingDockContainer.cpp" />
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\FloatingDragPreview.cpp" />
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\IconProvider.cpp" />
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockComponentsFactory.cpp" />
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\AutoHideSideBar.cpp" />
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\AutoHideTab.cpp" />
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\AutoHideDockContainer.cpp" />
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\PushButton.cpp" />
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\ResizeHandle.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Qt-Advanced-Docking-System-4.4.1\src\DockingStateReader.h" />
+    <ClInclude Include="Qt-Advanced-Docking-System-4.4.1\src\IconProvider.h" />
+    <ClInclude Include="Qt-Advanced-Docking-System-4.4.1\src\DockComponentsFactory.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\ads_globals.h" />
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\DockAreaTabBar.h" />
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\DockAreaTitleBar.h" />
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\DockAreaTitleBar_p.h" />
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\DockAreaWidget.h" />
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\DockContainerWidget.h" />
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\DockManager.h" />
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\DockOverlay.h" />
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\DockSplitter.h" />
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\DockWidget.h" />
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\DockWidgetTab.h" />
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\DockFocusController.h" />
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\ElidingLabel.h" />
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\FloatingDockContainer.h" />
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\FloatingDragPreview.h" />
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\AutoHideSideBar.h" />
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\AutoHideTab.h" />
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\AutoHideDockContainer.h" />
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\PushButton.h" />
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\ResizeHandle.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="Qt-Advanced-Docking-System-4.4.1\src\ads.qrc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(QtMsBuild)\qt.targets" Condition="Exists('$(QtMsBuild)\qt.targets')" />
+    <Import Project="..\sgraphBuildTools\vp_build.targets" />
+  </ImportGroup>
+</Project>

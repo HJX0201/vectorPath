@@ -1,7 +1,7 @@
 # vectorPath
 
 vectorPath 是一个面向 Windows 的现代二维 CAD/CAM 学习与技术展示项目，使用
-C++17、Qt 5.12.10、OpenGL、CMake 和 Ninja 开发。项目覆盖二维绘制与编辑、图层和标注、
+C++17、Qt 5.12.10、OpenGL 和 Visual Studio/MSBuild 开发。项目覆盖二维绘制与编辑、图层和标注、
 DWG/DXF/SVG/位图导入导出、刀路排序与仿真，以及可撤销的文档事务。
 
 > 当前版本：`0.2.0-alpha.1`。项目仍在持续开发，不宣称完整兼容 AutoCAD。
@@ -59,9 +59,15 @@ SVG 字节。
 
 ## 快速构建
 
-唯一构建入口为 `sgraphBuildTools/vp_build.py`。默认构建 64 位 Release 应用，测试与性能
-基准默认关闭。桌面构建需本机安装 Qt 5.12.10 MSVC 套件、Visual Studio 2022 C++ 工具、
-CMake、Ninja 和 Python 3；仓库不包含 Qt SDK。
+使用 Visual Studio 2022 打开根目录的 `vectorPath.sln`，选择 `Debug/Release` 和
+`Win32/x64`，将 `vectorPath` 设为启动项目即可编译运行。桌面构建需安装 C++ 桌面工具、
+Qt 5.12.10 MSVC 套件和 Qt VS Tools。解决方案直接使用原生 `.vcxproj`，无需 CMake、Ninja
+或 Python；仓库不包含 Qt SDK。
+最后的 CMake 版本保留在 Git 提交 `12fb231`；当前工作树只使用原生解决方案，第三方源码
+附带的 CMake 文件保持原样且不参与构建。
+
+命令行和批量验证入口仍为 `sgraphBuildTools/vp_build.py`，需要 Python 3.10 或更高版本。
+它直接调用 MSBuild，默认构建 64 位 Release 应用；测试与性能基准默认不构建。
 
 ```powershell
 python sgraphBuildTools/vp_build.py
@@ -69,7 +75,7 @@ python sgraphBuildTools/vp_build.py --bits 32 --config Debug
 ```
 
 脚本自动查找 Qt、激活 Visual Studio 环境并编译应用，将运行库部署到
-`build/<位数>/<配置>`。需要测试或无 Qt 核心时显式开启：
+`build/msbuild/<位数>/<配置>`。需要测试或无 Qt 核心时显式开启：
 
 ```powershell
 python sgraphBuildTools/vp_build.py --test
@@ -77,11 +83,11 @@ python sgraphBuildTools/vp_build.py --core --test
 python sgraphBuildTools/vp_build.py --test --benchmarks
 ```
 
-普通测试共用 `vectorPathCoreTests` 和 `vectorPathDesktopTests` 两个程序，38 个 CTest
+普通测试共用 `vectorPathCoreTests` 和 `vectorPathDesktopTests` 两个程序，38 个测试
 套件仍各自启动独立进程。开启位图基准检查后共 40 项；无 Qt 模式仅运行 4 个核心套件。
 `--benchmarks` 只开启基准构建，搭配 `--test` 才运行注册的基准检查。
 
-Qt 不在常用路径时可传 `--qt-dir C:\Qt\Qt5.12.10\5.12.10\msvc2017_64`，或设置
+Qt 不在常用路径时可向脚本传 `--qt-dir C:\Qt\Qt5.12.10\5.12.10\msvc2017_64`，或设置
 `SGRAPH_QT64_DIR`、`SGRAPH_QT32_DIR`、`QTDIR`。完整参数和当前核心边界见
 [构建说明](sgraphDocs/BUILDING.md)及[架构说明](sgraphDocs/ARCHITECTURE.md)。
 

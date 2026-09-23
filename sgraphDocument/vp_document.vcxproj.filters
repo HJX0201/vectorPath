@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{BB17863D-86B7-5E58-8AD9-986C0E1C8DB8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{36713DE2-25FD-5DE5-A34E-57F14A824D2F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{AABB1BF5-A1BA-537A-8304-2EE78599AE34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other Files">
+      <UniqueIdentifier>{8F0A0758-0BD5-5A8E-ADF5-BB36E8F719E8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="vp_associative_array_io.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vp_drawing_settings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vp_dimension_binary_io.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vp_document_style_io.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vp_hatch_binary_io.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vp_entity_binary_io.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vp_plot_style_table.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vp_cad_document.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vp_cad_document_history.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vp_cad_document_color_layer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vp_cad_document_audit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vp_cad_document_layer_state.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vp_cad_document_text_style.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vp_cad_document_dimension_style.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vp_cad_document_io.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vp_document_recovery_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vp_document_transaction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vp_toolpath_document.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="vp_associative_array_io.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vp_drawing_settings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vp_dimension_style_record.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vp_dimension_binary_io.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vp_document_style_io.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vp_hatch_binary_io.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vp_entity_binary_io.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vp_layer_record.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vp_plot_style_table.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vp_document_audit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vp_text_style_record.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vp_document_transaction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vp_toolpath_document.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="vp_cad_document.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="vp_document_recovery_manager.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+  </ItemGroup>
+</Project>

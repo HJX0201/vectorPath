@@ -1,0 +1,4 @@
+VECTORPATH_CORE_TEST(vectorPathCoreResultTests, vpRunCoreResultTests)
+VECTORPATH_CORE_TEST(vectorPathGeometryCoreTests, vpRunGeometryCoreTests)
+VECTORPATH_CORE_TEST(vectorPathIdCollectionTests, vpRunIdCollectionTests)
+VECTORPATH_CORE_TEST(vectorPathDraftingStateTests, vpRunDraftingStateTests)

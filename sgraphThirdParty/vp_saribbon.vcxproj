@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="Current">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C19F9EFD-08E1-5352-BE40-C84B1F454770}</ProjectGuid>
+    <ProjectName>SARibbonBar</ProjectName>
+    <Keyword>QtVS_v304</Keyword>
+    <RootNamespace>Vp</RootNamespace>
+    <VpTargetName>SARibbonBar</VpTargetName>
+    <VpUseQt>true</VpUseQt>
+    <VpDebugPostfix>d</VpDebugPostfix>
+  </PropertyGroup>
+  <Import Project="..\sgraphBuildTools\vp_defaults.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset Condition="'$(PlatformToolset)' == ''">v143</PlatformToolset>
+    <UseDebugLibraries Condition="'$(Configuration)' == 'Debug'">true</UseDebugLibraries>
+    <UseDebugLibraries Condition="'$(Configuration)' != 'Debug'">false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" Condition="Exists('$(QtMsBuild)\qt_defaults.props')" />
+  </ImportGroup>
+  <PropertyGroup Label="QtSettings">
+    <VpIncludeDirs>$(VpRootDir)sgraphThirdParty\SARibbon-2.9.0\src\SARibbonBar;$(VpRootDir)sgraphThirdParty\SARibbon-2.9.0\src\SARibbonBar\colorWidgets</VpIncludeDirs>
+    <VpDefinitions>SA_RIBBON_BAR_NO_EXPORT;SA_COLOR_WIDGETS_NO_DLL;SARIBBON_USE_3RDPARTY_FRAMELESSHELPER=0;NOMINMAX</VpDefinitions>
+    <QtModules>core;gui;widgets;svg</QtModules>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="..\sgraphBuildTools\vp_common.props" />
+    <Import Project="$(QtMsBuild)\Qt.props" Condition="Exists('$(QtMsBuild)\Qt.props')" />
+  </ImportGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SAFramelessHelper.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonActionsManager.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonApplicationButton.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonApplicationWidget.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonBar.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonBarLayout.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonButtonGroupWidget.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonButtonLayoutStrategy.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCategory.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCategoryLayout.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonColorToolButton.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonContextCategory.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCtrlContainer.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCustomizeData.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCustomizeDialog.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCustomizeWidget.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonElementFactory.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonElementManager.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonGallery.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonGalleryGroup.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonGalleryItem.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonLineWidgetContainer.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonMainWindow.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonMenu.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonPanel.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonPanelItem.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonPanelLayout.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonPanelOptionButton.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonQuickAccessBar.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonSeparatorWidget.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonStackedWidget.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonSystemButtonBar.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonTabBar.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonThemeManager.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonThemePalette.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonTitleIconWidget.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonToolButton.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonUtil.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonWidget.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\colorWidgets\SAColorGridWidget.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\colorWidgets\SAColorMenu.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\colorWidgets\SAColorPaletteGridWidget.cpp" />
+    <ClCompile Include="SARibbon-2.9.0\src\SARibbonBar\colorWidgets\SAColorToolButton.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonBarVersionInfo.h" />
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonButtonLayoutStrategy.h" />
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCustomizeData.h" />
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonElementFactory.h" />
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonElementManager.h" />
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonGalleryItem.h" />
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonGlobal.h" />
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonLineWidgetContainer.h" />
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonPanelItem.h" />
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonQt5Compat.hpp" />
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonThemeManager.h" />
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonThemePalette.h" />
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonUtil.h" />
+    <ClInclude Include="SARibbon-2.9.0\src\SARibbonBar\colorWidgets\SAColorWidgetsGlobal.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SAFramelessHelper.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonActionsManager.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonApplicationButton.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonApplicationWidget.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonBar.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonBarLayout.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonButtonGroupWidget.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCategory.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCategoryLayout.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonColorToolButton.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonContextCategory.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCtrlContainer.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCustomizeDialog.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonCustomizeWidget.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonGallery.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonGalleryGroup.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonMainWindow.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonMenu.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonPanel.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonPanelLayout.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonPanelOptionButton.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonQuickAccessBar.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonSeparatorWidget.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonStackedWidget.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonSystemButtonBar.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonTabBar.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonTitleIconWidget.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonToolButton.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonWidget.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\colorWidgets\SAColorGridWidget.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\colorWidgets\SAColorMenu.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\colorWidgets\SAColorPaletteGridWidget.h" />
+    <QtMoc Include="SARibbon-2.9.0\src\SARibbonBar\colorWidgets\SAColorToolButton.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="SARibbon-2.9.0\src\SARibbonBar\SARibbonResource.qrc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(QtMsBuild)\qt.targets" Condition="Exists('$(QtMsBuild)\qt.targets')" />
+    <Import Project="..\sgraphBuildTools\vp_build.targets" />
+  </ImportGroup>
+</Project>

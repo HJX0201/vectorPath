@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{0F14CA2A-FA40-56E9-A8DE-6C8A78C5CDCF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{EA0AF1BE-B2C3-56F6-A112-6BB3B179E0AB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{D1770A47-002E-503B-9DCE-74D29512630B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Other Files">
+      <UniqueIdentifier>{437D259C-7EDC-5A17-B701-059C011AB942}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\ads_globals.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockAreaTabBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockAreaTitleBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockAreaWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockContainerWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockOverlay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockSplitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockWidgetTab.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockingStateReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockFocusController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\ElidingLabel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\FloatingDockContainer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\FloatingDragPreview.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\IconProvider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\DockComponentsFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\AutoHideSideBar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\AutoHideTab.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\AutoHideDockContainer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\PushButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Qt-Advanced-Docking-System-4.4.1\src\ResizeHandle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Qt-Advanced-Docking-System-4.4.1\src\DockingStateReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Qt-Advanced-Docking-System-4.4.1\src\IconProvider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Qt-Advanced-Docking-System-4.4.1\src\DockComponentsFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\ads_globals.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\DockAreaTabBar.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\DockAreaTitleBar.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\DockAreaTitleBar_p.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\DockAreaWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\DockContainerWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\DockManager.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\DockOverlay.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\DockSplitter.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\DockWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\DockWidgetTab.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\DockFocusController.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\ElidingLabel.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\FloatingDockContainer.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\FloatingDragPreview.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\AutoHideSideBar.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\AutoHideTab.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\AutoHideDockContainer.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\PushButton.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Qt-Advanced-Docking-System-4.4.1\src\ResizeHandle.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="Qt-Advanced-Docking-System-4.4.1\src\ads.qrc">
+      <Filter>Resources</Filter>
+    </QtRcc>
+  </ItemGroup>
+</Project>

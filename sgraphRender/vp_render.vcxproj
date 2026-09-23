@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build" ToolsVersion="Current">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{1E0EB8B0-EDD4-5A65-85A3-51251883161F}</ProjectGuid>
+    <ProjectName>smartRender</ProjectName>
+    <Keyword>QtVS_v304</Keyword>
+    <RootNamespace>Vp</RootNamespace>
+    <VpTargetName>smartRender</VpTargetName>
+    <VpUseQt>true</VpUseQt>
+  </PropertyGroup>
+  <Import Project="..\sgraphBuildTools\vp_defaults.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset Condition="'$(PlatformToolset)' == ''">v143</PlatformToolset>
+    <UseDebugLibraries Condition="'$(Configuration)' == 'Debug'">true</UseDebugLibraries>
+    <UseDebugLibraries Condition="'$(Configuration)' != 'Debug'">false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" Condition="Exists('$(QtMsBuild)\qt_defaults.props')" />
+  </ImportGroup>
+  <PropertyGroup Label="QtSettings">
+    <VpIncludeDirs>$(VpRootDir)sgraphRender;$(VpRootDir)sgraphCommands;$(VpRootDir)sgraphDocument;$(VpRootDir)sgraphGeometry;$(VpRootDir)sgraphCore;$(VpRootDir)sgraphThirdParty\Clipper2\Clipper2Lib\include</VpIncludeDirs>
+    <VpDefinitions>CLIPPER2_MAX_DECIMAL_PRECISION=8</VpDefinitions>
+    <QtModules>core;gui;widgets;opengl</QtModules>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="..\sgraphBuildTools\vp_common.props" />
+    <Import Project="$(QtMsBuild)\Qt.props" Condition="Exists('$(QtMsBuild)\Qt.props')" />
+  </ImportGroup>
+  <ItemGroup>
+    <ClCompile Include="vp_cad_viewport_geometry.cpp" />
+    <ClCompile Include="vp_curve_offset.cpp" />
+    <ClCompile Include="vp_cad_viewport_transform.cpp" />
+    <ClCompile Include="vp_cad_viewport_grip.cpp" />
+    <ClCompile Include="vp_polyline_geometry.cpp" />
+    <ClCompile Include="vp_polyline_edit.cpp" />
+    <ClCompile Include="vp_spline_edit.cpp" />
+    <ClCompile Include="vp_circle_tangent_geometry.cpp" />
+    <ClCompile Include="vp_arc_construction_geometry.cpp" />
+    <ClCompile Include="vp_associative_array_geometry.cpp" />
+    <ClCompile Include="vp_object_snap.cpp" />
+    <ClCompile Include="vp_cad_viewport.cpp" />
+    <ClCompile Include="vp_cad_viewport_standard_shape.cpp" />
+    <ClCompile Include="vp_cad_viewport_appearance.cpp" />
+    <ClCompile Include="vp_cad_viewport_zoom.cpp" />
+    <ClCompile Include="vp_cad_viewport_drafting.cpp" />
+    <ClCompile Include="vp_cad_viewport_annotation.cpp" />
+    <ClCompile Include="vp_cad_viewport_dimension.cpp" />
+    <ClCompile Include="vp_cad_viewport_hatch.cpp" />
+    <ClCompile Include="vp_cad_viewport_keyword.cpp" />
+    <ClCompile Include="vp_cad_viewport_entity_render.cpp" />
+    <ClCompile Include="vp_cad_viewport_entity_overlay.cpp" />
+    <ClCompile Include="vp_cad_viewport_interaction.cpp" />
+    <ClCompile Include="vp_cad_viewport_curve_draw.cpp" />
+    <ClCompile Include="vp_cad_viewport_curve_construction.cpp" />
+    <ClCompile Include="vp_cad_viewport_events.cpp" />
+    <ClCompile Include="vp_cad_viewport_render.cpp" />
+    <ClCompile Include="vp_cad_viewport_overlay.cpp" />
+    <ClCompile Include="vp_cad_viewport_simulation.cpp" />
+    <ClCompile Include="vp_cad_viewport_break_render.cpp" />
+    <ClCompile Include="vp_cad_viewport_curve_break.cpp" />
+    <ClCompile Include="vp_cad_viewport_array_rect.cpp" />
+    <ClCompile Include="vp_cad_viewport_array_polar.cpp" />
+    <ClCompile Include="vp_cad_viewport_array_path.cpp" />
+    <ClCompile Include="vp_cad_viewport_array_edit.cpp" />
+    <ClCompile Include="vp_cad_viewport_chamfer.cpp" />
+    <ClCompile Include="vp_cad_viewport_curve_chamfer.cpp" />
+    <ClCompile Include="vp_cad_viewport_blend.cpp" />
+    <ClCompile Include="vp_cad_viewport_align.cpp" />
+    <ClCompile Include="vp_cad_viewport_curve_trim.cpp" />
+    <ClCompile Include="vp_cad_viewport_extend_render.cpp" />
+    <ClCompile Include="vp_cad_viewport_curve_extend.cpp" />
+    <ClCompile Include="vp_cad_viewport_explode_render.cpp" />
+    <ClCompile Include="vp_cad_viewport_fillet.cpp" />
+    <ClCompile Include="vp_cad_viewport_curve_fillet.cpp" />
+    <ClCompile Include="vp_polyline_fillet.cpp" />
+    <ClCompile Include="vp_cad_viewport_join_render.cpp" />
+    <ClCompile Include="vp_cad_viewport_curve_join.cpp" />
+    <ClCompile Include="vp_cad_viewport_snap_render.cpp" />
+    <ClCompile Include="vp_cad_viewport_tracking.cpp" />
+    <ClCompile Include="vp_cad_viewport_selection.cpp" />
+    <ClCompile Include="vp_cad_viewport_modify_complete.cpp" />
+    <ClCompile Include="vp_cad_viewport_polyline_edit.cpp" />
+    <ClCompile Include="vp_cad_viewport_spline_edit.cpp" />
+    <ClCompile Include="vp_cad_viewport_stretch.cpp" />
+    <ClCompile Include="vp_cad_viewport_lengthen.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="vp_cad_viewport_geometry.h" />
+    <ClInclude Include="vp_curve_offset.h" />
+    <ClInclude Include="vp_spline_edit.h" />
+    <ClInclude Include="vp_circle_tangent_math.h" />
+    <ClInclude Include="vp_associative_array_geometry.h" />
+    <ClInclude Include="vp_object_snap.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="vp_cad_viewport.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\sgraphCommands\vp_commands.vcxproj">
+      <Project>{C1524D1C-3737-5D2F-8546-1A4FAF6373AA}</Project>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(QtMsBuild)\qt.targets" Condition="Exists('$(QtMsBuild)\qt.targets')" />
+    <Import Project="..\sgraphBuildTools\vp_build.targets" />
+  </ImportGroup>
+</Project>
