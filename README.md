@@ -117,7 +117,7 @@ GeometryCore → Core`，第三方组件只在需要它们的模块里被引用�
 
 ## 文档
 
-- [项目文档（功能、架构、构建、使用、测试、性能、位图与 AutoCAD 基线）](sgraphDocs/DOCUMENTATION.md)
+- [项目文档（功能、架构、构建、使用、测试、性能与位图矢量化）](sgraphDocs/DOCUMENTATION.md)
 - [代码风格](sgraphDocs/vp_coding_style.md)
 - [许可证](LICENSE.md)
 

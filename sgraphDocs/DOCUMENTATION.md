@@ -2,10 +2,8 @@
 
 > 本文档由原 `ARCHITECTURE.md`、`AUTOCAD_BASELINE.md`、`BITMAP_VECTORIZATION.md`、
 > `BUILDING.md`、`CODEBASE_REFERENCE.md`、`FEATURES.md`、`PERFORMANCE.md`、
-> `TESTING.md`、`USER_GUIDE.md` 九个文档合并而成。功能数据文件
-> `vp_autocad_2026_feature_catalog.yaml`、`vp_autocad_gap_matrix.yaml`、
-> `vp_smartcad_feature_inventory.yaml` 与编码规范 [vp_coding_style.md](vp_coding_style.md)
-> 保持独立。
+> `TESTING.md`、`USER_GUIDE.md` 九个文档合并而成；编码规范
+> [vp_coding_style.md](vp_coding_style.md) 保持独立。
 
 ## 目录
 
@@ -17,7 +15,6 @@
 - [测试与验证](#testing)
 - [性能与内存](#performance)
 - [位图矢量化](#bitmap)
-- [AutoCAD 基线资料](#autocad)
 
 ---
 
@@ -175,8 +172,7 @@ flowchart LR
 
 | 目录 | 代表文件 | 职责 | 依赖 |
 | --- | --- | --- | --- |
-| `sgraphDocs/` | `DOCUMENTATION.md` | 合并后的架构、功能、使用、构建、测试、性能、位图矢量化与 AutoCAD 基线文档 | 无代码依赖 |
-|  | `vp_autocad_2026_feature_catalog.yaml`、`vp_autocad_gap_matrix.yaml`、`vp_smartcad_feature_inventory.yaml` | 功能基线、差距状态与实现证据；功能评审前先读前两份 |  |
+| `sgraphDocs/` | `DOCUMENTATION.md` | 合并后的架构、功能、使用、构建、测试、性能与位图矢量化文档 | 无代码依赖 |
 
 ### 4. 关键类型与约定
 
@@ -226,8 +222,7 @@ flowchart LR
 - [README](../README.md) · [代码架构](#architecture) · [构建](#building)
 - [使用说明与快捷键](#user-guide) · [编码规范](vp_coding_style.md)
 - [功能与路线](#features) · [测试与验证](#testing) · [性能与内存](#performance)
-- [位图矢量化算法](#bitmap) · [AutoCAD 基线资料](#autocad)
-- 数据文件：[功能目录](vp_autocad_2026_feature_catalog.yaml)、[差距矩阵](vp_autocad_gap_matrix.yaml)、[实现证据清单](vp_smartcad_feature_inventory.yaml)
+- [位图矢量化算法](#bitmap)
 - [位图基准说明](../sgraphVectorBenchmark/README.md) · [协作约束](../AGENTS.md)
 
 ---
@@ -293,8 +288,7 @@ flowchart TD
 ### 兼容性边界
 
 当前重点是二维 CAD/CAM。三维建模、三维编辑和三维可视化明确不在当前范围。功能完成度
-以 `vp_autocad_gap_matrix.yaml` 和 `vp_smartcad_feature_inventory.yaml` 为准；仅有入口或
-占位界面的功能不得视为完成。
+以可运行代码、持久化能力与自动测试为准；仅有入口或占位界面的功能不得视为完成。
 
 完整产品品牌已改为 vectorPath。下列旧名称属于兼容协议或稳定标识，不能作为普通技术债
 机械替换：
@@ -305,25 +299,22 @@ flowchart TD
   `smartCadLearning/smartGraphics`，以及旧 `smartCam.stb`、`smartCad.stb` 打印样式名。
 - 已持久化的 Qt object name、状态栏样式选择器和 DXF XDATA 应用名 `SMARTCAD`。
 - 旧 CMake 构建变量已随自研 CMake 入口退出；测试项目在解决方案中按需单独生成。
-- CAD 功能目录中的稳定 `SMARTCAD.*` 功能 ID，以及历史版本记录中的兼容标识。
 
 ### 相关文档
 
 [概览与代码库参考](#codebase) · [功能与路线](#features) · [构建](#building) ·
 [测试与验证](#testing) · [性能与内存](#performance) · [位图矢量化](#bitmap) ·
-[AutoCAD 基线资料](#autocad) · [代码风格](vp_coding_style.md)
+[代码风格](vp_coding_style.md)
 
 ---
 
 ## <a id="features"></a> 功能与路线
 
-本文记录已形成闭环的能力、已知差距和后续顺序。逐项证据与稳定功能 ID 保存在
-`vp_smartcad_feature_inventory.yaml`、`vp_autocad_2026_feature_catalog.yaml` 和
-`vp_autocad_gap_matrix.yaml`，AutoCAD 基线资料见 [AutoCAD 基线资料](#autocad)。
+本文记录已形成闭环的能力、已知差距和后续顺序。
 
 ### 完成判定
 
-功能只有同时满足以下条件，才能在差距矩阵标记为 `complete`：
+功能只有同时满足以下条件，才能标记为 `complete`：
 
 1. Ribbon 或属性页有专属、主题感知图标和可访问名称。
 2. 命令行提供完整命令名和常用别名，关键流程不依赖鼠标。
@@ -332,7 +323,7 @@ flowchart TD
 5. 原生格式无损保存；交换格式不支持时生成兼容性报告。
 6. 有自动测试，自研 `.h/.cpp` 均不超过 800 行。
 
-Ribbon 占位按钮、空停靠面板和只有接口声明的功能只能记为 `stub`。
+Ribbon 占位按钮、空停靠面板和只有接口声明的功能不得视为完成。
 
 ### 已实现
 
@@ -431,9 +422,6 @@ Ribbon 占位按钮、空停靠面板和只有接口声明的功能只能记为 
 
 ### 更新规则
 
-- 每实现一项，按功能 ID 更新 `vp_autocad_gap_matrix.yaml`，并把源码证据加入
-  `vp_smartcad_feature_inventory.yaml`。
-- Autodesk 大版本升级只新增或变更对应功能 ID，不重写稳定 ID。
 - 状态只由可运行代码、持久化能力和自动测试决定，不以 Ribbon 占位判断进度。
 
 ---
@@ -1081,47 +1069,3 @@ build/msbuild/64/Release/smartBitmapVectorBenchmark.exe --cases 1000 --seed 2026
 - [位图基准说明](../sgraphVectorBenchmark/README.md)
 - [项目 README](../README.md)
 
----
-
-## <a id="autocad"></a> AutoCAD 基线资料
-
-vectorPath 的二维功能以 AutoCAD 2026 官方资料为参照，只做摘要，不复制官方帮助正文、商标
-或图标资源。功能语义与差距状态以两份 YAML 为准：`vp_autocad_2026_feature_catalog.yaml`、
-`vp_autocad_gap_matrix.yaml`；实现证据在 `vp_smartcad_feature_inventory.yaml`。
-
-### 官方来源
-
-| ID | 页面 | 用途 |
-| --- | --- | --- |
-| `ADSK.ACD.2026.HOME` | https://help.autodesk.com/view/ACD/2026/ENU/ | 帮助首页与用户指南 |
-| `ADSK.ACD.2026.COMMANDS` | https://help.autodesk.com/view/ACD/2026/ENU/?page=commands | 命令快速参考 |
-| `ADSK.ACD.2026.NEW` | https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Core/files/GUID-B93A458E-1A7F-4090-A8CF-87A31C24E404.htm | 新增命令与系统变量 |
-| `ADSK.ACD.2026.UPDATED` | https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Core/files/GUID-4FEBA606-95E0-4DC4-A116-257ED86DCD58.htm | 更新命令与系统变量 |
-| `ADSK.ACD.2026.OBSOLETE` | https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Core/files/GUID-5647ACE3-412E-48A6-8C1B-6B0EE09F5E3F.htm | 废弃命令与系统变量 |
-| `ADSK.ACD.2026.SHORTCUTS` | https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Customization/files/GUID-B6A9C126-230D-47F5-8973-464BC80E3736.htm | 快捷键参考 |
-| `ADSK.ACD.2026.CUSTOMIZE` | https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Customization/files/GUID-91E01021-96F3-47E8-944D-72BC90BA06CC.htm | 自定义入口 |
-| `ADSK.ACD.2026.DEV` | https://help.autodesk.com/view/OARX/2026/ENU/ | ObjectARX 开发文档 |
-
-### 命令索引
-
-用于检索，不代表已实现：
-
-- 文件与视图：`NEW OPEN QSAVE SAVEAS RECOVER AUDIT PURGE DXFIN DXFOUT IMPORT EXPORT ZOOM PAN REGEN REDRAW VIEW VPORTS UNITS SNAP GRID ORTHO POLAR OSNAP OTRACK DSETTINGS ID`
-- 二维绘图：`LINE XLINE RAY PLINE PEDIT CIRCLE ARC ELLIPSE SPLINE RECTANG POLYGON POINT DIVIDE MEASURE REGION BOUNDARY REVCLOUD HATCH GRADIENT`
-- 修改：`ERASE MOVE COPY ROTATE SCALE MIRROR ALIGN ARRAY ARRAYRECT ARRAYPOLAR ARRAYPATH STRETCH LENGTHEN EXTEND TRIM BREAK JOIN OFFSET FILLET CHAMFER BLEND EXPLODE MATCHPROP CHPROP DRAWORDER OVERKILL`
-- 图层、文字与标注：`LAYER LAYDEL LAYMRG LAYERSTATE VPLAYER COLOR LINETYPE LWEIGHT TRANSPARENCY TEXT MTEXT STYLE MLEADER DIM DIMLINEAR DIMALIGNED DIMANGULAR DIMRADIUS DIMDIAMETER DIMARC DIMORDINATE DIMSTYLE DIMBREAK`
-- 表格、块与参照：`TABLE TABLESTYLE BLOCK INSERT WBLOCK ATTDEF XREF XATTACH XCLIP PDFATTACH PDFIMPORT IMAGEATTACH DATAEXTRACTION FIELD`
-- 布局与输出：`MODEL LAYOUT MVIEW VPSCALE PAGESETUP PLOT PREVIEW PUBLISH EXPORTPDF PLOTSTYLE COMPARE TRACE ETRANSMIT SHEETSET`
-- 自定义与自动化：`CUI CUILOAD SCRIPT APPLOAD VLIDE ARX NETLOAD`
-
-### vectorPath 已注册命令
-
-绘图与修改、阵列、夹点、图层、视图与输出等命令的完整列表见 [使用说明与快捷键](#user-guide)。
-
-### 范围说明
-
-- 目标是 AutoCAD 2026 通用二维核心工作流，不含 Architecture、Mechanical、Map 3D、
-  Civil 3D 等垂直产品的专有对象。
-- 三维属于完整版能力，用户已明确暂停：`ACAD.3D.MODEL`、`ACAD.3D.EDIT`、
-  `ACAD.3D.VISUALIZE` 固定 `out_of_scope`。
-- 状态只由可运行代码、持久化能力和自动测试决定。

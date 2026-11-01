@@ -23,6 +23,9 @@
 - 每次修改自研 C++ 代码后，必须立即编译并启动应用验证，不得积累多个未编译的变更。
 - 所有新功能必须编写自动测试，测试覆盖核心逻辑、边界条件和错误路径；未通过测试的
   功能不得标记为完成。
+- P3 三维升级当前由用户明确暂停；`ACAD.3D.MODEL`、`ACAD.3D.EDIT` 和
+  `ACAD.3D.VISUALIZE` 必须保持 `out_of_scope`，不得占用二维功能实施排期，除非用户后续
+  明确恢复三维范围。
 
 ## 完成验收与 Git 交付
 
@@ -31,16 +34,3 @@
 - 每次交付时，必须根据本次实际改动向开发者提供可直接复制执行的 Git 命令，用于检查
   差异、暂存、提交及在已配置远程仓库时推送更新；不得假定开发者已经执行这些命令。
 - 除非开发者明确要求，否则不代替开发者执行 `git add`、`git commit` 或 `git push`。
-
-## AutoCAD 功能基线
-
-- P3 三维升级当前由用户明确暂停；`ACAD.3D.MODEL`、`ACAD.3D.EDIT` 和
-  `ACAD.3D.VISUALIZE` 必须保持 `out_of_scope`，不得占用二维功能实施排期，除非用户后续
-  明确恢复三维范围。
-- 实现或评审 CAD 功能前，先读取 `sgraphDocs/vp_autocad_2026_feature_catalog.yaml` 和
-  `sgraphDocs/vp_autocad_gap_matrix.yaml`，使用稳定功能 ID 确认范围与依赖。
-- 当前实现证据记录在 `sgraphDocs/vp_smartcad_feature_inventory.yaml`；Ribbon 占位按钮、
-  空停靠面板和仅有接口声明的功能只能标记为 `stub`，不得标记为已完成。
-- 每个新增或补全的 CAD 功能必须同时具备主题自适应图标、Ribbon 入口、命令及别名、
-  动态预览、基于 `VpDocumentTransaction` 的撤销重做、持久化或兼容性处理、自动测试，
-  并同步更新功能目录、差距矩阵和实现证据；缺少其中任一项不得标记为 `complete`。
