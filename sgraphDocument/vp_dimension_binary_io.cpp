@@ -10,11 +10,13 @@ namespace Vp
 namespace
 {
 
+// 写入一个二维点。
 void writePoint(QDataStream& stream, const VpPoint2d& point)
 {
     stream << point.x << point.y;
 }
 
+// 读出一个二维点。
 void readPoint(QDataStream& stream, VpPoint2d& point)
 {
     stream >> point.x >> point.y;

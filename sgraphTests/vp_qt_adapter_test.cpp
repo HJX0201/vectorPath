@@ -11,6 +11,7 @@ class VpQtAdapterTest final : public QObject
     Q_OBJECT
 
   private slots:
+    // 校验 UTF-16 编码单元保持不变。
     void preservesUtf16CodeUnits()
     {
         // Preserve embedded NUL and unpaired surrogates as well as valid Unicode.
@@ -21,6 +22,7 @@ class VpQtAdapterTest final : public QObject
         QVERIFY(toCoreText(QString()).empty());
     }
 
+    // 校验原生错误细节的转换。
     void preservesNativeDiagnosticConversion()
     {
         const QByteArray bytes = QStringLiteral("本地错误").toLocal8Bit();

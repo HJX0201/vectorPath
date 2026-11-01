@@ -11,6 +11,7 @@ namespace
 constexpr double kPi = 3.14159265358979323846;
 constexpr double kEpsilon = 1.0e-9;
 
+// 计算两点中点。
 VpPoint2d midpoint(const VpPoint2d& first, const VpPoint2d& second)
 {
     return {(first.x + second.x) * 0.5, (first.y + second.y) * 0.5};
@@ -21,6 +22,7 @@ double crossProduct(const VpPoint2d& first, const VpPoint2d& second)
     return (first.x * second.y) - (first.y * second.x);
 }
 
+// 判断点坐标是否为有限值。
 bool finitePoint(const VpPoint2d& point)
 {
     return std::isfinite(point.x) && std::isfinite(point.y);

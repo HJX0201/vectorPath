@@ -21,11 +21,13 @@ double crossProduct(const VpPoint2d& first_vector, const VpPoint2d& second_vecto
     return (first_vector.x * second_vector.y) - (first_vector.y * second_vector.x);
 }
 
+// 计算两点之差。
 VpPoint2d subtractPoints(const VpPoint2d& first_point, const VpPoint2d& second_point) noexcept
 {
     return {first_point.x - second_point.x, first_point.y - second_point.y};
 }
 
+// 按参数插值两点。
 VpPoint2d interpolatePoint(const VpPoint2d& first_point, const VpPoint2d& second_point,
                            double parameter) noexcept
 {
@@ -33,6 +35,7 @@ VpPoint2d interpolatePoint(const VpPoint2d& first_point, const VpPoint2d& second
             first_point.y + ((second_point.y - first_point.y) * parameter)};
 }
 
+// 计算点到线段的距离。
 double pointSegmentDistance(const VpPoint2d& point, const VpPoint2d& start_point,
                             const VpPoint2d& end_point, VpPoint2d* closest_point = nullptr) noexcept
 {
@@ -52,6 +55,7 @@ double pointSegmentDistance(const VpPoint2d& point, const VpPoint2d& start_point
     return distance(point, projection);
 }
 
+// 追加不重复的点。
 void appendUniquePoint(std::vector<VpPoint2d>& points, const VpPoint2d& point)
 {
     if (points.empty() || distance(points.back(), point) > kGeometryEpsilon)
@@ -60,6 +64,7 @@ void appendUniquePoint(std::vector<VpPoint2d>& points, const VpPoint2d& point)
     }
 }
 
+// 把多段线离散为点序列。
 std::vector<VpPoint2d> flattenedPolyline(const VpPolylineEntity& polyline)
 {
     std::vector<VpPoint2d> points;
@@ -104,6 +109,7 @@ std::vector<VpPoint2d> flattenedPolyline(const VpPolylineEntity& polyline)
     return points;
 }
 
+// 按曲率自适应离散样条。
 void appendAdaptiveSpline(const VpSplineEntity& spline, double first_parameter,
                           double second_parameter, const VpPoint2d& first_point,
                           const VpPoint2d& second_point, double tolerance, int depth,
@@ -130,6 +136,7 @@ void appendAdaptiveSpline(const VpSplineEntity& spline, double first_parameter,
                          tolerance, depth + 1, points);
 }
 
+// 把样条离散为点序列。
 std::vector<VpPoint2d> flattenedSpline(const VpSplineEntity& spline)
 {
     double minimum_x = spline.control_points.front().x;
@@ -151,6 +158,7 @@ std::vector<VpPoint2d> flattenedSpline(const VpSplineEntity& spline)
     return points;
 }
 
+// 求两条直线的交点。
 bool lineIntersection(const VpPoint2d& first_origin, const VpPoint2d& first_direction,
                       const VpPoint2d& second_origin, const VpPoint2d& second_direction,
                       VpPoint2d& intersection) noexcept
@@ -167,6 +175,7 @@ bool lineIntersection(const VpPoint2d& first_origin, const VpPoint2d& first_dire
     return true;
 }
 
+// 求两条线段的交点。
 bool segmentIntersection(const VpPoint2d& first_start, const VpPoint2d& first_end,
                          const VpPoint2d& second_start, const VpPoint2d& second_end,
                          VpPoint2d& intersection) noexcept
@@ -191,6 +200,7 @@ bool segmentIntersection(const VpPoint2d& first_start, const VpPoint2d& first_en
     return true;
 }
 
+// 计算多边形有向面积。
 double signedArea(const std::vector<VpPoint2d>& points) noexcept
 {
     if (points.size() < 3)
@@ -207,6 +217,7 @@ double signedArea(const std::vector<VpPoint2d>& points) noexcept
     return area * 0.5;
 }
 
+// 清理开放路径偏移产生的自交环。
 void removeOpenPathLoops(std::vector<VpPoint2d>& points)
 {
     for (int pass = 0; pass < 16; ++pass)
@@ -240,6 +251,7 @@ void removeOpenPathLoops(std::vector<VpPoint2d>& points)
     }
 }
 
+// 清理闭合路径偏移产生的自交环。
 void removeClosedPathLoops(std::vector<VpPoint2d>& points, bool keep_larger_loop)
 {
     for (int pass = 0; pass < 16; ++pass)
@@ -290,6 +302,7 @@ void removeClosedPathLoops(std::vector<VpPoint2d>& points, bool keep_larger_loop
     }
 }
 
+// 对选中的点序列做偏移。
 bool selectedOffset(const std::vector<VpPoint2d>& points, bool is_closed,
                     const VpPoint2d& through_point, double& offset_distance) noexcept
 {
@@ -326,6 +339,7 @@ bool selectedOffset(const std::vector<VpPoint2d>& points, bool is_closed,
     return true;
 }
 
+// 按过点计算整条路径的偏移结果。
 bool offsetPath(const std::vector<VpPoint2d>& source_points, bool is_closed,
                 const VpPoint2d& through_point, std::vector<VpPoint2d>& result_points)
 {

@@ -11,17 +11,20 @@ namespace Vp
 namespace
 {
 
+// 把角度归一化到 [0,360)。
 double normalizedAngle(double angle)
 {
     double result = std::fmod(angle, 360.0);
     return result < 0.0 ? result + 360.0 : result;
 }
 
+// 计算逆时针扫掠角。
 double counterClockwiseSpan(double start_angle, double end_angle)
 {
     return normalizedAngle(end_angle - start_angle);
 }
 
+// 按角度计算圆弧上的点。
 VpPoint2d arcPoint(const VpArcEntity& arc, double angle)
 {
     const double radians = angle * 3.14159265358979323846 / 180.0;
@@ -29,12 +32,14 @@ VpPoint2d arcPoint(const VpArcEntity& arc, double angle)
             arc.center.y + (arc.radius * std::sin(radians))};
 }
 
+// 判断角度是否落在圆弧范围内。
 bool angleOnArc(double angle, const VpArcEntity& arc)
 {
     return counterClockwiseSpan(arc.start_angle, angle) <=
            counterClockwiseSpan(arc.start_angle, arc.end_angle) + 1.0e-8;
 }
 
+// 求无限长直线与圆的交点。
 std::vector<std::pair<VpPoint2d, double>>
 infiniteLineCircleIntersections(const VpLineEntity& line, const VpPoint2d& center, double radius)
 {
@@ -63,6 +68,7 @@ infiniteLineCircleIntersections(const VpLineEntity& line, const VpPoint2d& cente
     return results;
 }
 
+// 求两圆交点。
 std::vector<VpPoint2d> circleCircleIntersections(const VpPoint2d& first_center, double first_radius,
                                                  const VpPoint2d& second_center,
                                                  double second_radius)
@@ -94,6 +100,7 @@ std::vector<VpPoint2d> circleCircleIntersections(const VpPoint2d& first_center, 
     return points;
 }
 
+// 判断交点是否落在边界图元上。
 bool boundaryAcceptsPoint(const VpEntityRecord& boundary, const VpPoint2d& point)
 {
     if (boundary.type != VpEntityType::Arc)
@@ -104,6 +111,7 @@ bool boundaryAcceptsPoint(const VpEntityRecord& boundary, const VpPoint2d& point
     return angleOnArc(entityAngleDegrees(arc.center, point), arc);
 }
 
+// 求圆弧与边界的交点。
 std::vector<VpPoint2d> arcBoundaryIntersections(const VpArcEntity& target_arc,
                                                 const VpEntityRecord& boundary)
 {

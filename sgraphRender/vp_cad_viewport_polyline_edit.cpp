@@ -11,6 +11,7 @@ namespace Vp
 namespace
 {
 
+// 判断规范化关键字是否匹配任一别名。
 bool isKeyword(const QString& normalized_keyword, const char* full_name, const char* alias)
 {
     return normalized_keyword == QLatin1String(full_name) ||

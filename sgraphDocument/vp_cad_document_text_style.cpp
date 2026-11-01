@@ -8,6 +8,7 @@ namespace Vp
 namespace
 {
 
+// 校验文字样式取值是否合法。
 bool validTextStyle(const VpTextStyleRecord& style)
 {
     return !style.name.simplified().isEmpty() && style.name.size() <= 128 &&
@@ -18,6 +19,7 @@ bool validTextStyle(const VpTextStyleRecord& style)
            style.oblique_angle < 85.0;
 }
 
+// 返回图元使用的文字样式名。
 QString entityTextStyleName(const VpEntityRecord& entity)
 {
     if (entity.type == VpEntityType::Text)

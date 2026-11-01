@@ -12,11 +12,13 @@ namespace
 
 constexpr quint32 kMaximumPointCount = 1'000'000U;
 
+// 写入一个二维点。
 void writePoint(QDataStream& stream, const VpPoint2d& point)
 {
     stream << point.x << point.y;
 }
 
+// 写入一个边界环。
 void writeLoop(QDataStream& stream, const std::vector<VpPoint2d>& loop)
 {
     stream << static_cast<quint32>(loop.size());
@@ -26,6 +28,7 @@ void writeLoop(QDataStream& stream, const std::vector<VpPoint2d>& loop)
     }
 }
 
+// 读出一个边界环。
 bool readLoop(QDataStream& stream, std::vector<VpPoint2d>& loop)
 {
     quint32 point_count = 0;

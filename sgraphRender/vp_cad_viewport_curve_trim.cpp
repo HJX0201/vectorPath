@@ -13,17 +13,20 @@ namespace
 
 constexpr double kPi = 3.14159265358979323846;
 
+// 把角度归一化到 [0,360)。
 double normalizedAngle(double angle)
 {
     double result = std::fmod(angle, 360.0);
     return result < 0.0 ? result + 360.0 : result;
 }
 
+// 计算逆时针扫掠角。
 double counterClockwiseSpan(double start_angle, double end_angle)
 {
     return normalizedAngle(end_angle - start_angle);
 }
 
+// 判断角度是否落在圆弧范围内。
 bool angleOnArc(double angle, const VpArcEntity& arc)
 {
     const double total_span = counterClockwiseSpan(arc.start_angle, arc.end_angle);
@@ -31,6 +34,7 @@ bool angleOnArc(double angle, const VpArcEntity& arc)
     return point_span <= total_span + 1.0e-7;
 }
 
+// 求直线与圆的交点。
 std::vector<VpPoint2d> lineCircleIntersections(const VpLineEntity& line, const VpPoint2d& center,
                                                double radius)
 {
@@ -65,6 +69,7 @@ std::vector<VpPoint2d> lineCircleIntersections(const VpLineEntity& line, const V
     return points;
 }
 
+// 求两圆交点。
 std::vector<VpPoint2d> circleCircleIntersections(const VpPoint2d& first_center, double first_radius,
                                                  const VpPoint2d& second_center,
                                                  double second_radius)
@@ -96,6 +101,7 @@ std::vector<VpPoint2d> circleCircleIntersections(const VpPoint2d& first_center, 
     return points;
 }
 
+// 判断点是否落在图元上。
 bool pointOnEntity(const VpPoint2d& point, const VpEntityRecord& entity)
 {
     if (entity.type != VpEntityType::Arc)
@@ -106,6 +112,7 @@ bool pointOnEntity(const VpPoint2d& point, const VpEntityRecord& entity)
     return angleOnArc(entityAngleDegrees(arc.center, point), arc);
 }
 
+// 求两个图元的交点。
 std::vector<VpPoint2d> curveIntersections(const VpEntityRecord& first, const VpEntityRecord& second)
 {
     std::vector<VpPoint2d> points;
@@ -152,6 +159,7 @@ std::vector<VpPoint2d> curveIntersections(const VpEntityRecord& first, const VpE
     return points;
 }
 
+// 把直线裁剪到与剪切边的交点之间。
 std::vector<VpEntityRecord> trimLine(const VpEntityRecord& target,
                                      const std::vector<VpPoint2d>& intersections,
                                      const VpPoint2d& pick_point)
@@ -212,6 +220,7 @@ std::vector<VpEntityRecord> trimLine(const VpEntityRecord& target,
     return results;
 }
 
+// 计算点到线段的距离。
 double pointToSegmentDistance(const VpPoint2d& point, const VpPoint2d& start_point,
                               const VpPoint2d& end_point)
 {
@@ -230,11 +239,13 @@ double pointToSegmentDistance(const VpPoint2d& point, const VpPoint2d& start_poi
                     {start_point.x + (parameter * delta_x), start_point.y + (parameter * delta_y)});
 }
 
+// 计算顺时针扫掠角。
 double clockwiseSpan(double start_angle, double end_angle)
 {
     return normalizedAngle(start_angle - end_angle);
 }
 
+// 求点在线段上的归一化参数。
 double polylineSegmentParameter(const VpPoint2d& start_point, const VpPoint2d& end_point,
                                 double bulge, const VpPoint2d& point)
 {
@@ -261,6 +272,7 @@ double polylineSegmentParameter(const VpPoint2d& start_point, const VpPoint2d& e
     return total_span <= 1.0e-12 ? 0.0 : point_span / total_span;
 }
 
+// 按参数取线段上的点。
 VpPoint2d polylineSegmentPoint(const VpPoint2d& start_point, const VpPoint2d& end_point,
                                double bulge, double parameter)
 {
@@ -281,6 +293,7 @@ VpPoint2d polylineSegmentPoint(const VpPoint2d& start_point, const VpPoint2d& en
             arc.center.y + (arc.radius * std::sin(angle))};
 }
 
+// 计算点到多段线线段的距离。
 double pointToPolylineSegmentDistance(const VpPoint2d& point, const VpPoint2d& start_point,
                                       const VpPoint2d& end_point, double bulge)
 {
@@ -300,11 +313,13 @@ double pointToPolylineSegmentDistance(const VpPoint2d& point, const VpPoint2d& s
     return std::min(distance(point, start_point), distance(point, end_point));
 }
 
+// 按参数截取凸度值。
 double partialBulge(double bulge, double start_parameter, double end_parameter)
 {
     return std::tan(std::atan(bulge) * std::max(0.0, end_parameter - start_parameter));
 }
 
+// 追加多段线的一段边。
 void appendPolylineEdge(std::vector<VpPoint2d>& vertices, std::vector<double>& bulges,
                         const VpPoint2d& start_point, const VpPoint2d& end_point, double bulge)
 {
@@ -326,6 +341,7 @@ void appendPolylineEdge(std::vector<VpPoint2d>& vertices, std::vector<double>& b
     bulges.push_back(0.0);
 }
 
+// 追加开放多段线的一段。
 void appendOpenPolylinePart(const VpEntityRecord& source, std::vector<VpPoint2d> vertices,
                             std::vector<double> bulges, std::vector<VpEntityRecord>& results)
 {
@@ -338,6 +354,7 @@ void appendOpenPolylinePart(const VpEntityRecord& source, std::vector<VpPoint2d>
     results.push_back(std::move(result));
 }
 
+// 裁剪开放多段线。
 std::vector<VpEntityRecord> trimOpenPolyline(const VpEntityRecord& cutting_entity,
                                              const VpEntityRecord& target_entity,
                                              const VpPoint2d& pick_point)

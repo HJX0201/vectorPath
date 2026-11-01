@@ -16,16 +16,19 @@ namespace Vp
 namespace
 {
 
+// 写出一条字符串组码。
 void writePair(QTextStream& stream, int group_code, const QString& value)
 {
     stream << group_code << '\n' << value << '\n';
 }
 
+// 写出一条数值组码。
 void writePair(QTextStream& stream, int group_code, int value)
 {
     writePair(stream, group_code, QString::number(value));
 }
 
+// 读取 DXF 的全部组码对。
 std::vector<VpDxfPair> readPairs(const QString& file_path, QString& error_message)
 {
     QFile file(file_path);
@@ -62,6 +65,7 @@ std::vector<VpDxfPair> readPairs(const QString& file_path, QString& error_messag
     return pairs;
 }
 
+// 写出表段的起始标记。
 void writeTableStart(QTextStream& stream, const QString& name, const QString& handle, int count)
 {
     writePair(stream, 0, QStringLiteral("TABLE"));
@@ -71,12 +75,14 @@ void writeTableStart(QTextStream& stream, const QString& name, const QString& ha
     writePair(stream, 70, count);
 }
 
+// 写出一个空表。
 void writeEmptyTable(QTextStream& stream, const QString& name, const QString& handle)
 {
     writeTableStart(stream, name, handle, 0);
     writePair(stream, 0, QStringLiteral("ENDTAB"));
 }
 
+// 写出 DXF 头段。
 void writeHeader(QTextStream& stream)
 {
     writePair(stream, 999, QStringLiteral("vectorPath LibreDWG R2000 interchange"));
@@ -91,6 +97,7 @@ void writeHeader(QTextStream& stream)
     writePair(stream, 0, QStringLiteral("ENDSEC"));
 }
 
+// 写出线型表。
 void writeLineTypeTable(QTextStream& stream)
 {
     writeTableStart(stream, QStringLiteral("LTYPE"), QStringLiteral("5"), 1);
@@ -107,6 +114,7 @@ void writeLineTypeTable(QTextStream& stream)
     writePair(stream, 0, QStringLiteral("ENDTAB"));
 }
 
+// 写出图层表。
 void writeLayerTable(QTextStream& stream, const VpCadDocument& document)
 {
     const std::vector<VpLayerRecord>& layers = document.layers();
@@ -132,6 +140,7 @@ void writeLayerTable(QTextStream& stream, const VpCadDocument& document)
     writePair(stream, 0, QStringLiteral("ENDTAB"));
 }
 
+// 写出块记录表。
 void writeBlockRecordTable(QTextStream& stream)
 {
     writeTableStart(stream, QStringLiteral("BLOCK_RECORD"), QStringLiteral("1"), 2);
@@ -149,6 +158,7 @@ void writeBlockRecordTable(QTextStream& stream)
     writePair(stream, 0, QStringLiteral("ENDTAB"));
 }
 
+// 写出全部表段。
 void writeTables(QTextStream& stream, const VpCadDocument& document)
 {
     writePair(stream, 0, QStringLiteral("SECTION"));
@@ -164,6 +174,7 @@ void writeTables(QTextStream& stream, const VpCadDocument& document)
     writePair(stream, 0, QStringLiteral("ENDSEC"));
 }
 
+// 写出一个块定义。
 void writeBlock(QTextStream& stream, const QString& name, const QString& owner,
                 const QString& begin_handle, const QString& end_handle, bool is_paper_space)
 {
@@ -196,6 +207,7 @@ void writeBlock(QTextStream& stream, const QString& name, const QString& owner,
     writePair(stream, 100, QStringLiteral("AcDbBlockEnd"));
 }
 
+// 返回图元需要的子类标记。
 QStringList entitySubclasses(const QString& entity_name)
 {
     if (entity_name == QLatin1String("LINE"))
@@ -241,6 +253,7 @@ QStringList entitySubclasses(const QString& entity_name)
     return {};
 }
 
+// 把一组组码写成图元。
 void writeEntity(QTextStream& stream, const QString& entity_name,
                  const std::vector<VpDxfPair>& entity_pairs, quint64 handle,
                  const QString& owner_handle)
@@ -273,6 +286,7 @@ void writeEntity(QTextStream& stream, const QString& entity_name,
     }
 }
 
+// 写出 DXF 必需的空块。
 void writeRequiredBlocks(QTextStream& stream)
 {
     writePair(stream, 0, QStringLiteral("SECTION"));
@@ -284,6 +298,7 @@ void writeRequiredBlocks(QTextStream& stream)
     writePair(stream, 0, QStringLiteral("ENDSEC"));
 }
 
+// 写出全部图元段。
 void writeEntities(QTextStream& stream, const std::vector<VpDxfPair>& pairs, quint64& handle)
 {
     writePair(stream, 0, QStringLiteral("SECTION"));

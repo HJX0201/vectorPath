@@ -12,6 +12,7 @@ namespace Vp
 namespace
 {
 
+// 返回控件在分割器中的下标。
 int splitterChildIndex(QSplitter* splitter, const QWidget* target)
 {
     for (int child_index = 0; child_index < splitter->count(); ++child_index)
@@ -25,6 +26,7 @@ int splitterChildIndex(QSplitter* splitter, const QWidget* target)
     return -1;
 }
 
+// 返回同时容纳两个控件的分割器。
 QSplitter* sharedSplitter(QWidget* root, const QWidget* first, const QWidget* second)
 {
     const QList<QSplitter*> splitters = root->findChildren<QSplitter*>();
@@ -40,6 +42,7 @@ QSplitter* sharedSplitter(QWidget* root, const QWidget* first, const QWidget* se
     return nullptr;
 }
 
+// 设置控件在分割器中的占比。
 void setChildProportion(QSplitter* splitter, const QWidget* target, double proportion)
 {
     if (!splitter || splitter->count() != 2)

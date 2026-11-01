@@ -9,6 +9,7 @@ namespace Vp
 namespace
 {
 
+// 生成命令的配置键名。
 QString settingKey(const QString& command_id)
 {
     return QStringLiteral("shortcuts/%1").arg(command_id);

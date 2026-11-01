@@ -43,6 +43,7 @@ const VpDesktopTestSuite kSuites[] = {
 #undef VECTORPATH_DESKTOP_TEST
 };
 
+// 初始化测试用的应用程序环境。
 void initializeApplication(QCoreApplication& application, const VpDesktopTestSuite& suite)
 {
     application.setAttribute(Qt::AA_Use96Dpi, true);
@@ -50,6 +51,7 @@ void initializeApplication(QCoreApplication& application, const VpDesktopTestSui
     application.setApplicationName(QString::fromLatin1(suite.name));
 }
 
+// 运行一个测试套件并返回退出码。
 int runSuite(const VpDesktopTestSuite& suite, int argc, char* argv[])
 {
     switch (suite.application_mode)
@@ -81,6 +83,7 @@ int runSuite(const VpDesktopTestSuite& suite, int argc, char* argv[])
     return 2;
 }
 
+// 列出可用的测试套件。
 void listSuites()
 {
     for (const VpDesktopTestSuite& suite : kSuites)
@@ -92,6 +95,7 @@ void listSuites()
 } // namespace
 } // namespace Vp
 
+// 桌面测试入口。
 int main(int argc, char* argv[])
 {
     if (argc == 2 && std::strcmp(argv[1], "--list-suites") == 0)

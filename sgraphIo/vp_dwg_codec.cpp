@@ -18,6 +18,7 @@ namespace Vp
 namespace
 {
 
+// 返回随程序发布的 libredwg 目录。
 QString bundledToolDirectory()
 {
     const QString deployed_directory =
@@ -44,6 +45,7 @@ struct VpProcessResult
     QString error_output;
 };
 
+// 调用 libredwg 工具并收集输出与退出码。
 VpProcessResult runLibreDwgTool(const QString& executable_name, const QStringList& arguments,
                                 int timeout_ms = 120'000)
 {
@@ -76,6 +78,7 @@ VpProcessResult runLibreDwgTool(const QString& executable_name, const QStringLis
             standard_output, error_output};
 }
 
+// 先写临时文件再替换目标，避免中断留下半个文件。
 VpResult<void> copyAtomically(const QString& source_path, const QString& target_path)
 {
     QFile source_file(source_path);

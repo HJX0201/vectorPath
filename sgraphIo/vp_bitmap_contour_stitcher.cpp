@@ -13,6 +13,7 @@ namespace bitmapVectorPrivate
 namespace
 {
 
+// 返回边界线段的方向编号。
 int segmentDirection(const VpBoundarySegment& segment)
 {
     const QPoint delta = segment.end - segment.start;
@@ -31,6 +32,7 @@ int segmentDirection(const VpBoundarySegment& segment)
     return 3;
 }
 
+// 给转向组合打分，用于选择拼接顺序。
 int turnPriority(int previous_direction, int next_direction)
 {
     const int turn = (next_direction - previous_direction + 4) % 4;
@@ -49,6 +51,7 @@ int turnPriority(int previous_direction, int next_direction)
     return 3;
 }
 
+// 把二维整数点编码为查找键。
 quint64 pointKey(const QPoint& point)
 {
     return (static_cast<quint64>(static_cast<quint32>(point.x())) << 32U) |
@@ -65,6 +68,7 @@ struct VpNormalizedSegment
     int high = 0;
 };
 
+// 把线段端点排序归一，便于比较。
 VpNormalizedSegment normalizeSegment(const VpBoundarySegment& segment)
 {
     const int direction = segmentDirection(segment);
@@ -79,6 +83,7 @@ VpNormalizedSegment normalizeSegment(const VpBoundarySegment& segment)
             std::max(first, second)};
 }
 
+// 把归一化线段还原为原始方向。
 VpBoundarySegment restoreSegment(const VpNormalizedSegment& segment)
 {
     if (segment.direction == 0)
@@ -112,6 +117,7 @@ VpBoundarySegment restoreSegment(const VpNormalizedSegment& segment)
             segment.block_id};
 }
 
+// 去掉闭合轮廓里的共线与重复点。
 std::vector<QPoint> simplifyLoop(const std::vector<QPoint>& source)
 {
     if (source.size() < 4)
@@ -135,6 +141,7 @@ std::vector<QPoint> simplifyLoop(const std::vector<QPoint>& source)
     return result;
 }
 
+// 把轮廓旋转到固定起点，便于去重。
 void canonicalizeLoop(std::vector<QPoint>& points)
 {
     if (points.empty())

@@ -11,6 +11,7 @@ namespace Vp
 namespace
 {
 
+// 把阵列参数写到生成的图元上。
 void applyArrayData(std::vector<VpEntityRecord>& results,
                     const std::vector<VpEntityRecord>& sources,
                     const VpAssociativeArrayData& parameters)
@@ -31,6 +32,7 @@ void applyArrayData(std::vector<VpEntityRecord>& results,
     }
 }
 
+// 取出阵列的源图元。
 std::vector<VpEntityRecord> sourceEntities(const std::vector<VpEntityRecord>& document_entities,
                                            VpArrayId array_id)
 {
@@ -57,6 +59,7 @@ std::vector<VpEntityRecord> sourceEntities(const std::vector<VpEntityRecord>& do
     return sources;
 }
 
+// 按位置排序阵列成员的标识。
 std::vector<VpEntityId> sortedMemberIds(const std::vector<VpEntityRecord>& document_entities,
                                         VpArrayId array_id)
 {
@@ -87,6 +90,7 @@ std::vector<VpEntityId> sortedMemberIds(const std::vector<VpEntityRecord>& docum
     return ids;
 }
 
+// 取出路径阵列使用的路径图元。
 const VpEntityRecord* pathEntity(const std::vector<VpEntityRecord>& entities, VpEntityId path_id)
 {
     const auto iterator = std::find_if(entities.begin(), entities.end(),

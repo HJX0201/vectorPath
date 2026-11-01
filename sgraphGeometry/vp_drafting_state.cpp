@@ -10,6 +10,7 @@ namespace
 
 constexpr double kPi = 3.14159265358979323846;
 
+// 按角度生成单位向量。
 VpPoint2d unitVector(double angle_degrees)
 {
     const double angle_radians = angle_degrees * kPi / 180.0;

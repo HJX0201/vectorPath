@@ -7,6 +7,7 @@ namespace Vp
 namespace
 {
 
+// 把系统命令文案翻译成中文，未命中时返回空。
 QString translateSystemCommand(const char* source_text)
 {
     if (std::strcmp(source_text, "Restore") == 0 || std::strcmp(source_text, "Restored") == 0)

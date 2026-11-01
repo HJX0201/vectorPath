@@ -12,23 +12,27 @@ namespace
 
 constexpr double kPi = 3.14159265358979323846;
 
+// 把角度归一化到 [0,360)。
 double normalizedAngle(double angle)
 {
     const double result = std::fmod(angle, 360.0);
     return result < 0.0 ? result + 360.0 : result;
 }
 
+// 计算逆时针扫掠角。
 double counterClockwiseSpan(double start_angle, double end_angle)
 {
     return normalizedAngle(end_angle - start_angle);
 }
 
+// 判断角度是否落在圆弧范围内。
 bool angleOnArc(double angle, const VpArcEntity& arc)
 {
     return counterClockwiseSpan(arc.start_angle, angle) <=
            counterClockwiseSpan(arc.start_angle, arc.end_angle) + 1.0e-8;
 }
 
+// 按角度计算圆弧上的点。
 VpPoint2d arcPoint(const VpArcEntity& arc, double angle)
 {
     const double radians = angle * kPi / 180.0;
@@ -36,6 +40,7 @@ VpPoint2d arcPoint(const VpArcEntity& arc, double angle)
             arc.center.y + (arc.radius * std::sin(radians))};
 }
 
+// 求直线与圆弧的交点。
 std::vector<VpPoint2d> lineArcIntersections(const VpLineEntity& line, const VpArcEntity& arc)
 {
     std::vector<VpPoint2d> intersections;
@@ -71,6 +76,7 @@ std::vector<VpPoint2d> lineArcIntersections(const VpLineEntity& line, const VpAr
     return intersections;
 }
 
+// 求两段圆弧的交点。
 std::vector<VpPoint2d> arcArcIntersections(const VpArcEntity& first_arc,
                                            const VpArcEntity& second_arc)
 {
@@ -110,6 +116,7 @@ std::vector<VpPoint2d> arcArcIntersections(const VpArcEntity& first_arc,
     return intersections;
 }
 
+// 把直线裁剪到交点处。
 bool trimLine(const VpEntityRecord& source, const VpPoint2d& intersection,
               const VpPoint2d& pick_point, double trim_distance, VpEntityRecord& result,
               VpPoint2d& trim_point)
@@ -155,6 +162,7 @@ bool trimLine(const VpEntityRecord& source, const VpPoint2d& intersection,
     return true;
 }
 
+// 把圆弧裁剪到交点处。
 bool trimArc(const VpEntityRecord& source, const VpPoint2d& intersection,
              const VpPoint2d& pick_point, double trim_distance, VpEntityRecord& result,
              VpPoint2d& trim_point)
@@ -193,6 +201,7 @@ bool trimArc(const VpEntityRecord& source, const VpPoint2d& intersection,
     return true;
 }
 
+// 按图元类型裁剪到交点处。
 bool trimEntity(const VpEntityRecord& source, const VpPoint2d& intersection,
                 const VpPoint2d& pick_point, double trim_distance, VpEntityRecord& result,
                 VpPoint2d& trim_point)

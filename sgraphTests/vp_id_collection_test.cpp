@@ -11,6 +11,7 @@ namespace Vp
 namespace
 {
 
+// 断言条件成立，失败时输出消息。
 void expect(bool condition, const char* message)
 {
     if (!condition)
@@ -19,6 +20,7 @@ void expect(bool condition, const char* message)
     }
 }
 
+// 返回记录集合的标识列表。
 std::vector<std::uint64_t> ids(const std::vector<VpCollectionRecord>& records)
 {
     std::vector<std::uint64_t> result;
@@ -29,6 +31,7 @@ std::vector<std::uint64_t> ids(const std::vector<VpCollectionRecord>& records)
     return result;
 }
 
+// 覆盖空集合、单元素与缺失标识。
 void emptySingleAndMissingIds()
 {
     std::vector<VpCollectionRecord> records;
@@ -47,6 +50,7 @@ void emptySingleAndMissingIds()
     expect(records.empty(), "aliased removal must leave no records");
 }
 
+// 覆盖重复标识与稳定保留顺序。
 void duplicatesAndStableSurvivors()
 {
     std::vector<VpCollectionRecord> records;
@@ -74,6 +78,7 @@ void duplicatesAndStableSurvivors()
     expect(records.empty(), "bulk aliased removal must leave no records");
 }
 
+// 与参考实现做随机对比。
 void randomizedReferenceComparison()
 {
     std::mt19937 generator(2048);
@@ -108,6 +113,7 @@ void randomizedReferenceComparison()
 } // namespace
 } // namespace Vp
 
+// 运行标识集合测试。
 int vpRunIdCollectionTests()
 {
     try

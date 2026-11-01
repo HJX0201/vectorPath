@@ -14,6 +14,7 @@ struct VpFileCompatibilityReport
     std::size_t exported_entity_count = 0;
     std::size_t skipped_entity_count = 0;
 
+    // 返回是否有兼容性警告。
     bool hasWarnings() const noexcept
     {
         return !warnings.isEmpty();

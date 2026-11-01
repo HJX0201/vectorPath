@@ -63,6 +63,7 @@ QRectF entityBounds(const VpColoredEntityGeometry& entity)
     return {};
 }
 
+// 计算导入几何的包围盒。
 QRectF geometryBounds(const VpVectorImportGeometry& geometry)
 {
     QRectF result;
@@ -80,6 +81,7 @@ QRectF geometryBounds(const VpVectorImportGeometry& geometry)
     return result;
 }
 
+// 在预览中绘制一个图元。
 void drawEntity(QPainter& painter, const VpColoredEntityGeometry& entity,
                 const QRectF& world_bounds, const QRectF& target)
 {

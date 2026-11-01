@@ -12,6 +12,7 @@ namespace Vp
 namespace
 {
 
+// 计算轮廓集合的哈希，用于比对。
 QByteArray contourHash(const std::vector<VpBitmapContour>& contours)
 {
     std::vector<QByteArray> entries;
@@ -39,6 +40,7 @@ QByteArray contourHash(const std::vector<VpBitmapContour>& contours)
     return hash.result().toHex();
 }
 
+// 把轮廓栅格化为图像。
 QImage rasterize(int width, int height, const std::vector<VpBitmapContour>& contours)
 {
     QMap<QRgb, std::vector<const VpBitmapContour*>> color_contours;
@@ -89,6 +91,7 @@ QImage rasterize(int width, int height, const std::vector<VpBitmapContour>& cont
     return result;
 }
 
+// 比对两张图像并输出差异图。
 bool compareImage(const QImage& source, const QImage& actual, QImage* difference)
 {
     bool matches = true;
@@ -119,6 +122,7 @@ bool compareImage(const QImage& source, const QImage& actual, QImage* difference
     return matches;
 }
 
+// 校验生成的 SVG 是否可用。
 QString validateSvg(const VpBitmapVectorResult& result, const QString& algorithm)
 {
     const auto parsed = parseSvgVectorData(result.svg_data);

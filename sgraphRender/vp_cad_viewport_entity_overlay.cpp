@@ -14,12 +14,14 @@ namespace
 
 constexpr double kPi = 3.14159265358979323846;
 
+// 按极坐标计算点。
 VpPoint2d polarPoint(const VpPoint2d& center, double radius, double angle_degrees)
 {
     const double radians = angle_degrees * kPi / 180.0;
     return {center.x + radius * std::cos(radians), center.y + radius * std::sin(radians)};
 }
 
+// 返回图元的特征点，用于显示节点标记。
 std::vector<VpPoint2d> entityKeyPoints(const VpEntityRecord& entity)
 {
     if (entity.type == VpEntityType::Line)
@@ -85,6 +87,7 @@ std::vector<VpPoint2d> entityKeyPoints(const VpEntityRecord& entity)
     return {};
 }
 
+// 取出图元的起点与方向。
 bool directionVector(const VpEntityRecord& entity, VpPoint2d& point, VpPoint2d& vector)
 {
     if (entity.type == VpEntityType::Line)

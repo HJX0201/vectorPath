@@ -18,6 +18,7 @@ namespace Vp
 namespace
 {
 
+// 判断当前工具是否需要光标预览。
 bool toolHasCursorPreview(VpToolMode tool_mode)
 {
     return tool_mode == VpToolMode::Move || tool_mode == VpToolMode::Copy ||
@@ -36,6 +37,7 @@ bool toolHasCursorPreview(VpToolMode tool_mode)
            tool_mode == VpToolMode::Hatch;
 }
 
+// 按图层线型设置画笔样式。
 void applyLayerLineType(QPen& pen, const QString& line_type)
 {
     if (line_type == QLatin1String("Dashed"))

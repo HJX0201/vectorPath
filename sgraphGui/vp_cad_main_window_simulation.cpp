@@ -18,6 +18,7 @@ namespace Vp
 namespace
 {
 
+// 返回视口中选中的图元标识。
 std::vector<VpEntityId> selectedIds(const VpCadViewport& viewport)
 {
     std::vector<VpEntityId> ids;

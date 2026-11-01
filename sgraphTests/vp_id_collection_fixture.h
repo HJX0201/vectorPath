@@ -17,11 +17,13 @@ struct VpCollectionRecord
     inline static std::size_t copied_payload_bytes = 0;
     inline static std::size_t move_assignments = 0;
 
+    // 构造带指定点数的测试记录。
     explicit VpCollectionRecord(std::uint64_t record_id, std::size_t point_count = 128)
         : id(record_id), geometry(point_count, static_cast<double>(record_id))
     {
     }
 
+    // 拷贝构造，统计拷贝次数与负载字节。
     VpCollectionRecord(const VpCollectionRecord& other) : id(other.id), geometry(other.geometry)
     {
         ++copies;
@@ -48,6 +50,7 @@ struct VpCollectionRecord
         return *this;
     }
 
+    // 清零统计计数。
     static void resetCounters()
     {
         copies = 0;

@@ -13,6 +13,7 @@ namespace Vp
 namespace
 {
 
+// 返回选中图元携带的关联阵列参数。
 const VpAssociativeArrayData* selectedArrayData(const VpCadDocument* document,
                                                 const std::vector<VpEntityId>& selected_ids)
 {

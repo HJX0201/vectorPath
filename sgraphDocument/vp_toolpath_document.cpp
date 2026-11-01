@@ -18,6 +18,7 @@ struct VpLayerToolpathCandidates
     std::vector<VpEntityRecord> entities;
 };
 
+// 按图层分别对图元排序。
 VpToolpathSortResult sortToolpathsByLayer(const std::vector<VpEntityRecord>& candidates,
                                           const VpToolpathSortOptions& options)
 {

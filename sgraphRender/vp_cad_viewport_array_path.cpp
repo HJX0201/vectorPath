@@ -22,6 +22,7 @@ struct VpPathSegment
     double length = 0.0;
 };
 
+// 把路径图元展开为可采样的线段。
 std::vector<VpPathSegment> pathSegments(const VpEntityRecord& path, bool& is_closed,
                                         double& total_length)
 {
@@ -68,6 +69,7 @@ std::vector<VpPathSegment> pathSegments(const VpEntityRecord& path, bool& is_clo
     return segments;
 }
 
+// 按归一化距离取路径上的点。
 VpPoint2d pointOnPath(const std::vector<VpPathSegment>& segments, double target_distance,
                       double& tangent_angle)
 {

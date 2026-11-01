@@ -9,6 +9,7 @@ namespace
 
 constexpr double kPi = 3.14159265358979323846;
 
+// 返回标准图形的边数。
 int standardShapeSideCount(VpStandardShapeType shape_type)
 {
     switch (shape_type)

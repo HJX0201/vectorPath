@@ -12,6 +12,7 @@ namespace
 
 constexpr double kPi = 3.14159265358979323846;
 
+// 绘制正多边形或星形轮廓。
 void drawRegularPolygon(QPainter& painter, int vertex_count, double inner_ratio = 1.0)
 {
     QPolygonF polygon;
@@ -24,6 +25,7 @@ void drawRegularPolygon(QPainter& painter, int vertex_count, double inner_ratio 
     painter.drawPolygon(polygon);
 }
 
+// 绘制布尔运算的两个操作数图形。
 void drawBooleanOperands(QPainter& painter, VpIconType icon_type, const QColor& foreground,
                          const QColor& accent_color)
 {

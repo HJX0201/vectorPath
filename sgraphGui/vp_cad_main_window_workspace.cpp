@@ -59,6 +59,7 @@ namespace Vp
 namespace
 {
 
+// 创建承载列表控件的停靠窗口。
 ads::CDockWidget* createListDock(ads::CDockManager* dock_manager, const QString& title,
                                  const QStringList& items, const QIcon& icon, QWidget* parent)
 {

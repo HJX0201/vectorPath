@@ -8,6 +8,7 @@ namespace Vp
 namespace
 {
 
+// 按方向绘制箭头。
 void drawArrow(QPainter& painter, const QPointF& tip, const QPointF& direction)
 {
     QPolygonF arrow;

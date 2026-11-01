@@ -22,6 +22,7 @@ namespace
 
 constexpr int kDefaultAutosaveIntervalMilliseconds = 5 * 60 * 1000;
 
+// 把源文件路径规范化，用于匹配恢复快照。
 QString normalizedSourcePath(const QString& file_path)
 {
     return file_path.isEmpty() ? QString() : QFileInfo(file_path).absoluteFilePath();

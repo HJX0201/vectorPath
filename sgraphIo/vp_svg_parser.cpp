@@ -44,6 +44,7 @@ struct VpSvgViewport
     double height = 0.0;
 };
 
+// 解析数值，失败时返回默认值。
 double number(const QString& value, double fallback = 0.0)
 {
     static const QRegularExpression pattern(
@@ -58,6 +59,7 @@ double number(const QString& value, double fallback = 0.0)
     return is_valid ? result : fallback;
 }
 
+// 解析一组数值。
 std::vector<double> numbers(const QString& value)
 {
     static const QRegularExpression pattern(
@@ -71,6 +73,7 @@ std::vector<double> numbers(const QString& value)
     return result;
 }
 
+// 解析颜色文本，并按需去重记录警告。
 QColor parseColor(const QString& text, QSet<QString>& warning_keys, QStringList& warnings)
 {
     const QString value = text.trimmed();
@@ -124,6 +127,7 @@ QColor parseColor(const QString& text, QSet<QString>& warning_keys, QStringList&
     return color;
 }
 
+// 把不透明度应用到颜色。
 void applyOpacity(QColor& color, double opacity)
 {
     if (color.isValid())
@@ -132,6 +136,7 @@ void applyOpacity(QColor& color, double opacity)
     }
 }
 
+// 把 style 属性解析为键值表。
 QHash<QString, QString> inlineStyle(const QString& text)
 {
     QHash<QString, QString> result;
@@ -147,6 +152,7 @@ QHash<QString, QString> inlineStyle(const QString& text)
     return result;
 }
 
+// 合并继承样式与当前元素样式。
 VpSvgStyle elementStyle(const QXmlStreamAttributes& attributes, const VpSvgStyle& inherited,
                         QSet<QString>& warning_keys, QStringList& warnings)
 {
@@ -205,6 +211,7 @@ VpSvgStyle elementStyle(const QXmlStreamAttributes& attributes, const VpSvgStyle
     return result;
 }
 
+// 把 transform 文本解析为变换矩阵。
 QTransform svgTransform(const QString& text)
 {
     static const QRegularExpression operation_pattern(
@@ -256,6 +263,7 @@ QTransform svgTransform(const QString& text)
     return result;
 }
 
+// 解析点列表文本。
 std::vector<QPointF> pointList(const QString& text)
 {
     const std::vector<double> values = numbers(text);
@@ -267,6 +275,7 @@ std::vector<QPointF> pointList(const QString& text)
     return result;
 }
 
+// 把 SVG 元素解析为子路径。
 std::vector<VpSvgSubpath> elementPaths(const QString& name, const QXmlStreamAttributes& attributes,
                                        QString& error_message)
 {
@@ -346,6 +355,7 @@ std::vector<VpSvgSubpath> elementPaths(const QString& name, const QXmlStreamAttr
     return result;
 }
 
+// 把路径离散为点序列。
 std::vector<VpPoint2d> flattenedPoints(const QPainterPath& path, const QTransform& transform)
 {
     const QList<QPolygonF> polygons = transform.map(path).toSubpathPolygons();
@@ -365,6 +375,7 @@ std::vector<VpPoint2d> flattenedPoints(const QPainterPath& path, const QTransfor
     return result;
 }
 
+// 返回轮廓应使用的颜色。
 QColor outlineColor(const VpSvgStyle& style)
 {
     QColor result = style.stroke.isValid() ? style.stroke : style.fill;
@@ -377,6 +388,7 @@ QColor outlineColor(const VpSvgStyle& style)
     return result;
 }
 
+// 返回区域填充应使用的颜色。
 QColor regionColor(const VpSvgStyle& style)
 {
     QColor result = style.fill.isValid() ? style.fill : style.stroke;
@@ -389,6 +401,7 @@ QColor regionColor(const VpSvgStyle& style)
     return result;
 }
 
+// 按视口把坐标归一化到图纸范围。
 void normalizeCoordinates(VpSvgVectorData& data, VpSvgViewport viewport)
 {
     double maximum_x = 0.0;

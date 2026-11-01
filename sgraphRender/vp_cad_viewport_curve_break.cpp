@@ -10,23 +10,27 @@ namespace
 
 constexpr double kAngleTolerance = 1.0e-8;
 
+// 把角度归一化到 [0,360)。
 double normalizedAngle(double angle)
 {
     const double result = std::fmod(angle, 360.0);
     return result < 0.0 ? result + 360.0 : result;
 }
 
+// 计算逆时针扫掠角。
 double counterClockwiseSpan(double start_angle, double end_angle)
 {
     return normalizedAngle(end_angle - start_angle);
 }
 
+// 计算两个角度之间的最小夹角。
 double circularDistance(double first_angle, double second_angle)
 {
     const double span = counterClockwiseSpan(first_angle, second_angle);
     return std::min(span, 360.0 - span);
 }
 
+// 求点在圆弧上的参数位置。
 double arcParameter(const VpArcEntity& arc, const VpPoint2d& point)
 {
     const double total_span = counterClockwiseSpan(arc.start_angle, arc.end_angle);
@@ -42,6 +46,7 @@ double arcParameter(const VpArcEntity& arc, const VpPoint2d& point)
                : total_span;
 }
 
+// 把圆弧的一段追加为图元。
 void appendArcPart(const VpEntityRecord& source, const VpArcEntity& arc, double start_parameter,
                    double end_parameter, std::vector<VpEntityRecord>& results)
 {
@@ -57,6 +62,7 @@ void appendArcPart(const VpEntityRecord& source, const VpArcEntity& arc, double 
     results.push_back(std::move(result));
 }
 
+// 在交点处打断整圆。
 std::vector<VpEntityRecord> breakCircle(const VpEntityRecord& source,
                                         const VpPoint2d& first_break_point,
                                         const VpPoint2d& second_break_point)
@@ -74,6 +80,7 @@ std::vector<VpEntityRecord> breakCircle(const VpEntityRecord& source,
     return {result};
 }
 
+// 在交点处打断圆弧。
 std::vector<VpEntityRecord> breakArc(const VpEntityRecord& source,
                                      const VpPoint2d& first_break_point,
                                      const VpPoint2d& second_break_point)

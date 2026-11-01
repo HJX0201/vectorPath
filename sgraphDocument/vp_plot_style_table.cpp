@@ -28,6 +28,7 @@ struct VpParsedStyle
     qint64 mode_color = kObjectColor;
 };
 
+// 取出属性行中等号右侧的值。
 QString propertyValue(const QString& line)
 {
     QString value = line.section(QLatin1Char('='), 1).trimmed();
@@ -39,11 +40,13 @@ QString propertyValue(const QString& line)
     return appendix_index > 0 ? value.left(appendix_index) : value;
 }
 
+// 解析样式表里的布尔取值。
 bool parseBoolean(const QString& value)
 {
     return value.compare(QLatin1String("TRUE"), Qt::CaseInsensitive) == 0;
 }
 
+// 把样式表中编码的颜色解码为 QColor。
 QColor decodeColor(qint64 encoded_color)
 {
     const quint32 value = static_cast<quint32>(encoded_color);
@@ -51,6 +54,7 @@ QColor decodeColor(qint64 encoded_color)
                   static_cast<int>(value & 0xff));
 }
 
+// 解压打印样式表数据，兼容未压缩的内容。
 QByteArray decompressedPlotStyleData(const QByteArray& file_data)
 {
     if (file_data.size() <= 60 || !file_data.startsWith(kPlotStyleSignature))
@@ -70,6 +74,7 @@ QByteArray decompressedPlotStyleData(const QByteArray& file_data)
     return result;
 }
 
+// 解析一行样式属性并写入记录。
 void parseStyleProperty(VpParsedStyle& style, const QString& line)
 {
     const QString key = line.section(QLatin1Char('='), 0, 0).trimmed();
@@ -223,6 +228,7 @@ VpResult<VpPlotStyleTable> parsePlotStyleData(const QByteArray& data, const QStr
 namespace
 {
 
+// 把 AutoCAD 颜色索引转换为 QColor。
 QColor aciColor(int aci)
 {
     static const QColor basic_colors[]{QColor(),
@@ -253,6 +259,7 @@ QColor aciColor(int aci)
     return QColor(gray_values[gray_index], gray_values[gray_index], gray_values[gray_index]);
 }
 
+// 查找与给定颜色最接近的颜色索引。
 int nearestAci(const QColor& color)
 {
     int nearest_index = 7;

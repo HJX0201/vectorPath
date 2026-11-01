@@ -11,6 +11,7 @@ namespace Vp
 namespace
 {
 
+// 判断样式集合中是否已有该名称。
 template <typename SStyle>
 bool hasStyle(const std::vector<SStyle>& styles, const QString& style_name)
 {
@@ -21,6 +22,7 @@ bool hasStyle(const std::vector<SStyle>& styles, const QString& style_name)
                        });
 }
 
+// 校验文字样式取值是否合法。
 bool validTextStyle(const VpTextStyleRecord& style)
 {
     return !style.name.trimmed().isEmpty() && !style.font_family.trimmed().isEmpty() &&
@@ -30,6 +32,7 @@ bool validTextStyle(const VpTextStyleRecord& style)
            std::abs(style.oblique_angle) < 85.0;
 }
 
+// 校验标注样式取值是否合法。
 bool validDimensionStyle(const VpDimensionStyleRecord& style)
 {
     return !style.name.trimmed().isEmpty() && std::isfinite(style.text_height) &&

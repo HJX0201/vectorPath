@@ -17,11 +17,13 @@ namespace
 
 constexpr double kPi = 3.14159265358979323846;
 
+// 计算两点距离。
 double pointDistance(const VpPoint2d& first_point, const VpPoint2d& second_point)
 {
     return std::hypot(second_point.x - first_point.x, second_point.y - first_point.y);
 }
 
+// 计算两角之间的最短扫掠角。
 double shortestSweep(double start_angle, double end_angle)
 {
     double sweep = end_angle - start_angle;
@@ -38,12 +40,14 @@ double shortestSweep(double start_angle, double end_angle)
 
 class VpPainterStateGuard final
 {
+  // 保存画笔状态。
   public:
     explicit VpPainterStateGuard(QPainter& painter) : m_painter(painter)
     {
         m_painter.save();
     }
 
+    // 恢复画笔状态。
     ~VpPainterStateGuard()
     {
         m_painter.restore();
@@ -53,6 +57,7 @@ class VpPainterStateGuard final
     QPainter& m_painter;
 };
 
+// 按朝向绘制箭头。
 void drawArrow(QPainter& painter, const QPointF& tip, const QPointF& toward, double arrow_size)
 {
     const QPointF direction = toward - tip;
@@ -72,6 +77,7 @@ void drawArrow(QPainter& painter, const QPointF& tip, const QPointF& toward, dou
     painter.restore();
 }
 
+// 去掉数值末尾多余的零。
 QString suppressTrailingZeros(QString value)
 {
     if (value.contains(QLatin1Char('.')))
@@ -88,6 +94,7 @@ QString suppressTrailingZeros(QString value)
     return value;
 }
 
+// 按标注样式生成标注文字。
 QString styledDimensionText(const VpLinearDimensionEntity& dimension,
                             const VpDimensionStyleRecord& style)
 {
@@ -127,6 +134,7 @@ QString styledDimensionText(const VpLinearDimensionEntity& dimension,
     return style.prefix + measurement + style.suffix;
 }
 
+// 构造标注预览数据。
 VpLinearDimensionEntity previewDimension(VpDimensionType dimension_type,
                                          const std::vector<VpPoint2d>& input_points,
                                          const VpPoint2d& cursor)
@@ -158,6 +166,7 @@ VpLinearDimensionEntity previewDimension(VpDimensionType dimension_type,
     return dimension;
 }
 
+// 返回标注第一步的提示文字。
 QString firstDimensionPrompt(VpDimensionType dimension_type)
 {
     switch (dimension_type)
@@ -180,6 +189,7 @@ QString firstDimensionPrompt(VpDimensionType dimension_type)
     return {};
 }
 
+// 返回后续拾取步的提示文字。
 QString nextDimensionPrompt(VpDimensionType dimension_type, std::size_t point_count)
 {
     if (dimension_type == VpDimensionType::Angular || dimension_type == VpDimensionType::ArcLength)

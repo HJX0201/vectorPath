@@ -21,6 +21,7 @@ namespace
 constexpr double kTolerance = 1.0e-8;
 constexpr double kPi = 3.14159265358979323846;
 
+// 断言条件成立，失败时输出消息。
 void expect(bool condition, const char* message)
 {
     if (!condition)
@@ -29,17 +30,20 @@ void expect(bool condition, const char* message)
     }
 }
 
+// 判断两个浮点数是否足够接近。
 bool near(double actual, double expected)
 {
     return std::abs(actual - expected) <= kTolerance;
 }
 
+// 断言两点坐标接近。
 void expectPoint(const VpPoint2d& actual, const VpPoint2d& expected)
 {
     expect(near(actual.x, expected.x) && near(actual.y, expected.y),
            "geometry point differs from expected coordinates");
 }
 
+// 校验距离计算与标准图形顶点。
 void distanceAndStandardShapes()
 {
     expect(near(distance({-1.0, -2.0}, {2.0, 2.0}), 5.0), "distance must use both axes");
@@ -75,6 +79,7 @@ void distanceAndStandardShapes()
     }
 }
 
+// 校验样条边界与离散逼近。
 void splineBoundariesAndApproximation()
 {
     const VpSplineEntity spline{
@@ -95,6 +100,7 @@ void splineBoundariesAndApproximation()
     expect(near(splineApproximateLength(collapsed), 0.0), "collapsed spline must have zero length");
 }
 
+// 校验椭圆边界与离散逼近。
 void ellipseBoundariesAndApproximation()
 {
     const VpEllipseEntity ellipse{{2.0, -3.0}, {4.0, 0.0}, {0.0, 2.0}};
@@ -111,6 +117,7 @@ void ellipseBoundariesAndApproximation()
     expect(ellipseApproximation(collapsed).empty(), "invalid ellipse must produce no preview");
 }
 
+// 校验多边形面积与内部判定。
 void polygonMeasurements()
 {
     VpPolygonPath polygon{{-2.0, -1.0}, {4.0, -1.0}, {4.0, 3.0}, {-2.0, 3.0}};
@@ -125,6 +132,7 @@ void polygonMeasurements()
     expect(!pointInsidePolygon({0.0, 0.0}, {}), "empty polygon must not contain points");
 }
 
+// 校验布尔运算结果与错误路径。
 void polygonBooleanOperationsAndErrors()
 {
     const VpPolygonPaths subjects{{{0.0, 0.0}, {10.0, 0.0}, {10.0, 10.0}, {0.0, 10.0}}};
@@ -170,6 +178,7 @@ void polygonBooleanOperationsAndErrors()
 } // namespace
 } // namespace Vp
 
+// 运行几何核心测试。
 int vpRunGeometryCoreTests()
 {
     try

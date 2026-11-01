@@ -13,6 +13,7 @@ namespace Vp
 namespace
 {
 
+// 把颜色索引转换为 QColor。
 QColor aciColor(int aci)
 {
     const std::array<QColor, 8> colors = {
@@ -45,6 +46,7 @@ int layerTransparency(const std::vector<VpDxfPair>& record)
     return std::clamp(static_cast<int>(std::round(transparent_byte * 100.0 / 255.0)), 0, 90);
 }
 
+// 从组码读出一条图层记录。
 VpLayerRecord readLayerRecord(const std::vector<VpDxfPair>& record)
 {
     VpLayerRecord layer;

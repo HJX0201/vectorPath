@@ -23,6 +23,7 @@ namespace Vp
 namespace
 {
 
+// 计算点到线段的距离。
 double pointToSegmentDistance(const VpPoint2d& point, const VpPoint2d& segment_start,
                               const VpPoint2d& segment_end)
 {
@@ -41,12 +42,14 @@ double pointToSegmentDistance(const VpPoint2d& point, const VpPoint2d& segment_s
                             segment_start.y + (projection * delta_y)});
 }
 
+// 把角度归一化到 [0,360)。
 double normalizedAngle(double angle)
 {
     const double result = std::fmod(angle, 360.0);
     return result < 0.0 ? result + 360.0 : result;
 }
 
+// 判断角度是否落在圆弧范围内。
 bool angleOnArc(double angle, const VpArcEntity& arc)
 {
     const double total_span = normalizedAngle(arc.is_clockwise ? arc.start_angle - arc.end_angle

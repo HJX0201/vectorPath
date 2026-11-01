@@ -15,29 +15,34 @@ constexpr double kPi = 3.14159265358979323846;
 
 class VpPathReader final
 {
+  // 构造路径读取器。
   public:
     explicit VpPathReader(const QString& text) : m_text(text)
     {
     }
 
+    // 返回是否已读到结尾。
     bool atEnd()
     {
         skipSeparators();
         return m_index >= m_text.size();
     }
 
+    // 返回下一个有效字符是否为命令。
     bool nextIsCommand()
     {
         skipSeparators();
         return m_index < m_text.size() && m_text.at(m_index).isLetter();
     }
 
+    // 读取一个命令字符。
     QChar readCommand()
     {
         skipSeparators();
         return m_index < m_text.size() ? m_text.at(m_index++) : QChar();
     }
 
+    // 读取一个数值，失败返回 false。
     bool readNumber(double& result)
     {
         skipSeparators();
@@ -95,6 +100,7 @@ class VpPathReader final
         return is_valid;
     }
 
+  // 跳过命令之间的分隔符。
   private:
     void skipSeparators()
     {
@@ -113,6 +119,7 @@ class VpPathReader final
     int m_index = 0;
 };
 
+// 计算两个向量之间的夹角。
 double vectorAngle(double ux, double uy, double vx, double vy)
 {
     const double dot = ux * vx + uy * vy;
@@ -125,6 +132,7 @@ double vectorAngle(double ux, double uy, double vx, double vy)
     return ux * vy - uy * vx < 0.0 ? -magnitude : magnitude;
 }
 
+// 把 SVG 圆弧命令转换为路径。
 void appendSvgArc(QPainterPath& path, const QPointF& start, const QPointF& end, double radius_x,
                   double radius_y, double rotation_degrees, bool large_arc, bool sweep)
 {
@@ -212,11 +220,13 @@ void appendSvgArc(QPainterPath& path, const QPointF& start, const QPointF& end, 
     }
 }
 
+// 计算控制点关于当前点的对称点。
 QPointF reflected(const QPointF& control, const QPointF& around)
 {
     return around * 2.0 - control;
 }
 
+// 读取成对出现的两个数值。
 bool readPair(VpPathReader& reader, double& first, double& second)
 {
     return reader.readNumber(first) && reader.readNumber(second);

@@ -13,6 +13,7 @@ namespace Vp
 namespace
 {
 
+// 判断点是否落在选择窗口内。
 bool pointInsideWindow(const VpPoint2d& point, const VpPoint2d& first_corner,
                        const VpPoint2d& second_corner)
 {

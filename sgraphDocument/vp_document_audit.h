@@ -33,6 +33,7 @@ struct VpDocumentAuditReport
     int removed_entity_count = 0;
     std::vector<VpDocumentAuditIssue> issues;
 
+    // 返回文档是否没有问题。
     bool isClean() const noexcept
     {
         return issue_count == 0;

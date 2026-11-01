@@ -11,6 +11,7 @@
 #include <QSurfaceFormat>
 #include <QTranslator>
 
+// 程序入口：创建应用与主窗口。
 int main(int argument_count, char* argument_values[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);

@@ -9,6 +9,7 @@ namespace Vp
 namespace
 {
 
+// 返回文档中的图元标识。
 std::vector<VpEntityId> entityIds(const VpCadDocument& document)
 {
     std::vector<VpEntityId> ids;
@@ -19,6 +20,7 @@ std::vector<VpEntityId> entityIds(const VpCadDocument& document)
     return ids;
 }
 
+// 向文档预置若干图元。
 std::vector<VpEntityId> seedDocument(VpCadDocument& document)
 {
     auto transaction = document.beginTransaction(QStringLiteral("seed"));

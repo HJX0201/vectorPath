@@ -9,6 +9,7 @@ namespace Vp
 namespace
 {
 
+// 返回捕捉类型的中文名称。
 QString objectSnapName(VpObjectSnapType snap_type)
 {
     switch (snap_type)

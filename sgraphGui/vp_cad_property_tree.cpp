@@ -22,6 +22,7 @@ namespace
 
 constexpr double kPi = 3.14159265358979323846;
 
+// 返回图元类型的中文名称。
 QString entityTypeName(VpEntityType entity_type)
 {
     switch (entity_type)
@@ -52,6 +53,7 @@ QString entityTypeName(VpEntityType entity_type)
     return QObject::tr("未知实体");
 }
 
+// 向属性树追加一行属性。
 void addProperty(QTreeWidgetItem* parent_item, const QString& name, const QString& value)
 {
     auto* property_item = new QTreeWidgetItem(parent_item, {name, value});
@@ -59,6 +61,7 @@ void addProperty(QTreeWidgetItem* parent_item, const QString& name, const QStrin
     property_item->setToolTip(1, value);
 }
 
+// 计算多边形面积。
 double polygonArea(const std::vector<VpPoint2d>& vertices)
 {
     if (vertices.size() < 3)

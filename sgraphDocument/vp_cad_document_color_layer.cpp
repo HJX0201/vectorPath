@@ -9,12 +9,14 @@ namespace Vp
 namespace
 {
 
+// 判断是否为不允许删除的系统图层。
 bool isProtectedLayerName(const QString& layer_name)
 {
     return layer_name.compare(QStringLiteral("0"), Qt::CaseInsensitive) == 0 ||
            layer_name.compare(QStringLiteral("DEFPOINTS"), Qt::CaseInsensitive) == 0;
 }
 
+// 为指定颜色生成不冲突的图层名。
 QString uniqueColorLayerName(const VpCadDocument& document, const QColor& color)
 {
     const QString prefix =

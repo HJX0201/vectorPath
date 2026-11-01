@@ -24,11 +24,13 @@ struct VpLinearConstraint
     double value = 0.0;
 };
 
+// 计算两个向量的点积。
 inline double dotProduct(const VpVector3& first, const VpVector3& second)
 {
     return (first.x * second.x) + (first.y * second.y) + (first.z * second.z);
 }
 
+// 计算两个向量的叉积。
 inline VpVector3 crossProduct(const VpVector3& first, const VpVector3& second)
 {
     return {(first.y * second.z) - (first.z * second.y),
@@ -36,6 +38,7 @@ inline VpVector3 crossProduct(const VpVector3& first, const VpVector3& second)
             (first.x * second.y) - (first.y * second.x)};
 }
 
+// 求两个线性约束的交点与方向，平行时返回 false。
 inline bool constraintIntersection(const VpLinearConstraint& first,
                                    const VpLinearConstraint& second, VpVector3& base,
                                    VpVector3& direction)
@@ -68,6 +71,7 @@ inline bool constraintIntersection(const VpLinearConstraint& first,
     return true;
 }
 
+// 求一元二次方程的稳定根并追加到结果。
 inline void appendQuadraticRoots(double coefficient_a, double coefficient_b, double coefficient_c,
                                  std::vector<double>& roots)
 {

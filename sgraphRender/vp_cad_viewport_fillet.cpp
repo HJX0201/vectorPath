@@ -15,6 +15,7 @@ namespace
 
 constexpr double kPi = 3.14159265358979323846;
 
+// 求两条无限长直线的交点。
 bool infiniteLineIntersection(const VpLineEntity& first_line, const VpLineEntity& second_line,
                               VpPoint2d& intersection)
 {
@@ -35,6 +36,7 @@ bool infiniteLineIntersection(const VpLineEntity& first_line, const VpLineEntity
     return true;
 }
 
+// 按拾取点确定要保留的直线方向。
 bool pickedDirection(const VpLineEntity& line, const VpPoint2d& intersection,
                      const VpPoint2d& pick_point, VpPoint2d& direction, VpPoint2d& retained_point)
 {

@@ -21,6 +21,7 @@ namespace
 
 constexpr int kCommandIdRole = Qt::UserRole + 1;
 
+// 把按键序列格式化为显示文本。
 QString sequenceText(const QKeySequence& sequence)
 {
     return sequence.isEmpty() ? VpShortcutDialog::tr("未设置")

@@ -19,6 +19,7 @@ class VpSplineEditTest final : public QObject
     void viewportPointPreviewWorkflow();
 };
 
+// 构造测试用样条图元。
 VpEntityRecord splineSource()
 {
     VpEntityRecord source;

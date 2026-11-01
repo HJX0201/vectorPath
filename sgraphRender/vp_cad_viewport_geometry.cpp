@@ -13,6 +13,7 @@ namespace
 
 constexpr double kPi = 3.14159265358979323846;
 
+// 求两条直线的交点。
 bool lineIntersection(const VpLineEntity& first_line, const VpLineEntity& second_line,
                       double& first_parameter, double& second_parameter, VpPoint2d& intersection)
 {
@@ -36,6 +37,7 @@ bool lineIntersection(const VpLineEntity& first_line, const VpLineEntity& second
     return true;
 }
 
+// 求两条线段的交点。
 bool lineSegmentIntersection(const VpLineEntity& first_line, const VpLineEntity& second_line,
                              VpPoint2d& intersection)
 {

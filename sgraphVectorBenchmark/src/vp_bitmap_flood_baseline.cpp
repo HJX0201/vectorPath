@@ -12,6 +12,7 @@ namespace Vp
 namespace
 {
 
+// 按背景忽略设置返回有效颜色。
 QRgb effectiveColor(QRgb color, QRgb background, const VpBitmapVectorSettings& settings)
 {
     if (qAlpha(color) == 0 || (settings.ignore_background && color == background))
@@ -21,6 +22,7 @@ QRgb effectiveColor(QRgb color, QRgb background, const VpBitmapVectorSettings& s
     return color;
 }
 
+// 追加一条边界线段。
 void appendBoundary(std::vector<bitmapVectorPrivate::VpBoundarySegment>& edges, int x, int y,
                     int direction, QRgb color, int component)
 {

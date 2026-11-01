@@ -19,6 +19,7 @@ constexpr int kStandardDialogMinimumHeight = 320;
 constexpr int kInputDialogMinimumHeight = 220;
 constexpr int kMessageDialogMinimumHeight = 240;
 
+// 把标准按钮文字翻译成中文。
 void translateStandardButtons(QDialogButtonBox& button_box)
 {
     const std::pair<QDialogButtonBox::StandardButton, QString> translations[]{
@@ -42,6 +43,7 @@ void translateStandardButtons(QDialogButtonBox& button_box)
     }
 }
 
+// 给输入对话框添加确定与取消按钮。
 void addInputDialogButtons(QDialog& dialog, QVBoxLayout& layout)
 {
     layout.addStretch();
@@ -52,6 +54,7 @@ void addInputDialogButtons(QDialog& dialog, QVBoxLayout& layout)
     QObject::connect(buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
 }
 
+// 把消息框图标类型映射为标准图标。
 QStyle::StandardPixmap messageIconPixmap(QMessageBox::Icon icon)
 {
     switch (icon)

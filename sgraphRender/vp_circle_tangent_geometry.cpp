@@ -39,6 +39,7 @@ struct VpLineEquation
     double constant = 0.0;
 };
 
+// 把图元转换为相切求解用的曲线描述。
 bool supportFromEntity(const VpEntityRecord& entity, VpCurveSupport& support)
 {
     if (entity.type == VpEntityType::Line)
@@ -73,6 +74,7 @@ bool supportFromEntity(const VpEntityRecord& entity, VpCurveSupport& support)
     return false;
 }
 
+// 由曲线描述求直线方程。
 VpLineEquation lineEquation(const VpCurveSupport& support)
 {
     const double delta_x = support.second.x - support.first.x;
@@ -83,6 +85,7 @@ VpLineEquation lineEquation(const VpCurveSupport& support)
     return {normal_x, normal_y, (normal_x * support.first.x) + (normal_y * support.first.y)};
 }
 
+// 把角度归一化到 [0,360)。
 double normalizedAngle(double angle)
 {
     double result = std::fmod(angle, 360.0);
@@ -93,6 +96,7 @@ double normalizedAngle(double angle)
     return result;
 }
 
+// 判断点是否落在圆弧上。
 bool pointOnArc(const VpCurveSupport& support, const VpPoint2d& point)
 {
     if (!support.is_arc)
@@ -106,6 +110,7 @@ bool pointOnArc(const VpCurveSupport& support, const VpPoint2d& point)
     return offset <= span + 1.0e-6;
 }
 
+// 追加直线与直线的交点。
 void appendLineLineIntersections(const VpLineEquation& first, const VpLineEquation& second,
                                  double first_offset, double second_offset,
                                  std::vector<VpPoint2d>& centers)
@@ -123,6 +128,7 @@ void appendLineLineIntersections(const VpLineEquation& first, const VpLineEquati
          ((first.normal_x * second_constant) - (first_constant * second.normal_x)) / determinant});
 }
 
+// 追加直线与圆的交点。
 void appendLineCircleIntersections(const VpLineEquation& line, double line_offset,
                                    const VpPoint2d& center, double radius,
                                    std::vector<VpPoint2d>& centers)
@@ -148,6 +154,7 @@ void appendLineCircleIntersections(const VpLineEquation& line, double line_offse
     }
 }
 
+// 追加两圆的交点。
 void appendCircleCircleIntersections(const VpPoint2d& first_center, double first_radius,
                                      const VpPoint2d& second_center, double second_radius,
                                      std::vector<VpPoint2d>& centers)
@@ -172,6 +179,7 @@ void appendCircleCircleIntersections(const VpPoint2d& first_center, double first
     }
 }
 
+// 计算相切圆圆心的轨迹半径。
 std::vector<double> circleLocusRadii(double source_radius, double tangent_radius)
 {
     std::vector<double> radii{source_radius + tangent_radius};
@@ -183,6 +191,7 @@ std::vector<double> circleLocusRadii(double source_radius, double tangent_radius
     return radii;
 }
 
+// 求切点。
 bool tangencyPoint(const VpCurveSupport& support, const VpPoint2d& candidate_center,
                    double candidate_radius, VpPoint2d& point)
 {
@@ -224,6 +233,7 @@ bool tangencyPoint(const VpCurveSupport& support, const VpPoint2d& candidate_cen
     return pointOnArc(support, point);
 }
 
+// 计算三阶行列式。
 double determinant3(const std::array<std::array<double, 3>, 3>& matrix)
 {
     return matrix[0][0] * ((matrix[1][1] * matrix[2][2]) - (matrix[1][2] * matrix[2][1])) -
@@ -244,6 +254,7 @@ struct VpCurveEquation
     double constant = 0.0;
 };
 
+// 为每个图元选择相切分支。
 std::array<VpTangentBranch, 3> contactBranches(const VpCurveSupport& support,
                                                std::size_t& branch_count)
 {
@@ -257,12 +268,14 @@ std::array<VpTangentBranch, 3> contactBranches(const VpCurveSupport& support,
             VpTangentBranch{0.0, 1.0, -support.radius}};
 }
 
+// 把直线转换为线性约束。
 VpLinearConstraint lineConstraint(const VpCurveSupport& support, const VpTangentBranch& branch)
 {
     const VpLineEquation line = lineEquation(support);
     return {{line.normal_x, line.normal_y, -branch.line_sign}, line.constant};
 }
 
+// 把曲线转换为二次方程系数。
 VpCurveEquation curveEquation(const VpCurveSupport& support, const VpTangentBranch& branch)
 {
     return {{-2.0 * support.center.x, -2.0 * support.center.y,
@@ -271,6 +284,7 @@ VpCurveEquation curveEquation(const VpCurveSupport& support, const VpTangentBran
                 (branch.radial_offset * branch.radial_offset)};
 }
 
+// 构造两条曲线相切时的约束。
 VpLinearConstraint curveDifferenceConstraint(const VpCurveSupport& first_support,
                                              const VpTangentBranch& first_branch,
                                              const VpCurveSupport& second_support,
@@ -283,6 +297,7 @@ VpLinearConstraint curveDifferenceConstraint(const VpCurveSupport& first_support
             second.constant - first.constant};
 }
 
+// 检查切点是否符合选定分支。
 bool branchSatisfied(const VpCurveSupport& support, const VpTangentBranch& branch,
                      const VpCircleEntity& candidate)
 {
@@ -301,6 +316,7 @@ bool branchSatisfied(const VpCurveSupport& support, const VpTangentBranch& branc
            std::abs(distance(support.center, candidate.center) - required_distance) <= tolerance;
 }
 
+// 判断两个圆是否重合。
 bool sameCircle(const VpCircleEntity& first, const VpCircleEntity& second)
 {
     const double scale = std::max({1.0, first.radius, second.radius});
@@ -308,6 +324,7 @@ bool sameCircle(const VpCircleEntity& first, const VpCircleEntity& second)
            std::abs(first.radius - second.radius) <= 1.0e-7 * scale;
 }
 
+// 追加与三个图元相切的候选圆。
 void appendThreeEntityCandidates(const std::array<VpCurveSupport, 3>& supports,
                                  const std::array<VpTangentBranch, 3>& branches,
                                  std::vector<VpCircleEntity>& candidates)

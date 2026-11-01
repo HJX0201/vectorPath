@@ -20,6 +20,7 @@ namespace Vp
 namespace
 {
 
+// 计算多边形面积。
 double polygonArea(const std::vector<VpPoint2d>& points)
 {
     double twice_area = 0.0;
@@ -32,6 +33,7 @@ double polygonArea(const std::vector<VpPoint2d>& points)
     return std::abs(twice_area) * 0.5;
 }
 
+// 计算填充区域面积。
 double hatchArea(const VpHatchEntity& hatch)
 {
     double result = polygonArea(hatch.boundary);
@@ -42,6 +44,7 @@ double hatchArea(const VpHatchEntity& hatch)
     return result;
 }
 
+// 计算指定颜色填充的面积。
 double hatchAreaForColor(const VpCadDocument& document, const QColor& color)
 {
     double result = 0.0;
@@ -55,6 +58,7 @@ double hatchAreaForColor(const VpCadDocument& document, const QColor& color)
     return result;
 }
 
+// 构造重叠色块的导入几何。
 VpVectorImportGeometry overlappingColorBlocks()
 {
     VpHatchEntity lower;

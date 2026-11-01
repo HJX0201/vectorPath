@@ -11,6 +11,7 @@ namespace Vp
 namespace
 {
 
+// 返回圆构造的提示文字。
 QString circlePrompt(VpCircleConstruction construction)
 {
     switch (construction)
@@ -31,6 +32,7 @@ QString circlePrompt(VpCircleConstruction construction)
     return {};
 }
 
+// 返回圆弧构造的提示文字。
 QString arcPrompt(VpArcConstruction construction)
 {
     switch (construction)
@@ -55,6 +57,7 @@ QString arcPrompt(VpArcConstruction construction)
     return {};
 }
 
+// 判断该圆弧构造是否还需要参数。
 bool isParameterizedArcConstruction(VpArcConstruction construction)
 {
     return construction == VpArcConstruction::StartCenterAngle ||
@@ -64,6 +67,7 @@ bool isParameterizedArcConstruction(VpArcConstruction construction)
            construction == VpArcConstruction::StartEndRadius;
 }
 
+// 返回下一拾取步的提示文字。
 QString nextArcPrompt(VpArcConstruction construction, std::size_t point_count)
 {
     if (construction == VpArcConstruction::ThreePoint)
@@ -105,6 +109,7 @@ QString nextArcPrompt(VpArcConstruction construction, std::size_t point_count)
                             : QObject::tr("ARC SER：输入半径，或在视口指定圆心侧和半径：");
 }
 
+// 由拾取点与参数构造圆弧。
 bool arcFromInputs(VpArcConstruction construction, const std::vector<VpPoint2d>& points,
                    const std::optional<double>& parameter, VpArcEntity& result)
 {

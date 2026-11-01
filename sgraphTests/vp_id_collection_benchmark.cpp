@@ -9,6 +9,7 @@ namespace Vp
 namespace
 {
 
+// 逐个删除，模拟最坏删除路径。
 void eraseSequentially(std::vector<VpCollectionRecord>& records,
                        const std::vector<VpCollectionRecord>& removed)
 {
@@ -23,6 +24,7 @@ void eraseSequentially(std::vector<VpCollectionRecord>& records,
     }
 }
 
+// 测量单个操作的耗时并输出。
 template <typename VpOperation>
 void measure(const char* name, std::vector<VpCollectionRecord>& records,
              const std::vector<VpCollectionRecord>& removed, VpOperation operation)
@@ -40,6 +42,7 @@ void measure(const char* name, std::vector<VpCollectionRecord>& records,
 } // namespace
 } // namespace Vp
 
+// 运行一组规模的样本。
 int runSample(std::size_t record_count)
 {
     const std::size_t removal_count = (record_count + 4) / 5;
@@ -78,6 +81,7 @@ int runSample(std::size_t record_count)
     return same_result ? 0 : 1;
 }
 
+// 基准程序入口。
 int main()
 {
     for (std::size_t record_count : {1000U, 10000U, 30000U})

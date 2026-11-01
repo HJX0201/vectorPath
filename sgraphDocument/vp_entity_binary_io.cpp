@@ -13,16 +13,19 @@ namespace Vp
 namespace
 {
 
+// 写入一个二维点。
 void writePoint(QDataStream& stream, const VpPoint2d& point)
 {
     stream << point.x << point.y;
 }
 
+// 读出一个二维点。
 void readPoint(QDataStream& stream, VpPoint2d& point)
 {
     stream >> point.x >> point.y;
 }
 
+// 读入多段线几何。
 VpResult<VpPolylineEntity> readPolyline(QDataStream& stream, quint32 format_version)
 {
     quint32 vertex_count = 0;
@@ -102,6 +105,7 @@ VpResult<VpPolylineEntity> readPolyline(QDataStream& stream, quint32 format_vers
     return VpResult<VpPolylineEntity>::success(std::move(polyline));
 }
 
+// 按图元类型读入几何数据。
 VpResult<VpEntityGeometry> readGeometry(QDataStream& stream, VpEntityType entity_type,
                                         quint32 format_version)
 {

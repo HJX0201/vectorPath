@@ -15,6 +15,7 @@ namespace
 
 constexpr double kPi = 3.14159265358979323846;
 
+// 按角度计算圆弧上的点。
 VpPoint2d arcPoint(const VpArcEntity& arc, double angle)
 {
     const double radians = angle * kPi / 180.0;
@@ -22,18 +23,21 @@ VpPoint2d arcPoint(const VpArcEntity& arc, double angle)
             arc.center.y + (arc.radius * std::sin(radians))};
 }
 
+// 把角度归一化到 [0,360)。
 double normalizedAngle(double angle)
 {
     const double result = std::fmod(angle, 360.0);
     return result < 0.0 ? result + 360.0 : result;
 }
 
+// 为一个图元追加夹点。
 void appendGrip(std::vector<VpGripHandle>& grips, const VpEntityRecord& entity, VpGripRole role,
                 std::size_t index, const VpPoint2d& point)
 {
     grips.push_back({entity.id, role, index, point});
 }
 
+// 返回夹点操作的中文名称。
 QString gripOperationName(VpGripOperation operation)
 {
     switch (operation)
@@ -52,6 +56,7 @@ QString gripOperationName(VpGripOperation operation)
     return {};
 }
 
+// 计算夹点拖拽的参照点。
 VpPoint2d selectionGripReference(const std::vector<VpEntityRecord>& sources,
                                  const VpPoint2d& base_point)
 {

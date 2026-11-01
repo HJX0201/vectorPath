@@ -11,6 +11,7 @@ namespace Vp
 namespace
 {
 
+// 把 ARGB 颜色格式化为 SVG 颜色文本。
 QString svgColor(QRgb color)
 {
     return QStringLiteral("#%1%2%3")

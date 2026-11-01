@@ -28,6 +28,7 @@ class VpToolpathSortTest final : public QObject
     void clockwiseArcPersistenceAndDxfDegradation();
 };
 
+// 构造一条测试用直线图元。
 VpEntityRecord lineEntity(VpEntityId id, double start_x, double start_y, double end_x, double end_y)
 {
     VpEntityRecord entity;
@@ -37,6 +38,7 @@ VpEntityRecord lineEntity(VpEntityId id, double start_x, double start_y, double 
     return entity;
 }
 
+// 返回排序结果中的图元标识。
 std::vector<VpEntityId> ids(const VpToolpathSortResult& result)
 {
     std::vector<VpEntityId> values;
@@ -47,6 +49,7 @@ std::vector<VpEntityId> ids(const VpToolpathSortResult& result)
     return values;
 }
 
+// 向文档添加一条直线。
 VpEntityId addDocumentLine(VpCadDocument& document, const QString& layer_name, double start_x,
                            double end_x)
 {

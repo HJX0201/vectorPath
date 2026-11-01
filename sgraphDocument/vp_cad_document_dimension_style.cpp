@@ -8,6 +8,7 @@ namespace Vp
 namespace
 {
 
+// 校验标注样式取值是否合法。
 bool validDimensionStyle(const VpDimensionStyleRecord& style)
 {
     return !style.name.simplified().isEmpty() && style.name.size() <= 128 &&

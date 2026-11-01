@@ -12,11 +12,13 @@ namespace Vp
 namespace
 {
 
+// 判断坐标是否为有限值。
 bool validPoint(const VpPoint2d& point) noexcept
 {
     return std::isfinite(point.x) && std::isfinite(point.y);
 }
 
+// 检查几何类型与图元类型是否匹配。
 bool expectedGeometry(const VpEntityRecord& entity) noexcept
 {
     switch (entity.type)
@@ -47,6 +49,7 @@ bool expectedGeometry(const VpEntityRecord& entity) noexcept
     return false;
 }
 
+// 检查图元的几何数据是否合法。
 bool validGeometry(const VpEntityRecord& entity) noexcept
 {
     if (!expectedGeometry(entity))
@@ -130,6 +133,7 @@ bool validGeometry(const VpEntityRecord& entity) noexcept
     return false;
 }
 
+// 向检查报告追加一条问题记录。
 void addIssue(VpDocumentAuditReport& report, VpAuditSeverity severity, VpEntityId entity_id,
               const QString& message, bool was_repaired)
 {

@@ -16,11 +16,13 @@ constexpr double kPi = 3.14159265358979323846;
 constexpr double kGeometryTolerance = 1.0e-9;
 constexpr int kClipperPrecision = 6;
 
+// 按旋转矩阵变换点。
 VpPoint2d rotatePoint(const VpPoint2d& point, double cosine, double sine)
 {
     return {cosine * point.x - sine * point.y, sine * point.x + cosine * point.y};
 }
 
+// 按比例缩放矢量区域。
 VpVectorRegion scaledRegion(const VpVectorRegion& source, double scale)
 {
     VpVectorRegion result = source;
@@ -35,6 +37,7 @@ VpVectorRegion scaledRegion(const VpVectorRegion& source, double scale)
     return result;
 }
 
+// 把矢量区域转换为 Clipper 路径。
 Clipper2Lib::PathsD clipperPaths(const VpVectorRegion& region)
 {
     Clipper2Lib::PathsD result;
@@ -52,12 +55,14 @@ Clipper2Lib::PathsD clipperPaths(const VpVectorRegion& region)
     return result;
 }
 
+// 把填充规则转换为 Clipper 的枚举值。
 Clipper2Lib::FillRule clipperFillRule(VpVectorFillRule fill_rule)
 {
     return fill_rule == VpVectorFillRule::EvenOdd ? Clipper2Lib::FillRule::EvenOdd
                                                   : Clipper2Lib::FillRule::NonZero;
 }
 
+// 把闭合路径转换为多段线。
 void addClosedPathPolyline(const Clipper2Lib::PathD& path, std::vector<VpPolylineEntity>& polylines)
 {
     if (path.size() < 3)
@@ -85,6 +90,7 @@ void addClosedPathPolyline(const Clipper2Lib::PathD& path, std::vector<VpPolylin
     }
 }
 
+// 把 Clipper 路径转换为点序列。
 std::vector<VpPoint2d> pointsFromClipperPath(const Clipper2Lib::PathD& path)
 {
     std::vector<VpPoint2d> result;
@@ -96,6 +102,7 @@ std::vector<VpPoint2d> pointsFromClipperPath(const Clipper2Lib::PathD& path)
     return result;
 }
 
+// 递归把多边形树转换为填充图元。
 void appendHatchesFromPolyPath(const Clipper2Lib::PolyPathD& parent,
                                std::vector<VpHatchEntity>& hatches)
 {
@@ -130,6 +137,7 @@ struct VpScanEvent
     int winding_delta = 0;
 };
 
+// 收集某条扫描线上的交点事件。
 std::vector<VpScanEvent> scanEvents(const VpVectorRegion& region, double y)
 {
     std::vector<VpScanEvent> events;
@@ -157,6 +165,7 @@ std::vector<VpScanEvent> scanEvents(const VpVectorRegion& region, double y)
     return events;
 }
 
+// 把一段扫描区间追加为直线。
 void addScanSegment(std::vector<VpLineEntity>& lines, double first_x, double second_x, double y,
                     double cosine, double sine)
 {
@@ -168,6 +177,7 @@ void addScanSegment(std::vector<VpLineEntity>& lines, double first_x, double sec
         {rotatePoint({first_x, y}, cosine, sine), rotatePoint({second_x, y}, cosine, sine)});
 }
 
+// 用奇偶规则生成扫描填充线。
 std::vector<VpLineEntity> evenOddScanLines(const VpVectorRegion& region, double y, double cosine,
                                            double sine)
 {
@@ -180,6 +190,7 @@ std::vector<VpLineEntity> evenOddScanLines(const VpVectorRegion& region, double 
     return result;
 }
 
+// 用非零环绕规则生成扫描填充线。
 std::vector<VpLineEntity> nonZeroScanLines(const VpVectorRegion& region, double y, double cosine,
                                            double sine)
 {

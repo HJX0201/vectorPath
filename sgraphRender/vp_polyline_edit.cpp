@@ -8,6 +8,7 @@ namespace Vp
 namespace
 {
 
+// 取出可编辑的多段线副本。
 bool sourcePolyline(const VpEntityRecord& source, VpPolylineEntity& polyline)
 {
     if (source.type != VpEntityType::Polyline)

@@ -10,6 +10,7 @@ namespace Vp
 namespace
 {
 
+// 断言条件成立，失败时输出消息。
 void check(bool condition, const char* message)
 {
     if (!condition)
@@ -18,11 +19,13 @@ void check(bool condition, const char* message)
     }
 }
 
+// 断言两点坐标相等。
 void checkPoint(const VpPoint2d& actual, const VpPoint2d& expected, const char* message)
 {
     check(distance(actual, expected) <= 1.0e-9, message);
 }
 
+// 校验默认值与设置读写。
 void checkDefaultsAndSettings()
 {
     VpDraftingState state;
@@ -63,6 +66,7 @@ void checkDefaultsAndSettings()
     check(state.gridRotation() == 90.0, "invalid settings altered grid rotation");
 }
 
+// 校验栅格吸附与正交约束。
 void checkGridAndOrtho()
 {
     VpDraftingState state;
@@ -96,6 +100,7 @@ void checkGridAndOrtho()
                "zero grid spacing must leave point unchanged");
 }
 
+// 校验极轴追踪的候选点。
 void checkTrackingCandidates()
 {
     VpDraftingState state;
@@ -122,6 +127,7 @@ void checkTrackingCandidates()
           "negative tolerance must not produce a candidate");
 }
 
+// 校验追踪点的采集与重置。
 void checkTrackingAcquisitionAndReset()
 {
     VpDraftingState state;
@@ -161,6 +167,7 @@ void checkTrackingAcquisitionAndReset()
 } // namespace
 } // namespace Vp
 
+// 运行绘图辅助状态测试。
 int vpRunDraftingStateTests()
 {
     try

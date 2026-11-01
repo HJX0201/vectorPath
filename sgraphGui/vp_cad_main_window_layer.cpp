@@ -28,6 +28,7 @@ namespace Vp
 namespace
 {
 
+// 把控件包装为在单元格中居中的容器。
 QWidget* centeredCellWidget(QWidget* content, QWidget* parent)
 {
     auto* container = new QWidget(parent);

@@ -12,23 +12,27 @@ namespace
 
 constexpr double kPi = 3.14159265358979323846;
 
+// 把角度归一化到 [0,360)。
 double normalizedAngle(double angle)
 {
     const double result = std::fmod(angle, 360.0);
     return result < 0.0 ? result + 360.0 : result;
 }
 
+// 计算逆时针扫掠角。
 double counterClockwiseSpan(double start_angle, double end_angle)
 {
     return normalizedAngle(end_angle - start_angle);
 }
 
+// 判断角度是否落在圆弧范围内。
 bool angleOnArc(double angle, const VpArcEntity& arc)
 {
     return counterClockwiseSpan(arc.start_angle, angle) <=
            counterClockwiseSpan(arc.start_angle, arc.end_angle) + 1.0e-8;
 }
 
+// 按角度计算圆弧上的点。
 VpPoint2d arcPoint(const VpArcEntity& arc, double angle)
 {
     const double radians = angle * kPi / 180.0;
@@ -44,6 +48,7 @@ struct VpFilletCandidate
     double score = std::numeric_limits<double>::max();
 };
 
+// 收集可能的圆角圆心。
 void appendCandidateCenters(const VpPoint2d& line_origin, const VpPoint2d& line_direction,
                             const VpPoint2d& curve_center, double center_distance,
                             std::vector<VpPoint2d>& centers)
@@ -75,6 +80,7 @@ void appendCandidateCenters(const VpPoint2d& line_origin, const VpPoint2d& line_
     }
 }
 
+// 求两圆交点。
 std::vector<VpPoint2d> circleIntersections(const VpPoint2d& first_center, double first_radius,
                                            const VpPoint2d& second_center, double second_radius)
 {
@@ -105,6 +111,7 @@ std::vector<VpPoint2d> circleIntersections(const VpPoint2d& first_center, double
     return points;
 }
 
+// 取出曲线的圆心与半径。
 bool curveGeometry(const VpEntityRecord& source, VpPoint2d& center, double& radius)
 {
     if (source.type == VpEntityType::Circle)
@@ -124,6 +131,7 @@ bool curveGeometry(const VpEntityRecord& source, VpPoint2d& center, double& radi
     return false;
 }
 
+// 按拾取点裁剪圆角结果。
 void trimArcResult(const VpEntityRecord& source, const VpPoint2d& pick_point,
                    const VpPoint2d& tangent_point, VpEntityRecord& result)
 {
@@ -147,6 +155,7 @@ void trimArcResult(const VpEntityRecord& source, const VpPoint2d& pick_point,
     }
 }
 
+// 对两条曲线倒圆角。
 bool curveCurveFillet(const VpEntityRecord& first_source, const VpEntityRecord& second_source,
                       const VpPoint2d& first_pick, const VpPoint2d& second_pick, double radius,
                       VpEntityRecord& first_result, VpEntityRecord& second_result,
@@ -227,6 +236,7 @@ bool curveCurveFillet(const VpEntityRecord& first_source, const VpEntityRecord& 
     return true;
 }
 
+// 对直线与曲线倒圆角。
 bool curveFillet(const VpEntityRecord& line_source, const VpEntityRecord& curve_source,
                  const VpPoint2d& line_pick, const VpPoint2d& curve_pick, double radius,
                  VpEntityRecord& line_result, VpEntityRecord& curve_result,

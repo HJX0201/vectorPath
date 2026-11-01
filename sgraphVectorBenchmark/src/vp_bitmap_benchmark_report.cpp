@@ -26,6 +26,7 @@ struct VpAggregate
     double parallel_ms = 0.0;
 };
 
+// 转义 HTML 特殊字符。
 QString escapeHtml(QString value)
 {
     return value.replace('&', QStringLiteral("&amp;"))
@@ -34,11 +35,13 @@ QString escapeHtml(QString value)
         .replace('"', QStringLiteral("&quot;"));
 }
 
+// 把毫秒格式化为显示文本。
 QString milliseconds(double value)
 {
     return QString::number(value, 'f', value < 10.0 ? 3 : 2);
 }
 
+// 计算相对基线的加速比。
 QString speedup(double baseline, double candidate)
 {
     if (candidate <= 0.0)
@@ -48,6 +51,7 @@ QString speedup(double baseline, double candidate)
     return QString::number(baseline / candidate, 'f', 2) + QStringLiteral("×");
 }
 
+// 计算给定分位数。
 double percentile(std::vector<double> values, double fraction)
 {
     if (values.empty())
@@ -62,6 +66,7 @@ double percentile(std::vector<double> values, double fraction)
     return values[lower] * (1.0 - weight) + values[upper] * weight;
 }
 
+// 写出汇总卡片。
 void writeSummaryCards(QTextStream& stream, int passed, int total, double flood_ms,
                        double serial_ms, double parallel_ms, quint64 peak_bytes)
 {
@@ -79,6 +84,7 @@ void writeSummaryCards(QTextStream& stream, int passed, int total, double flood_
            << QStringLiteral(" MB</b><span>进程峰值工作集</span></div></section>");
 }
 
+// 写出分类统计表。
 void writeCategoryTable(QTextStream& stream, const QMap<QString, VpAggregate>& categories)
 {
     stream << QStringLiteral("<h2>按图案类别</h2><table><thead><tr>"
@@ -98,6 +104,7 @@ void writeCategoryTable(QTextStream& stream, const QMap<QString, VpAggregate>& c
     stream << "</tbody></table>";
 }
 
+// 写出最慢用例表。
 void writeWorstTable(QTextStream& stream, QString title,
                      std::vector<const VpBitmapBenchmarkCaseResult*> values, bool by_regression)
 {
@@ -135,6 +142,7 @@ void writeWorstTable(QTextStream& stream, QString title,
     stream << "</tbody></table>";
 }
 
+// 写出全部用例明细。
 void writeAllRows(QTextStream& stream, const std::vector<VpBitmapBenchmarkCaseResult>& results)
 {
     stream << QStringLiteral("<h2>全部逐文件结果</h2>"

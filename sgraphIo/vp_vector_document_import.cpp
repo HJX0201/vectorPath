@@ -12,6 +12,7 @@ namespace Vp
 namespace
 {
 
+// 按颜色生成导入图层名。
 QString layerName(const QColor& color)
 {
     return QStringLiteral("SVG_%1%2%3_A%4")

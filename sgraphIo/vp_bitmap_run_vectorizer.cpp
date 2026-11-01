@@ -40,6 +40,7 @@ struct VpRowConnection
 
 class VpDisjointSet
 {
+  // 构造指定规模的并查集。
   public:
     explicit VpDisjointSet(int size)
         : m_parent(static_cast<std::size_t>(size)), m_rank(static_cast<std::size_t>(size), 0)
@@ -63,6 +64,7 @@ class VpDisjointSet
         return root;
     }
 
+    // 合并两个集合。
     void unite(int first, int second)
     {
         int first_root = find(first);
@@ -89,6 +91,7 @@ class VpDisjointSet
     std::vector<quint8> m_rank;
 };
 
+// 按背景忽略设置返回段的有效颜色。
 QRgb effectiveColor(QRgb color, QRgb background, const VpBitmapVectorSettings& settings)
 {
     if (qAlpha(color) == 0 || (settings.ignore_background && color == background))
@@ -98,6 +101,7 @@ QRgb effectiveColor(QRgb color, QRgb background, const VpBitmapVectorSettings& s
     return color;
 }
 
+// 提取一行的同色连续段。
 std::vector<VpColorRun> extractRowRuns(const QImage& image, int row, QRgb background,
                                        const VpBitmapVectorSettings& settings)
 {
@@ -119,6 +123,7 @@ std::vector<VpColorRun> extractRowRuns(const QImage& image, int row, QRgb backgr
     return runs;
 }
 
+// 按图像规模与设置决定线程数。
 int requestedWorkerCount(const QImage& image, const VpBitmapVectorSettings& settings)
 {
     if (settings.worker_count > 0)
@@ -133,6 +138,7 @@ int requestedWorkerCount(const QImage& image, const VpBitmapVectorSettings& sett
     return std::max(1, QThread::idealThreadCount());
 }
 
+// 把区间切分成多段并行执行。
 void parallelRanges(int item_count, int worker_count,
                     const std::function<void(int, int)>& operation)
 {
@@ -165,6 +171,7 @@ void parallelRanges(int item_count, int worker_count,
     }
 }
 
+// 把相邻两行的同色段连成连通域。
 void connectRows(const std::vector<VpColorRun>& upper, const std::vector<VpColorRun>& lower,
                  int boundary_y, VpRowConnection& result)
 {

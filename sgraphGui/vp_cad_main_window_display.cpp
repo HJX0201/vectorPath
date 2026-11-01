@@ -18,6 +18,7 @@ namespace Vp
 namespace
 {
 
+// 生成菜单勾选项图标。
 QIcon toggleMenuCheckIcon(const QColor& color)
 {
     QPixmap unchecked_pixmap(20, 20);

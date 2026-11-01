@@ -12,6 +12,7 @@ namespace Vp
 namespace
 {
 
+// 求两条直线在角点处的射线方向。
 bool lineCornerRays(const VpEntityRecord& first_source, const VpEntityRecord& second_source,
                     const VpPoint2d& first_pick, const VpPoint2d& second_pick,
                     VpPoint2d& intersection, VpPoint2d& first_direction,

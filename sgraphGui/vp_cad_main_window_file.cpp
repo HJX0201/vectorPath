@@ -23,6 +23,7 @@ namespace
 
 constexpr int kWorkspaceStateVersion = 8;
 
+// 判断文件后缀是否为原生文档格式。
 bool hasNativeDocumentSuffix(const QString& file_path)
 {
     return file_path.endsWith(QStringLiteral(".vectorpath"), Qt::CaseInsensitive) ||

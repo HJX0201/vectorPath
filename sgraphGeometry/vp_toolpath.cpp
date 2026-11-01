@@ -15,12 +15,14 @@ namespace
 constexpr double kDistanceEpsilon = 1.0e-12;
 constexpr double kPi = 3.14159265358979323846;
 
+// 按极坐标计算点。
 VpPoint2d polarPoint(const VpPoint2d& center, double radius, double angle_degrees)
 {
     const double radians = angle_degrees * kPi / 180.0;
     return {center.x + (std::cos(radians) * radius), center.y + (std::sin(radians) * radius)};
 }
 
+// 把一段折线追加到点序列，跳过重复点。
 void appendPolylineSegment(std::vector<VpPoint2d>& points, const VpPoint2d& start,
                            const VpPoint2d& end, double bulge)
 {
@@ -50,6 +52,7 @@ void appendPolylineSegment(std::vector<VpPoint2d>& points, const VpPoint2d& star
     }
 }
 
+// 把图元展开为依次经过的点序列。
 std::vector<VpPoint2d> entityPathPoints(const VpEntityRecord& entity)
 {
     if (entity.type == VpEntityType::Line)
@@ -126,6 +129,7 @@ std::vector<VpPoint2d> entityPathPoints(const VpEntityRecord& entity)
     return {};
 }
 
+// 按图元尺寸估算分行扫描的容差。
 double rowTolerance(const std::vector<VpEntityRecord>& entities)
 {
     double minimum_x = std::numeric_limits<double>::max();
@@ -143,6 +147,7 @@ double rowTolerance(const std::vector<VpEntityRecord>& entities)
     return std::max(1.0e-6, std::hypot(maximum_x - minimum_x, maximum_y - minimum_y) * 0.001);
 }
 
+// 按行扫描顺序排序图元。
 VpToolpathSortResult rowScanSort(const std::vector<VpEntityRecord>& entities,
                                  const VpToolpathSortOptions& options)
 {
@@ -181,6 +186,7 @@ VpToolpathSortResult rowScanSort(const std::vector<VpEntityRecord>& entities,
     return result;
 }
 
+// 按最近邻顺序排序图元。
 VpToolpathSortResult shortestSort(const std::vector<VpEntityRecord>& entities,
                                   const VpToolpathSortOptions& options)
 {

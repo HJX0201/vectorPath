@@ -18,6 +18,7 @@ namespace Vp
 namespace
 {
 
+// 返回基准图像使用的调色板。
 const QVector<QRgb>& palette()
 {
     static const QVector<QRgb> colors{
@@ -30,6 +31,7 @@ const QVector<QRgb>& palette()
     return colors;
 }
 
+// 按用例下标决定图像尺寸。
 QSize caseSize(int index, bool smoke, QRandomGenerator& random)
 {
     if (smoke)
@@ -69,6 +71,7 @@ QSize caseSize(int index, bool smoke, QRandomGenerator& random)
     return {width, height};
 }
 
+// 按用例下标决定测试分类。
 QString categoryForIndex(int index)
 {
     static const QStringList categories{
@@ -79,6 +82,7 @@ QString categoryForIndex(int index)
     return categories[index % categories.size()];
 }
 
+// 绘制条纹图案。
 void drawBands(QImage& image, QRandomGenerator& random)
 {
     QPainter painter(&image);
@@ -96,6 +100,7 @@ void drawBands(QImage& image, QRandomGenerator& random)
     }
 }
 
+// 绘制嵌套色块图案。
 void drawNested(QImage& image, QRandomGenerator& random)
 {
     QPainter painter(&image);
@@ -110,6 +115,7 @@ void drawNested(QImage& image, QRandomGenerator& random)
     }
 }
 
+// 绘制分割合并图案。
 void drawSplitMerge(QImage& image, QRandomGenerator& random)
 {
     QPainter painter(&image);
@@ -126,6 +132,7 @@ void drawSplitMerge(QImage& image, QRandomGenerator& random)
                      color);
 }
 
+// 绘制细长通道图案。
 void drawThinCorridors(QImage& image, QRandomGenerator& random)
 {
     QPainter painter(&image);
@@ -147,6 +154,7 @@ void drawThinCorridors(QImage& image, QRandomGenerator& random)
     }
 }
 
+// 绘制棋盘格图案。
 void drawChecker(QImage& image, QRandomGenerator& random)
 {
     QPainter painter(&image);
@@ -163,6 +171,7 @@ void drawChecker(QImage& image, QRandomGenerator& random)
     }
 }
 
+// 绘制随机矩形图案。
 void drawRandomRectangles(QImage& image, QRandomGenerator& random)
 {
     QPainter painter(&image);
@@ -177,6 +186,7 @@ void drawRandomRectangles(QImage& image, QRandomGenerator& random)
     }
 }
 
+// 绘制互不相连的图案。
 void drawDisconnected(QImage& image, QRandomGenerator& random)
 {
     QPainter painter(&image);
@@ -199,6 +209,7 @@ void drawDisconnected(QImage& image, QRandomGenerator& random)
     }
 }
 
+// 按用例下标绘制合成图案。
 void drawSyntheticVariant(QImage& image, QRandomGenerator& random, int index)
 {
     QImage source(320, 240, QImage::Format_ARGB32);
@@ -218,6 +229,7 @@ void drawSyntheticVariant(QImage& image, QRandomGenerator& random, int index)
     image = variant.convertToFormat(QImage::Format_ARGB32);
 }
 
+// 按分类与种子生成测试图像。
 QImage generateImage(const QSize& size, const QString& category, quint32 seed, int index)
 {
     QRandomGenerator random(seed);
@@ -258,6 +270,7 @@ QImage generateImage(const QSize& size, const QString& category, quint32 seed, i
     return image;
 }
 
+// 统计图像中的颜色数量。
 int colorCount(const QImage& image)
 {
     QSet<QRgb> colors;
@@ -272,6 +285,7 @@ int colorCount(const QImage& image)
     return colors.size();
 }
 
+// 写出用例清单文件。
 bool writeManifest(const QString& output_directory, const std::vector<VpBitmapBenchmarkCase>& cases,
                    const VpBitmapBenchmarkOptions& options)
 {

@@ -16,6 +16,7 @@ namespace Vp
 namespace
 {
 
+// 写出一份旧版 V6 文件，用于兼容性测试。
 bool writeLegacyV6File(const QString& file_path)
 {
     QFile file(file_path);

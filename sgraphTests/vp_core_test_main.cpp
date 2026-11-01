@@ -22,6 +22,7 @@ constexpr VpCoreSuite kSuites[] = {
 
 } // namespace
 
+// 核心测试入口，返回断言失败次数。
 int main(int argc, char** argv)
 {
     if (argc == 2 && std::strcmp(argv[1], "--list-suites") == 0)

@@ -34,6 +34,7 @@ struct VpSnapCircle
     bool is_clockwise = false;
 };
 
+// 把角度归一化到 [0,360)。
 double normalizedAngle(double angle)
 {
     double result = std::fmod(angle, 360.0);
@@ -44,11 +45,13 @@ double normalizedAngle(double angle)
     return result;
 }
 
+// 计算点到圆心的方位角。
 double pointAngle(const VpPoint2d& center, const VpPoint2d& point)
 {
     return normalizedAngle(std::atan2(point.y - center.y, point.x - center.x) * 180.0 / kPi);
 }
 
+// 判断角度是否落在圆弧范围内。
 bool angleOnArc(double angle, double start_angle, double end_angle, bool is_clockwise)
 {
     const double span =
@@ -57,18 +60,21 @@ bool angleOnArc(double angle, double start_angle, double end_angle, bool is_cloc
     return offset <= span + 1.0e-7;
 }
 
+// 判断点是否落在捕捉曲线上。
 bool pointOnCurve(const VpSnapCircle& circle, const VpPoint2d& point)
 {
     return !circle.is_arc || angleOnArc(pointAngle(circle.center, point), circle.start_angle,
                                         circle.end_angle, circle.is_clockwise);
 }
 
+// 按极坐标计算点。
 VpPoint2d polarPoint(const VpPoint2d& center, double radius, double angle)
 {
     const double radians = angle * kPi / 180.0;
     return {center.x + (radius * std::cos(radians)), center.y + (radius * std::sin(radians))};
 }
 
+// 求线段上距给定点最近的点。
 VpPoint2d closestPointOnSegment(const VpPoint2d& point, const VpSnapSegment& segment)
 {
     const double delta_x = segment.end.x - segment.start.x;
@@ -85,6 +91,7 @@ VpPoint2d closestPointOnSegment(const VpPoint2d& point, const VpSnapSegment& seg
     return {segment.start.x + (parameter * delta_x), segment.start.y + (parameter * delta_y)};
 }
 
+// 求点在无限长直线上的参数。
 double infiniteLineParameter(const VpPoint2d& point, const VpSnapSegment& segment)
 {
     const double delta_x = segment.end.x - segment.start.x;
@@ -96,12 +103,14 @@ double infiniteLineParameter(const VpPoint2d& point, const VpSnapSegment& segmen
                                             length_squared;
 }
 
+// 按参数取无限长直线上的点。
 VpPoint2d pointOnInfiniteLine(const VpSnapSegment& segment, double parameter)
 {
     return {segment.start.x + ((segment.end.x - segment.start.x) * parameter),
             segment.start.y + ((segment.end.y - segment.start.y) * parameter)};
 }
 
+// 求两条无限长直线的交点。
 bool infiniteLineIntersection(const VpSnapSegment& first, const VpSnapSegment& second,
                               VpPoint2d& intersection, double& first_parameter,
                               double& second_parameter)
@@ -124,6 +133,7 @@ bool infiniteLineIntersection(const VpSnapSegment& first, const VpSnapSegment& s
     return true;
 }
 
+// 求两条线段的交点。
 bool segmentIntersection(const VpSnapSegment& first, const VpSnapSegment& second,
                          VpPoint2d& intersection)
 {
@@ -150,6 +160,7 @@ bool segmentIntersection(const VpSnapSegment& first, const VpSnapSegment& second
     return true;
 }
 
+// 求线段与圆的交点。
 std::vector<VpPoint2d> segmentCircleIntersections(const VpSnapSegment& segment,
                                                   const VpSnapCircle& circle)
 {
@@ -185,6 +196,7 @@ std::vector<VpPoint2d> segmentCircleIntersections(const VpSnapSegment& segment,
     return results;
 }
 
+// 求两圆交点。
 std::vector<VpPoint2d> circleIntersections(const VpSnapCircle& first, const VpSnapCircle& second)
 {
     std::vector<VpPoint2d> results;
@@ -217,6 +229,7 @@ std::vector<VpPoint2d> circleIntersections(const VpSnapCircle& first, const VpSn
     return results;
 }
 
+// 把图元展开为捕捉用的线段与圆。
 void appendEntityGeometry(const VpEntityRecord& entity, std::vector<VpSnapSegment>& segments,
                           std::vector<VpSnapCircle>& circles)
 {

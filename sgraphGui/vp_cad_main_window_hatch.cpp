@@ -23,11 +23,13 @@ namespace Vp
 namespace
 {
 
+// 生成颜色按钮的样式表。
 QString colorButtonStyle(const QColor& color)
 {
     return QStringLiteral("QPushButton { background:%1; min-height:24px; }").arg(color.name());
 }
 
+// 解析填充命令的参数。
 bool parseHatchCommand(const QStringList& parts, int option_index, VpHatchEntity& settings)
 {
     if (parts.size() <= option_index)

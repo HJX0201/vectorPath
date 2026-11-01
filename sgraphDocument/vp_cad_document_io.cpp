@@ -22,6 +22,7 @@ namespace
 constexpr char kFileMagic[] = "SMCAD001";
 constexpr quint32 kFileVersion = 24;
 
+// 读出一个二维点。
 void readPoint(QDataStream& stream, VpPoint2d& point)
 {
     stream >> point.x >> point.y;

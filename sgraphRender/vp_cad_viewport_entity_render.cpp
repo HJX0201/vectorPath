@@ -18,6 +18,7 @@ namespace Vp
 namespace
 {
 
+// 按文字样式构造绘制字体。
 QFont entityTextFont(const VpCadDocument* document, const QString& style_name, double height,
                      double zoom, const QFont& fallback)
 {

@@ -11,17 +11,20 @@ namespace
 
 constexpr double kFullCircleDegrees = 360.0;
 
+// 把角度归一化到 [0,360)。
 double normalizedAngle(double angle)
 {
     const double result = std::fmod(angle, kFullCircleDegrees);
     return result < 0.0 ? result + kFullCircleDegrees : result;
 }
 
+// 计算逆时针扫掠角。
 double counterClockwiseSpan(double start_angle, double end_angle)
 {
     return normalizedAngle(end_angle - start_angle);
 }
 
+// 按角度计算圆弧上的点。
 VpPoint2d arcPoint(const VpArcEntity& arc, double angle)
 {
     constexpr double kPi = 3.14159265358979323846;
@@ -30,6 +33,7 @@ VpPoint2d arcPoint(const VpArcEntity& arc, double angle)
             arc.center.y + (arc.radius * std::sin(radians))};
 }
 
+// 把相接的圆弧合并为一段。
 bool joinedArcEntity(const std::vector<VpEntityRecord>& sources, double tolerance,
                      VpEntityRecord& result)
 {
@@ -156,6 +160,7 @@ struct VpPolylinePath
     std::vector<double> end_widths;
 };
 
+// 反转折线路径的方向。
 VpPolylinePath reversedPath(const VpPolylinePath& source)
 {
     VpPolylinePath result;
@@ -173,6 +178,7 @@ VpPolylinePath reversedPath(const VpPolylinePath& source)
     return result;
 }
 
+// 把另一条路径接到当前路径之后。
 void appendPath(VpPolylinePath& destination, const VpPolylinePath& addition)
 {
     destination.bulges.back() = addition.bulges.front();
@@ -188,6 +194,7 @@ void appendPath(VpPolylinePath& destination, const VpPolylinePath& addition)
                                   addition.end_widths.end());
 }
 
+// 把相接的直线或多段线合并。
 bool joinedLinearEntity(const std::vector<VpEntityRecord>& sources, double tolerance,
                         VpEntityRecord& result)
 {

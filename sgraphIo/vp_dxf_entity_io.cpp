@@ -16,6 +16,7 @@ namespace Vp
 namespace
 {
 
+// 写出图元的公共组码。
 void writeEntityCommon(QTextStream& stream, const VpEntityRecord& entity)
 {
     writeDxfPair(stream, 8, entity.layer_name);
@@ -30,6 +31,7 @@ void writeEntityCommon(QTextStream& stream, const VpEntityRecord& entity)
     }
 }
 
+// 从组码读出图元的公共属性。
 VpEntityRecord commonRecord(const std::vector<VpDxfPair>& pairs)
 {
     VpEntityRecord entity;
@@ -40,6 +42,7 @@ VpEntityRecord commonRecord(const std::vector<VpDxfPair>& pairs)
     return entity;
 }
 
+// 读出重复出现的坐标点。
 std::vector<VpPoint2d> readRepeatedPoints(const std::vector<VpDxfPair>& pairs, int x_code,
                                           int y_code)
 {
@@ -67,12 +70,14 @@ std::vector<VpPoint2d> readRepeatedPoints(const std::vector<VpDxfPair>& pairs, i
     return points;
 }
 
+// 构造图元解析失败的返回值。
 VpResult<VpEntityRecord> invalidEntity(const QString& entity_name)
 {
     return VpResult<VpEntityRecord>::failure(
         toCoreText(QObject::tr("字段不完整或几何无效的 %1 实体。").arg(entity_name)));
 }
 
+// 按开关累加导出计数。
 void countExport(VpFileCompatibilityReport& report, bool count_entity)
 {
     if (count_entity)

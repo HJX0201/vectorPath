@@ -13,6 +13,7 @@ namespace Vp
 namespace
 {
 
+// 判断关键字是否属于样条编辑命令。
 bool splineEditKeyword(const QString& keyword, const char* full_name, const char* alias)
 {
     return keyword == QLatin1String(full_name) || keyword == QLatin1String(alias);

@@ -10,6 +10,7 @@ namespace
 
 constexpr double kPi = 3.14159265358979323846;
 
+// 解析分隔符分隔的一对数值，失败返回 false。
 bool parsePair(const QString& text, QChar separator, double& first_value, double& second_value)
 {
     const QStringList parts = text.split(separator);

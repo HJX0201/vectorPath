@@ -13,6 +13,7 @@ namespace Vp
 namespace
 {
 
+// 返回该操作对应的旋转角度。
 double rotationAngle(VpQuickEntityOperation operation)
 {
     switch (operation)
@@ -40,6 +41,7 @@ const VpEntityRecord* entityById(const VpCadDocument& document, VpEntityId entit
     return iterator == document.entities().end() ? nullptr : &*iterator;
 }
 
+// 计算反转后的图元顺序。
 std::vector<VpEntityId> reversedEntityOrder(const VpCadDocument& document,
                                             const std::vector<VpEntityId>& target_ids,
                                             bool use_selection)
@@ -72,6 +74,7 @@ std::vector<VpEntityId> reversedEntityOrder(const VpCadDocument& document,
     return result;
 }
 
+// 把选中图元反向并写回文档。
 VpQuickEntityOperationResult reverseEntities(VpCadDocument& document,
                                              const std::vector<VpEntityId>& target_ids,
                                              bool use_selection)

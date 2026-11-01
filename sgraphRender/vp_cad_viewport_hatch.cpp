@@ -15,6 +15,7 @@ namespace Vp
 namespace
 {
 
+// 把填充区域转换为绘制路径。
 QPainterPath hatchPath(const VpHatchEntity& hatch,
                        const std::function<QPointF(const VpPoint2d&)>& transform)
 {
@@ -41,6 +42,7 @@ QPainterPath hatchPath(const VpHatchEntity& hatch,
     return path;
 }
 
+// 按缩放计算图案间距。
 double patternSpacing(const VpHatchEntity& hatch, double zoom)
 {
     return std::clamp(hatch.pattern_scale * zoom * 8.0, 4.0, 160.0);

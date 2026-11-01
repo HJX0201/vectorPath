@@ -19,6 +19,7 @@ namespace Vp
 namespace
 {
 
+// 从组码中截取指定实体的内容。
 std::vector<VpDxfPair> entityPairs(const std::vector<VpDxfPair>& pairs, std::size_t& index)
 {
     std::vector<VpDxfPair> entity_pairs;
@@ -38,6 +39,7 @@ void ensureLayer(VpCadDocument& document, const QString& layer_name)
     }
 }
 
+// 确保图元引用的样式已存在。
 void ensureEntityStyles(VpCadDocument& document, const VpEntityRecord& entity)
 {
     if (entity.type == VpEntityType::LinearDimension)
@@ -64,6 +66,7 @@ void ensureEntityStyles(VpCadDocument& document, const VpEntityRecord& entity)
     }
 }
 
+// 追加一条兼容性警告。
 void appendWarning(VpFileCompatibilityReport& report, const QString& warning)
 {
     if (report.warnings.size() < 100)
@@ -72,6 +75,7 @@ void appendWarning(VpFileCompatibilityReport& report, const QString& warning)
     }
 }
 
+// 把图层属性编码为 DXF 标志位。
 int layerFlags(const VpLayerRecord& layer)
 {
     int flags = layer.is_frozen ? 1 : 0;
@@ -82,6 +86,7 @@ int layerFlags(const VpLayerRecord& layer)
     return flags;
 }
 
+// 写出图层表。
 void writeLayerTable(QTextStream& stream, const VpCadDocument& document)
 {
     writeDxfPair(stream, 0, QStringLiteral("SECTION"));

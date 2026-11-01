@@ -13,12 +13,14 @@ namespace
 
 constexpr double kPi = 3.14159265358979323846;
 
+// 把角度归一化到 [0,360)。
 double normalizedAngle(double angle)
 {
     const double result = std::fmod(angle, 360.0);
     return result < 0.0 ? result + 360.0 : result;
 }
 
+// 延长或缩短直线的某一端。
 bool lengthenedLine(const VpLineEntity& source, bool edit_start, const VpPoint2d& destination,
                     VpLineEntity& result)
 {
@@ -46,12 +48,14 @@ bool lengthenedLine(const VpLineEntity& source, bool edit_start, const VpPoint2d
     return true;
 }
 
+// 按角度计算圆上的点。
 VpPoint2d pointOnCircle(const VpPoint2d& center, double radius, const VpPoint2d& direction_point)
 {
     const double angle = entityAngleDegrees(center, direction_point) * kPi / 180.0;
     return {center.x + (radius * std::cos(angle)), center.y + (radius * std::sin(angle))};
 }
 
+// 按起止点重算凸度。
 double updatedBulge(const VpPoint2d& center, const VpPoint2d& start_point,
                     const VpPoint2d& end_point, double source_bulge)
 {
@@ -62,6 +66,7 @@ double updatedBulge(const VpPoint2d& center, const VpPoint2d& start_point,
     return std::tan((sweep * kPi / 180.0) * 0.25);
 }
 
+// 延长或缩短多段线的端部。
 bool lengthenedPolyline(const VpPolylineEntity& source, bool edit_start,
                         const VpPoint2d& destination, VpPolylineEntity& result)
 {

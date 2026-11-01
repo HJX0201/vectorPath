@@ -10,6 +10,7 @@ namespace Vp
 namespace
 {
 
+// 返回图元当前的绘制顺序。
 std::vector<VpEntityId> entityOrder(const std::vector<VpEntityRecord>& entities)
 {
     std::vector<VpEntityId> order;
@@ -21,6 +22,7 @@ std::vector<VpEntityId> entityOrder(const std::vector<VpEntityRecord>& entities)
     return order;
 }
 
+// 按给定顺序重排图元。
 void applyEntityOrder(std::vector<VpEntityRecord>& entities, const std::vector<VpEntityId>& order)
 {
     std::unordered_map<VpEntityId, std::size_t> ranks;

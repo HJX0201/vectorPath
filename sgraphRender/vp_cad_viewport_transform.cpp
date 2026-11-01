@@ -9,6 +9,7 @@ namespace
 
 constexpr double kPi = 3.14159265358979323846;
 
+// 把点绕基点旋转。
 VpPoint2d rotatePoint(const VpPoint2d& point, const VpPoint2d& center, double angle)
 {
     const double radians = angle * kPi / 180.0;
@@ -20,12 +21,14 @@ VpPoint2d rotatePoint(const VpPoint2d& point, const VpPoint2d& center, double an
             center.y + (delta_x * sine) + (delta_y * cosine)};
 }
 
+// 把点按基点缩放。
 VpPoint2d scalePoint(const VpPoint2d& point, const VpPoint2d& base_point, double scale_factor)
 {
     return {base_point.x + ((point.x - base_point.x) * scale_factor),
             base_point.y + ((point.y - base_point.y) * scale_factor)};
 }
 
+// 把点按轴镜像。
 VpPoint2d mirrorPoint(const VpPoint2d& point, const VpPoint2d& axis_start,
                       const VpPoint2d& axis_end)
 {
@@ -44,6 +47,7 @@ VpPoint2d mirrorPoint(const VpPoint2d& point, const VpPoint2d& axis_start,
     return {(2.0 * projected.x) - point.x, (2.0 * projected.y) - point.y};
 }
 
+// 对样条的控制点应用变换。
 template <typename SFunction>
 void transformSpline(VpEntityRecord& entity, SFunction transform_point)
 {
@@ -53,6 +57,7 @@ void transformSpline(VpEntityRecord& entity, SFunction transform_point)
     }
 }
 
+// 对椭圆的轴向应用变换。
 template <typename SFunction>
 void transformEllipse(VpEntityRecord& entity, SFunction transform_point)
 {

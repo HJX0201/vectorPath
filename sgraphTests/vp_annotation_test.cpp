@@ -22,6 +22,7 @@ class VpAnnotationTest final : public QObject
     void mtextDxfCompatibility();
 };
 
+// 构造测试用的注释文字样式。
 VpTextStyleRecord notesStyle()
 {
     VpTextStyleRecord style;

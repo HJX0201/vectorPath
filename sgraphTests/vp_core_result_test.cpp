@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 
+// 运行核心结果类型测试。
 int vpRunCoreResultTests()
 {
     using namespace Vp;

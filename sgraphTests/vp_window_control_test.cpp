@@ -28,6 +28,7 @@ using namespace Vp;
 namespace
 {
 
+// 计算图标在给定尺寸下的可见范围。
 QRect visibleIconBounds(const QIcon& icon, const QSize& size)
 {
     const QImage image = icon.pixmap(size).toImage().convertToFormat(QImage::Format_ARGB32);

@@ -14,6 +14,7 @@ namespace Vp
 namespace
 {
 
+// 把命令名解析为标准图形类型。
 std::optional<VpStandardShapeType> standardShapeFromCommand(const QString& command)
 {
     if (command == QLatin1String("STAR"))

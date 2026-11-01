@@ -12,11 +12,13 @@ namespace
 constexpr double kGeometryTolerance = 1.0e-9;
 constexpr double kPi = 3.14159265358979323846;
 
+// 返回点到圆心的方位角。
 double vectorAngle(const VpPoint2d& center, const VpPoint2d& point) noexcept
 {
     return std::atan2(point.y - center.y, point.x - center.x);
 }
 
+// 把起止角之间的扫掠角归一为正角。
 double positiveSweep(double start_angle, double end_angle) noexcept
 {
     double sweep = end_angle - start_angle;
@@ -31,6 +33,7 @@ double positiveSweep(double start_angle, double end_angle) noexcept
     return sweep > kPi ? (2.0 * kPi) - sweep : sweep;
 }
 
+// 计算两点间距离。
 double pointDistance(const VpPoint2d& first_point, const VpPoint2d& second_point) noexcept
 {
     return std::hypot(second_point.x - first_point.x, second_point.y - first_point.y);

@@ -17,6 +17,7 @@ namespace Vp
 namespace
 {
 
+// 从 JSON 对象读颜色，缺失时用默认值。
 QColor readColor(const QJsonObject& object, const char* key, const QColor& fallback)
 {
     const QColor color(object.value(QLatin1String(key)).toString());

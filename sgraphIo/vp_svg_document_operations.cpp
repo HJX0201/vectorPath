@@ -18,17 +18,20 @@ namespace
 
 constexpr int kClipperPrecision = 6;
 
+// 判断图层是否为 SVG 填充层。
 bool isSvgFillLayer(const QString& layer_name)
 {
     return layer_name.startsWith(QStringLiteral("SVG_FILL_"), Qt::CaseInsensitive);
 }
 
+// 判断图层是否为 SVG 色块层。
 bool isSvgColorLayer(const QString& layer_name)
 {
     return layer_name.startsWith(QStringLiteral("SVG_"), Qt::CaseInsensitive) &&
            !isSvgFillLayer(layer_name);
 }
 
+// 返回图元的显示颜色。
 QColor entityColor(const VpCadDocument& document, const QString& layer_name)
 {
     QColor color = document.layerColor(layer_name);
@@ -37,6 +40,7 @@ QColor entityColor(const VpCadDocument& document, const QString& layer_name)
     return color;
 }
 
+// 把填充图元转换为矢量区域。
 VpVectorRegion hatchRegion(const VpHatchEntity& hatch, const QColor& color)
 {
     VpVectorRegion region;
@@ -48,6 +52,7 @@ VpVectorRegion hatchRegion(const VpHatchEntity& hatch, const QColor& color)
     return region;
 }
 
+// 把填充图元的边界转换为 Clipper 路径。
 Clipper2Lib::PathsD pathsFromHatches(const std::vector<const VpEntityRecord*>& entities)
 {
     Clipper2Lib::PathsD result;
@@ -80,6 +85,7 @@ Clipper2Lib::PathsD pathsFromHatches(const std::vector<const VpEntityRecord*>& e
     return result;
 }
 
+// 把 Clipper 路径转换为矢量区域。
 VpVectorRegion regionFromPaths(const Clipper2Lib::PathsD& paths)
 {
     VpVectorRegion result;
@@ -100,11 +106,13 @@ VpVectorRegion regionFromPaths(const Clipper2Lib::PathsD& paths)
     return result;
 }
 
+// 由源图层名生成填充图层名。
 QString fillLayerName(const QString& source_layer)
 {
     return QStringLiteral("SVG_FILL_%1").arg(source_layer.mid(4));
 }
 
+// 判断图元是否在目标集合中。
 bool isTargetEntity(const VpEntityRecord& entity,
                     const std::unordered_set<VpEntityId>& target_entity_ids)
 {
@@ -112,6 +120,7 @@ bool isTargetEntity(const VpEntityRecord& entity,
            target_entity_ids.find(entity.id) != target_entity_ids.end();
 }
 
+// 判断点是否落在填充区域内。
 bool pointInsideHatch(const VpPoint2d& point, const VpHatchEntity& hatch)
 {
     if (!pointInsidePolygon(point, hatch.boundary))
@@ -125,6 +134,7 @@ bool pointInsideHatch(const VpPoint2d& point, const VpHatchEntity& hatch)
                         });
 }
 
+// 取多段线上的一个代表点。
 VpPoint2d representativePoint(const VpPolylineEntity& polyline)
 {
     if (polyline.vertices.empty() || polyline.is_closed)
@@ -136,6 +146,7 @@ VpPoint2d representativePoint(const VpPolylineEntity& polyline)
     return {(first.x + last.x) * 0.5, (first.y + last.y) * 0.5};
 }
 
+// 判断填充是否由指定源图元生成。
 bool isFillForSource(const VpEntityRecord& fill_entity, const VpEntityRecord& source_entity)
 {
     if (fill_entity.type != VpEntityType::Polyline ||

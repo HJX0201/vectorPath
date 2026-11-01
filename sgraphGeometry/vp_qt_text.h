@@ -8,11 +8,13 @@
 namespace Vp
 {
 
+// 把 Qt 字符串转换为核心文本。
 inline std::u16string toCoreText(const QString& text)
 {
     return text.toStdU16String();
 }
 
+// 把核心文本转换为 Qt 字符串。
 inline QString toQtText(const std::u16string& text)
 {
     return QString::fromStdU16String(text);

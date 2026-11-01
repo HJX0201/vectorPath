@@ -9,16 +9,19 @@ namespace
 
 constexpr quint32 kMaximumPointCount = 1'000'000U;
 
+// 写入一个二维点。
 void writePoint(QDataStream& stream, const VpPoint2d& point)
 {
     stream << point.x << point.y;
 }
 
+// 读出一个二维点。
 void readPoint(QDataStream& stream, VpPoint2d& point)
 {
     stream >> point.x >> point.y;
 }
 
+// 按图元类型写入几何数据。
 void writeGeometry(QDataStream& stream, VpEntityType type, const VpEntityGeometry& geometry)
 {
     if (type == VpEntityType::Line)
@@ -134,12 +137,14 @@ void writeGeometry(QDataStream& stream, VpEntityType type, const VpEntityGeometr
     }
 }
 
+// 读出数量并做上限校验，防止非法数据超额分配。
 bool readCount(QDataStream& stream, quint32& count)
 {
     stream >> count;
     return count <= kMaximumPointCount;
 }
 
+// 按图元类型读出几何数据。
 bool readGeometry(QDataStream& stream, VpEntityType type, VpEntityGeometry& geometry,
                   quint32 format_version)
 {

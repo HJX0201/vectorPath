@@ -40,6 +40,7 @@ const VpEntityRecord& entityById(const VpCadDocument& document, VpEntityId id)
     return *iterator;
 }
 
+// 断言两点坐标接近。
 void comparePoint(const VpPoint2d& actual, const VpPoint2d& expected)
 {
     QVERIFY(std::abs(actual.x - expected.x) < 1.0e-9);

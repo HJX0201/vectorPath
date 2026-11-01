@@ -22,12 +22,14 @@ namespace Vp
 namespace
 {
 
+// 返回打印样式表目录。
 QString plotStyleDirectoryPath()
 {
     return QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) +
            QStringLiteral("/PlotStyles");
 }
 
+// 列出已安装的打印样式表引用。
 QStringList installedPlotStyleReferences()
 {
     QStringList references;
@@ -42,6 +44,7 @@ QStringList installedPlotStyleReferences()
     return references;
 }
 
+// 把样式表引用转换为显示名。
 QString plotStyleDisplayName(const QString& reference)
 {
     if (reference == QLatin1String("acad"))
@@ -51,6 +54,7 @@ QString plotStyleDisplayName(const QString& reference)
     return QFileInfo(reference).baseName();
 }
 
+// 填充打印样式下拉框。
 void populatePlotStyleCombo(QComboBox& combo_box, const QString& current_reference)
 {
     combo_box.clear();
@@ -63,6 +67,7 @@ void populatePlotStyleCombo(QComboBox& combo_box, const QString& current_referen
     combo_box.setCurrentIndex(current_index < 0 ? 0 : current_index);
 }
 
+// 把样式表文件安装到应用目录。
 VpResult<void> installPlotStyleFile(const QString& source_path)
 {
     const VpResult<VpPlotStyleTable> validation = VpPlotStyleTable::load(source_path);

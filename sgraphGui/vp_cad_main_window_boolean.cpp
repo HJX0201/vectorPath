@@ -23,6 +23,7 @@ namespace Vp
 namespace
 {
 
+// 把命令名解析为布尔运算类型。
 std::optional<VpPolygonBooleanOperation> operationFromCommand(const QString& command)
 {
     if (command == QLatin1String("UNION"))
@@ -48,6 +49,7 @@ std::optional<VpPolygonBooleanOperation> operationFromCommand(const QString& com
     return std::nullopt;
 }
 
+// 判断是否为可参与布尔运算的闭合直线多段线。
 bool isStraightClosedPolyline(const VpEntityRecord& entity)
 {
     if (entity.type != VpEntityType::Polyline)

@@ -39,6 +39,7 @@ struct VpMeasuredResult
     VpBitmapVectorResult value;
 };
 
+// 重复执行并用中位数统计耗时。
 VpMeasuredResult measure(int repetitions,
                          const std::function<VpResult<VpBitmapVectorResult>()>& operation)
 {
@@ -68,6 +69,7 @@ VpMeasuredResult measure(int repetitions,
     return measured;
 }
 
+// 保存失败用例的中间结果。
 void saveFailureArtifacts(const VpBitmapBenchmarkOptions& options,
                           const VpBitmapBenchmarkCase& test_case, const QImage& source,
                           const VpMeasuredResult& flood_fill, const VpMeasuredResult& run_serial,
@@ -100,6 +102,7 @@ void saveFailureArtifacts(const VpBitmapBenchmarkOptions& options,
     write_svg(QStringLiteral("run_parallel.svg"), run_parallel);
 }
 
+// 返回进程峰值内存占用。
 quint64 peakWorkingSet()
 {
 #ifdef Q_OS_WIN
@@ -114,6 +117,7 @@ quint64 peakWorkingSet()
     return 0;
 }
 
+// 生成下一个结果目录名。
 QString nextResultDirectory()
 {
     QDir results_directory(
@@ -138,12 +142,14 @@ QString nextResultDirectory()
     return results_directory.filePath(prefix + QString::number(next_index));
 }
 
+// 删除临时目录。
 bool removeTemporaryDirectory(const QString& output_directory, const QString& directory_name)
 {
     QDir temporary_directory(QDir(output_directory).filePath(directory_name));
     return !temporary_directory.exists() || temporary_directory.removeRecursively();
 }
 
+// 清理临时产物。
 bool removeTemporaryArtifacts(const QString& output_directory)
 {
     const bool cases_removed = removeTemporaryDirectory(output_directory, QStringLiteral("cases"));
@@ -152,6 +158,7 @@ bool removeTemporaryArtifacts(const QString& output_directory)
     return cases_removed && failures_removed;
 }
 
+// 解析命令行参数。
 VpBitmapBenchmarkOptions parseOptions(QCoreApplication& application)
 {
     QCommandLineParser parser;
@@ -194,6 +201,7 @@ VpBitmapBenchmarkOptions parseOptions(QCoreApplication& application)
 } // namespace
 } // namespace Vp
 
+// 基准程序入口。
 int main(int argc, char* argv[])
 {
     QCoreApplication application(argc, argv);

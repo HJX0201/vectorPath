@@ -33,11 +33,13 @@ enum class VpObjectSnapMode : std::uint8_t
 
 using VpObjectSnapModes = std::uint8_t;
 
+// 把单个捕捉模式转换为位标志。
 constexpr VpObjectSnapModes objectSnapModeValue(VpObjectSnapMode mode) noexcept
 {
     return static_cast<VpObjectSnapModes>(mode);
 }
 
+// 判断位标志中是否包含指定捕捉模式。
 constexpr bool objectSnapModeEnabled(VpObjectSnapModes modes, VpObjectSnapMode mode) noexcept
 {
     return (modes & objectSnapModeValue(mode)) != 0;

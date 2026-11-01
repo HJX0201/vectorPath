@@ -21,6 +21,7 @@ class VpHatchTest final : public QObject
     void nativeAndDxfRoundTrip();
 };
 
+// 构造图案填充的测试数据。
 VpHatchEntity patternedHatch()
 {
     VpHatchEntity hatch;

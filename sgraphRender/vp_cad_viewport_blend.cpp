@@ -20,6 +20,7 @@ struct VpBlendEndpoint
     VpPoint2d outward_tangent;
 };
 
+// 把向量单位化，长度为零时返回 false。
 bool normalizedVector(const VpPoint2d& vector, VpPoint2d& result)
 {
     const double length = std::hypot(vector.x, vector.y);
@@ -31,6 +32,7 @@ bool normalizedVector(const VpPoint2d& vector, VpPoint2d& result)
     return true;
 }
 
+// 按角度计算圆弧上的点。
 VpPoint2d arcPoint(const VpArcEntity& arc, double angle)
 {
     const double radians = angle * kPi / 180.0;
@@ -38,6 +40,7 @@ VpPoint2d arcPoint(const VpArcEntity& arc, double angle)
             arc.center.y + (arc.radius * std::sin(radians))};
 }
 
+// 取出用于桥接的端点及其切向。
 bool blendEndpoint(const VpEntityRecord& source, const VpPoint2d& pick_point,
                    VpBlendEndpoint& result)
 {
@@ -81,6 +84,7 @@ bool blendEndpoint(const VpEntityRecord& source, const VpPoint2d& pick_point,
     return false;
 }
 
+// 判断图元是否为样条桥接曲线。
 bool isBlendCurve(const VpEntityRecord& entity)
 {
     return entity.type == VpEntityType::Line || entity.type == VpEntityType::Arc ||

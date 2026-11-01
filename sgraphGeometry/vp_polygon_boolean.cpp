@@ -10,6 +10,7 @@ namespace
 
 constexpr int kBooleanPrecision = 6;
 
+// 把多边形路径转换为 Clipper2 数据结构。
 Clipper2Lib::PathsD toClipperPaths(const VpPolygonPaths& paths)
 {
     Clipper2Lib::PathsD clipper_paths;
@@ -27,6 +28,7 @@ Clipper2Lib::PathsD toClipperPaths(const VpPolygonPaths& paths)
     return clipper_paths;
 }
 
+// 把 Clipper2 结果转换回多边形路径。
 VpPolygonPaths fromClipperPaths(const Clipper2Lib::PathsD& paths)
 {
     VpPolygonPaths result;
@@ -47,6 +49,7 @@ VpPolygonPaths fromClipperPaths(const Clipper2Lib::PathsD& paths)
     return result;
 }
 
+// 检查路径中是否存在非法点。
 bool hasInvalidPath(const VpPolygonPaths& paths)
 {
     for (const VpPolygonPath& path : paths)

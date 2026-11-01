@@ -13,6 +13,7 @@ namespace Vp
 namespace
 {
 
+// 写出填充图元的公共组码。
 void writeEntityCommon(QTextStream& stream, const VpEntityRecord& entity)
 {
     writeDxfPair(stream, 8, entity.layer_name);

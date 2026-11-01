@@ -26,6 +26,7 @@ class VpDimensionTest final : public QObject
     void explodeAllDimensionTypes();
 };
 
+// 构造一个测试用标注。
 VpLinearDimensionEntity makeDimension(VpDimensionType dimension_type)
 {
     VpLinearDimensionEntity dimension;

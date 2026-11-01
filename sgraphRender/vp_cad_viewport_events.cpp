@@ -16,6 +16,7 @@ namespace
 constexpr double kMinimumZoom = 0.01;
 constexpr double kMaximumZoom = 10000.0;
 
+// 判断当前工具是否需要光标预览。
 bool toolHasCursorPreview(VpToolMode tool_mode)
 {
     return tool_mode == VpToolMode::Move || tool_mode == VpToolMode::Copy ||

@@ -18,6 +18,7 @@ void drawArrowHead(QPainter& painter, const QPointF& point, bool clockwise)
     painter.drawPath(arrow);
 }
 
+// 绘制旋转方向图标。
 void drawRotation(QPainter& painter, bool clockwise, bool half_turn, const QColor& accent)
 {
     painter.drawArc(QRectF(11, 11, 42, 42), clockwise ? 35 * 16 : 55 * 16,

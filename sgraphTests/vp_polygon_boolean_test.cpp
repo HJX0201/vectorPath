@@ -10,6 +10,7 @@ namespace Vp
 namespace
 {
 
+// 计算单条路径的面积。
 double pathArea(const VpPolygonPath& path)
 {
     double twice_area = 0.0;
@@ -22,6 +23,7 @@ double pathArea(const VpPolygonPath& path)
     return std::abs(twice_area) * 0.5;
 }
 
+// 计算多条路径的面积之和。
 double pathsArea(const VpPolygonPaths& paths)
 {
     double area = 0.0;
