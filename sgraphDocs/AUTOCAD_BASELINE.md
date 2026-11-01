@@ -1,0 +1,42 @@
+# AutoCAD 基线资料
+
+vectorPath 的二维功能以 AutoCAD 2026 官方资料为参照，只做摘要，不复制官方帮助正文、商标
+或图标资源。功能语义与差距状态以两份 YAML 为准：`vp_autocad_2026_feature_catalog.yaml`、
+`vp_autocad_gap_matrix.yaml`；实现证据在 `vp_smartcad_feature_inventory.yaml`。
+
+## 官方来源
+
+| ID | 页面 | 用途 |
+| --- | --- | --- |
+| `ADSK.ACD.2026.HOME` | https://help.autodesk.com/view/ACD/2026/ENU/ | 帮助首页与用户指南 |
+| `ADSK.ACD.2026.COMMANDS` | https://help.autodesk.com/view/ACD/2026/ENU/?page=commands | 命令快速参考 |
+| `ADSK.ACD.2026.NEW` | https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Core/files/GUID-B93A458E-1A7F-4090-A8CF-87A31C24E404.htm | 新增命令与系统变量 |
+| `ADSK.ACD.2026.UPDATED` | https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Core/files/GUID-4FEBA606-95E0-4DC4-A116-257ED86DCD58.htm | 更新命令与系统变量 |
+| `ADSK.ACD.2026.OBSOLETE` | https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Core/files/GUID-5647ACE3-412E-48A6-8C1B-6B0EE09F5E3F.htm | 废弃命令与系统变量 |
+| `ADSK.ACD.2026.SHORTCUTS` | https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Customization/files/GUID-B6A9C126-230D-47F5-8973-464BC80E3736.htm | 快捷键参考 |
+| `ADSK.ACD.2026.CUSTOMIZE` | https://help.autodesk.com/cloudhelp/2026/ENU/AutoCAD-Customization/files/GUID-91E01021-96F3-47E8-944D-72BC90BA06CC.htm | 自定义入口 |
+| `ADSK.ACD.2026.DEV` | https://help.autodesk.com/view/OARX/2026/ENU/ | ObjectARX 开发文档 |
+
+## 命令索引
+
+用于检索，不代表已实现：
+
+- 文件与视图：`NEW OPEN QSAVE SAVEAS RECOVER AUDIT PURGE DXFIN DXFOUT IMPORT EXPORT ZOOM PAN REGEN REDRAW VIEW VPORTS UNITS SNAP GRID ORTHO POLAR OSNAP OTRACK DSETTINGS ID`
+- 二维绘图：`LINE XLINE RAY PLINE PEDIT CIRCLE ARC ELLIPSE SPLINE RECTANG POLYGON POINT DIVIDE MEASURE REGION BOUNDARY REVCLOUD HATCH GRADIENT`
+- 修改：`ERASE MOVE COPY ROTATE SCALE MIRROR ALIGN ARRAY ARRAYRECT ARRAYPOLAR ARRAYPATH STRETCH LENGTHEN EXTEND TRIM BREAK JOIN OFFSET FILLET CHAMFER BLEND EXPLODE MATCHPROP CHPROP DRAWORDER OVERKILL`
+- 图层、文字与标注：`LAYER LAYDEL LAYMRG LAYERSTATE VPLAYER COLOR LINETYPE LWEIGHT TRANSPARENCY TEXT MTEXT STYLE MLEADER DIM DIMLINEAR DIMALIGNED DIMANGULAR DIMRADIUS DIMDIAMETER DIMARC DIMORDINATE DIMSTYLE DIMBREAK`
+- 表格、块与参照：`TABLE TABLESTYLE BLOCK INSERT WBLOCK ATTDEF XREF XATTACH XCLIP PDFATTACH PDFIMPORT IMAGEATTACH DATAEXTRACTION FIELD`
+- 布局与输出：`MODEL LAYOUT MVIEW VPSCALE PAGESETUP PLOT PREVIEW PUBLISH EXPORTPDF PLOTSTYLE COMPARE TRACE ETRANSMIT SHEETSET`
+- 自定义与自动化：`CUI CUILOAD SCRIPT APPLOAD VLIDE ARX NETLOAD`
+
+## vectorPath 已注册命令
+
+绘图与修改、阵列、夹点、图层、视图与输出等命令的完整列表见 [USER_GUIDE.md](USER_GUIDE.md)。
+
+## 范围说明
+
+- 目标是 AutoCAD 2026 通用二维核心工作流，不含 Architecture、Mechanical、Map 3D、
+  Civil 3D 等垂直产品的专有对象。
+- 三维属于完整版能力，用户已明确暂停：`ACAD.3D.MODEL`、`ACAD.3D.EDIT`、
+  `ACAD.3D.VISUALIZE` 固定 `out_of_scope`。
+- 状态只由可运行代码、持久化能力和自动测试决定。

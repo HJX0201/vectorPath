@@ -54,7 +54,7 @@ features:
     evidence: [sgraphGui/vp_shortcut_manager.cpp,
                sgraphGui/vp_shortcut_dialog.cpp,
                sgraphGui/vp_cad_main_window_shortcut.cpp,
-               sgraphDocs/vp_default_shortcuts.md,
+               sgraphDocs/USER_GUIDE.md,
                sgraphTests/vp_shortcut_manager_test.cpp]
     provides: [stable_command_ids, searchable_shortcut_editor, native_key_sequence_capture,
                conflict_detection, per_command_clear, restore_all_defaults,

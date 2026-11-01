@@ -55,7 +55,7 @@ SVG 字节。
 当前基准也没有设置单独的计时外预热轮次。
 
 - [生成样本与运行基准](sgraphVectorBenchmark/README.md)
-- [测试方法与结果说明](sgraphDocs/TEST_RESULTS.md)
+- [测试方法与结果说明](sgraphDocs/TESTING.md)
 
 ## 快速构建
 
@@ -117,16 +117,17 @@ GeometryCore → Core`，第三方组件只在需要它们的模块里被引用�
 
 ## 文档
 
-- [运行性能与内存优化计划](sgraphDocs/vp_performance_memory_plan.md)
-- [完整代码架构与文件参考](sgraphDocs/CODEBASE_REFERENCE.md)
-- [位图矢量化详尽源码与调用关系](sgraphDocs/BITMAP_VECTORIZATION_SOURCE_REFERENCE.md)
-- [使用说明](sgraphDocs/USER_GUIDE.md)
-- [简版架构说明](sgraphDocs/ARCHITECTURE.md)
-- [完整编译工具链](sgraphDocs/BUILDING.md)
-- [测试结果](sgraphDocs/TEST_RESULTS.md)
-- [实现状态](sgraphDocs/vp_implementation_status.md)
-- [默认快捷键](sgraphDocs/vp_default_shortcuts.md)
-- [第三方组件与许可证](THIRD_PARTY_NOTICES.md)
+- [功能与路线](sgraphDocs/FEATURES.md)
+- [架构说明](sgraphDocs/ARCHITECTURE.md)
+- [代码库参考](sgraphDocs/CODEBASE_REFERENCE.md)
+- [编译说明](sgraphDocs/BUILDING.md)
+- [使用说明与快捷键](sgraphDocs/USER_GUIDE.md)
+- [测试与验证](sgraphDocs/TESTING.md)
+- [性能与内存](sgraphDocs/PERFORMANCE.md)
+- [位图矢量化算法](sgraphDocs/BITMAP_VECTORIZATION.md)
+- [AutoCAD 基线资料](sgraphDocs/AUTOCAD_BASELINE.md)
+- [代码风格](sgraphDocs/vp_coding_style.md)
+- [许可证](LICENSE.md)
 
 ## 仓库结构
 
@@ -136,9 +137,8 @@ GeometryCore → Core`，第三方组件只在需要它们的模块里被引用�
 
 ## 许可与状态
 
-vectorPath 自研代码目前采用仓库内的
-[`LICENSE.md`](LICENSE.md)；第三方组件继续适用各自许可证。
-特别是 LibreDWG 为 GPLv3+，Qt 5.12.10 和 Qt Advanced Docking System 适用 LGPL
-条款。发布二进制前请阅读 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)。
+vectorPath 自研代码采用仓库内的 [`LICENSE.md`](LICENSE.md)；第三方组件继续适用各自许可证。
+特别是 LibreDWG 为 GPLv3+，Qt 5.12.10 和 Qt Advanced Docking System 适用 LGPL 条款，
+发布二进制前请核对 `sgraphThirdParty` 中各上游目录附带的许可证文件。
 
-欢迎通过 Issue 提交可复现的问题；安全问题请按 [`SECURITY.md`](SECURITY.md) 处理。
+欢迎通过 Issue 提交可复现的问题。

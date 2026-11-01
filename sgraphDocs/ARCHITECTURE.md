@@ -18,11 +18,10 @@ flowchart TD
     GeometryCore --> Clipper["Clipper2（私有算法依赖）"]
 ```
 
-根 `vectorPath.sln` 是原生 Visual Studio 入口；各模块 `.vcxproj` 显式登记源文件和依赖。
-默认“生成解决方案”只构建应用及依赖，两个测试程序与性能项目可单独生成。
-构建只通过解决方案完成：`msbuild vectorPath.sln` 生成应用及依赖，测试与性能项目按需
-单独生成；纯核心用 `/p:VpCoreOnly=true` 只构建无 Qt 目标。
-最后的 CMake 入口留在 Git 提交 `12fb231`，当前不调用 vendor 自带 CMake，详见 [BUILDING.md](BUILDING.md)。
+根 `vectorPath.sln` 是唯一的构建入口；各模块 `.vcxproj` 显式登记源文件和依赖。
+默认“生成解决方案”只构建应用及依赖，测试与性能项目单独生成；纯核心用
+`/p:VpCoreOnly=true` 只构建无 Qt 目标。最后的 CMake 入口留在 Git 提交 `12fb231`，
+当前不调用 vendor 自带 CMake，详见 [BUILDING.md](BUILDING.md)。
 
 ## 模块职责
 
@@ -54,8 +53,8 @@ flowchart TD
 - 文档修改仍通过 `VpDocumentTransaction`；几何精度、容差、文件布局和兼容枚举保持不变。
 - 位图保持精确颜色与四邻域语义，DWG 继续使用隔离的 LibreDWG 外部工具。
 
-本次合并辅助目录和构建目标不把 Qt 放回纯核心；Qt 代码由桌面目标显式登记。
-删除的未使用命令接口、转发头和未读取的设计数据不再作为功能实现证据。
+合并辅助目录和构建目标不把 Qt 放回纯核心；Qt 代码由桌面目标显式登记。删除的未使用
+命令接口、转发头和未读取的设计数据不再作为功能实现证据。
 
 ## 兼容性边界
 
@@ -71,5 +70,11 @@ flowchart TD
 - 首次启动依次读取的旧设置位置 `smartCamLearning/smartCam`、
   `smartCadLearning/smartGraphics`，以及旧 `smartCam.stb`、`smartCad.stb` 打印样式名。
 - 已持久化的 Qt object name、状态栏样式选择器和 DXF XDATA 应用名 `SMARTCAD`。
-- 旧 CMake 构建变量已随自研 CMake 入口退出；命令行测试使用 `--test`。
+- 旧 CMake 构建变量已随自研 CMake 入口退出；测试项目在解决方案中按需单独生成。
 - CAD 功能目录中的稳定 `SMARTCAD.*` 功能 ID，以及历史版本记录中的兼容标识。
+
+## 相关文档
+
+[代码库参考](CODEBASE_REFERENCE.md) · [功能与路线](FEATURES.md) · [构建](BUILDING.md) ·
+[测试](TESTING.md) · [性能](PERFORMANCE.md) · [位图算法](BITMAP_VECTORIZATION.md) ·
+[AutoCAD 基线](AUTOCAD_BASELINE.md) · [代码风格](vp_coding_style.md)
