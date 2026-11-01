@@ -55,7 +55,7 @@ SVG 字节。
 当前基准也没有设置单独的计时外预热轮次。
 
 - [生成样本与运行基准](sgraphVectorBenchmark/README.md)
-- [测试方法与结果说明](sgraphDocs/TESTING.md)
+- [测试方法与结果说明](sgraphDocs/DOCUMENTATION.md#testing)
 
 ## 快速构建
 
@@ -87,7 +87,7 @@ msbuild sgraphGeometry/vp_geometry_core.vcxproj /m /p:Configuration=Release /p:P
 
 Qt 不在常用路径时设置 `SGRAPH_QT64_DIR`、`SGRAPH_QT32_DIR` 或 `QTDIR`，也可用
 `/p:VpQtDir=<路径>`，或在仓库根的 `vp_local.props` 中固定。完整说明见
-[构建说明](sgraphDocs/BUILDING.md)及[架构说明](sgraphDocs/ARCHITECTURE.md)。
+[构建说明](sgraphDocs/DOCUMENTATION.md#building)及[架构说明](sgraphDocs/DOCUMENTATION.md#architecture)。
 
 ## 解决方案中的项目
 
@@ -117,15 +117,7 @@ GeometryCore → Core`，第三方组件只在需要它们的模块里被引用�
 
 ## 文档
 
-- [功能与路线](sgraphDocs/FEATURES.md)
-- [架构说明](sgraphDocs/ARCHITECTURE.md)
-- [代码库参考](sgraphDocs/CODEBASE_REFERENCE.md)
-- [编译说明](sgraphDocs/BUILDING.md)
-- [使用说明与快捷键](sgraphDocs/USER_GUIDE.md)
-- [测试与验证](sgraphDocs/TESTING.md)
-- [性能与内存](sgraphDocs/PERFORMANCE.md)
-- [位图矢量化算法](sgraphDocs/BITMAP_VECTORIZATION.md)
-- [AutoCAD 基线资料](sgraphDocs/AUTOCAD_BASELINE.md)
+- [项目文档（功能、架构、构建、使用、测试、性能、位图与 AutoCAD 基线）](sgraphDocs/DOCUMENTATION.md)
 - [代码风格](sgraphDocs/vp_coding_style.md)
 - [许可证](LICENSE.md)
 
