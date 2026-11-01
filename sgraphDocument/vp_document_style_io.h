@@ -12,6 +12,7 @@ class QDataStream;
 namespace Vp
 {
 
+// 从文件读出的文字样式与标注样式集合。
 struct VpLoadedDocumentStyles
 {
     std::vector<VpTextStyleRecord> text_styles{{}};

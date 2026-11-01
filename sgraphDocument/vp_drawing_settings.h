@@ -24,6 +24,7 @@ enum class VpAngleFormat
     Radians
 };
 
+// 图纸级设置：插入单位、角度格式与精度。
 struct VpDrawingSettings
 {
     VpInsertionUnit insertion_unit = VpInsertionUnit::Millimeters;

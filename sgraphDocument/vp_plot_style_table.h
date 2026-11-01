@@ -16,6 +16,7 @@ enum class VpPlotStyleTableType
     Named
 };
 
+// 打印样式表中单条索引对应的打印属性。
 struct VpPlotStyleRecord
 {
     int index = 0;
@@ -28,6 +29,7 @@ struct VpPlotStyleRecord
     double line_width_mm = -1.0;
 };
 
+// 打印样式表：把对象颜色映射为打印颜色与线宽。
 class VpPlotStyleTable final
 {
   public:

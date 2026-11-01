@@ -6,6 +6,7 @@
 namespace Vp
 {
 
+// 读写文件时的兼容性提示与实体统计。
 struct VpFileCompatibilityReport
 {
     QStringList warnings;

@@ -43,6 +43,7 @@ constexpr bool objectSnapModeEnabled(VpObjectSnapModes modes, VpObjectSnapMode m
     return (modes & objectSnapModeValue(mode)) != 0;
 }
 
+// 对象捕捉的命中点与捕捉类型。
 struct VpObjectSnapResult
 {
     VpPoint2d point;

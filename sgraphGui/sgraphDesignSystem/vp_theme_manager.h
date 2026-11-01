@@ -7,6 +7,7 @@
 namespace Vp
 {
 
+// 深浅色主题与界面缩放的切换中心。
 class VpThemeManager final : public QObject
 {
     Q_OBJECT

@@ -5,6 +5,7 @@
 namespace Vp
 {
 
+// 标注样式：箭头尺寸、文字高度与标注精度。
 struct VpDimensionStyleRecord
 {
     QString name = QStringLiteral("Standard");

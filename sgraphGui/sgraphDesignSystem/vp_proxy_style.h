@@ -5,6 +5,7 @@
 namespace Vp
 {
 
+// 在系统样式之上微调度量与尺寸，统一界面留白。
 class VpProxyStyle final : public QProxyStyle
 {
   public:

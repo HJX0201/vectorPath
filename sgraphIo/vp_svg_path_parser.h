@@ -9,6 +9,7 @@
 namespace Vp
 {
 
+// SVG 路径解析出的一段子路径。
 struct VpSvgSubpath
 {
     QPainterPath path;

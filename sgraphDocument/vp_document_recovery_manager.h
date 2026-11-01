@@ -12,6 +12,7 @@ namespace Vp
 
 class VpCadDocument;
 
+// 崩溃恢复快照的文件与元数据描述。
 struct VpRecoveryEntry
 {
     QString recovery_file_path;
@@ -21,6 +22,7 @@ struct VpRecoveryEntry
     qint64 created_at_milliseconds = 0;
 };
 
+// 定时写出恢复快照，供异常退出后恢复文档。
 class VpDocumentRecoveryManager final : public QObject
 {
     Q_OBJECT

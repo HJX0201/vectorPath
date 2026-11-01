@@ -19,6 +19,7 @@ enum class VpImportFillMode : std::uint8_t
     PolygonOffset
 };
 
+// 矢量导入的填充方式、间距与缩放设置。
 struct VpVectorImportSettings
 {
     VpImportFillMode fill_mode = VpImportFillMode::None;
@@ -29,6 +30,7 @@ struct VpVectorImportSettings
     bool include_color_blocks = true;
 };
 
+// 带颜色的图元几何，用于矢量导入。
 struct VpColoredEntityGeometry
 {
     VpEntityGeometry geometry = VpLineEntity{};
@@ -36,6 +38,7 @@ struct VpColoredEntityGeometry
     QColor color{0, 0, 0};
 };
 
+// 矢量导入生成的图元集合与画布尺寸。
 struct VpVectorImportGeometry
 {
     std::vector<VpColoredEntityGeometry> entities;

@@ -5,6 +5,7 @@
 namespace Vp
 {
 
+// 为 Qt 标准界面文案提供简体中文翻译。
 class VpChineseUiTranslator final : public QTranslator
 {
   public:

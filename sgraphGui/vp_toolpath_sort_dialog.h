@@ -9,6 +9,7 @@ class QCheckBox;
 namespace Vp
 {
 
+// 设置刀具路径排序方式的对话框。
 class VpToolpathSortDialog final : public QDialog
 {
   public:

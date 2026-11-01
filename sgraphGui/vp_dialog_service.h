@@ -10,12 +10,14 @@ class QWidget;
 namespace Vp
 {
 
+// 应用内对话框基类，统一对话框最小尺寸。
 class VpDialog : public QDialog
 {
   public:
     explicit VpDialog(QWidget* parent = nullptr);
 };
 
+// 模态对话框的统一调用入口。
 class VpDialogService final
 {
   public:

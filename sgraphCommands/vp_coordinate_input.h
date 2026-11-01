@@ -17,6 +17,7 @@ enum class VpCoordinateInputMode
     RelativePolar
 };
 
+// 命令行坐标输入（绝对/相对/极坐标）的解析结果。
 struct VpCoordinateInput
 {
     VpCoordinateInputMode mode = VpCoordinateInputMode::NotCoordinate;

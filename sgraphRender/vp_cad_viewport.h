@@ -46,6 +46,7 @@ enum class VpGripOperation
     Mirror
 };
 
+// 视口中可拖拽的夹点：实体、角色与索引。
 struct VpGripHandle
 {
     VpEntityId entity_id = 0;
@@ -135,6 +136,7 @@ enum class VpArcConstruction
     StartEndRadius
 };
 
+// OpenGL 视口：绘制、缩放、选择与夹点编辑。
 class VpCadViewport final : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT

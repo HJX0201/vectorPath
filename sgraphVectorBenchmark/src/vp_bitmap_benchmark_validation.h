@@ -7,6 +7,7 @@
 namespace Vp
 {
 
+// 三种算法结果一致性校验的结论。
 struct VpBitmapValidationResult
 {
     bool passed = false;

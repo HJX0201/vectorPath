@@ -131,6 +131,7 @@ enum class VpIconType
     Help
 };
 
+// 按类型生成随主题变色的矢量图标。
 class VpIconProvider final
 {
   public:

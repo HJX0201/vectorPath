@@ -20,6 +20,7 @@ enum class VpSvgLayerPriority : std::uint8_t
     LowerFirst
 };
 
+// SVG 填充生成的统计结果。
 struct VpSvgFillReport
 {
     std::size_t source_region_count = 0;
@@ -27,6 +28,7 @@ struct VpSvgFillReport
     std::size_t replaced_entity_count = 0;
 };
 
+// SVG 轮廓去重的统计结果。
 struct VpSvgDeduplicateReport
 {
     std::size_t processed_layer_count = 0;

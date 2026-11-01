@@ -10,6 +10,7 @@ class QAction;
 namespace Vp
 {
 
+// 一条命令与按键序列的绑定关系。
 struct VpShortcutBinding
 {
     QString command_id;
@@ -20,6 +21,7 @@ struct VpShortcutBinding
     QKeySequence currentSequence() const;
 };
 
+// 集中管理快捷键，检测冲突并持久化。
 class VpShortcutManager final
 {
   public:

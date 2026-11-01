@@ -20,6 +20,7 @@ enum class VpQuickEntityOperation
     MirrorHorizontal
 };
 
+// 批量图元操作的执行统计。
 struct VpQuickEntityOperationResult
 {
     int target_count = 0;

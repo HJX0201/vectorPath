@@ -5,6 +5,7 @@
 namespace Vp
 {
 
+// DWG 读写编解码器，通过 libredwg 外部进程转换。
 class VpDwgCodec final : public VpIFileCodec
 {
   public:

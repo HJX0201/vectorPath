@@ -10,6 +10,7 @@ namespace Vp
 
 using VpLayerId = std::uint64_t;
 
+// 图层属性记录：颜色、线宽、可见性与锁定状态。
 struct VpLayerRecord
 {
     VpLayerId id = 0;
@@ -24,6 +25,7 @@ struct VpLayerRecord
     int transparency = 0;
 };
 
+// 图层状态快照，用于保存和恢复图层配置。
 struct VpLayerStateRecord
 {
     QString name;

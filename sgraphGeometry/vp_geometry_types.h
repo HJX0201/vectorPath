@@ -5,6 +5,7 @@
 namespace Vp
 {
 
+// 二维坐标点，几何与文档层共用的基础类型。
 struct VpPoint2d
 {
     double x = 0.0;

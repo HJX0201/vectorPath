@@ -11,6 +11,7 @@ namespace Vp
 
 class VpCadDocument;
 
+// 文件编解码器接口，DWG/DXF 等格式实现同一契约。
 class VpIFileCodec
 {
   public:

@@ -13,6 +13,7 @@ namespace Vp
 class VpCadDocument;
 class VpCadViewport;
 
+// 文档工作区：承载视口与快捷操作条。
 class VpCadWorkspaceWidget final : public QWidget
 {
     Q_OBJECT

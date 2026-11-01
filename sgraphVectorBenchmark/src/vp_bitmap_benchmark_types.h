@@ -9,6 +9,7 @@
 namespace Vp
 {
 
+// 一个位图矢量化基准测试用例。
 struct VpBitmapBenchmarkCase
 {
     int id = 0;
@@ -20,6 +21,7 @@ struct VpBitmapBenchmarkCase
     QString file_path;
 };
 
+// 单个算法在一次基准中的耗时与结果摘要。
 struct VpBitmapAlgorithmSummary
 {
     bool success = false;
@@ -29,6 +31,7 @@ struct VpBitmapAlgorithmSummary
     VpBitmapVectorMetrics metrics;
 };
 
+// 一个用例下三种算法的对比结果。
 struct VpBitmapBenchmarkCaseResult
 {
     VpBitmapBenchmarkCase test_case;
@@ -39,6 +42,7 @@ struct VpBitmapBenchmarkCaseResult
     QString validation_error;
 };
 
+// 基准测试的用例数量、线程与输出设置。
 struct VpBitmapBenchmarkOptions
 {
     int case_count = 1000;

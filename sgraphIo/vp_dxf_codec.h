@@ -5,6 +5,7 @@
 namespace Vp
 {
 
+// DXF 读写编解码器。
 class VpDxfCodec final : public VpIFileCodec
 {
   public:

@@ -12,6 +12,7 @@ namespace Vp
 
 class VpShortcutManager;
 
+// 快捷键设置对话框：列出命令并编辑按键。
 class VpShortcutDialog final : public QDialog
 {
   public:

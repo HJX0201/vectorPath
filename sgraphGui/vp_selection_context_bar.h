@@ -8,6 +8,7 @@ class QHBoxLayout;
 namespace Vp
 {
 
+// 选中对象后浮出的快捷操作条。
 class VpSelectionContextBar final : public QFrame
 {
   public:

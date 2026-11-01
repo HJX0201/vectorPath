@@ -9,6 +9,7 @@ namespace Vp
 
 class VpCadDocument;
 
+// 刀具路径排序的统计结果。
 struct VpToolpathDocumentSortResult
 {
     int sorted_entity_count = 0;

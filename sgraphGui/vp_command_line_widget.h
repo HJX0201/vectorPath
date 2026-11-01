@@ -11,6 +11,7 @@ class QTextEdit;
 namespace Vp
 {
 
+// 命令行输入框与消息显示区。
 class VpCommandLineWidget final : public QWidget
 {
     Q_OBJECT

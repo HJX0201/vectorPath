@@ -19,6 +19,7 @@ class QPushButton;
 namespace Vp
 {
 
+// 导入前预览并设置矢量填充方式的对话框。
 class VpVectorImportDialog final : public QDialog
 {
   public:

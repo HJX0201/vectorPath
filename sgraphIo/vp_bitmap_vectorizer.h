@@ -12,6 +12,7 @@
 namespace Vp
 {
 
+// 位图矢量化参数：背景忽略与线程数。
 struct VpBitmapVectorSettings
 {
     bool ignore_background = true;
@@ -19,6 +20,7 @@ struct VpBitmapVectorSettings
     int worker_count = 0;
 };
 
+// 位图矢量化的耗时与规模统计。
 struct VpBitmapVectorMetrics
 {
     qint64 pixel_count = 0;
@@ -35,6 +37,7 @@ struct VpBitmapVectorMetrics
     int worker_count = 1;
 };
 
+// 矢量化得到的一条同色轮廓。
 struct VpBitmapContour
 {
     QRgb color = 0;
@@ -42,6 +45,7 @@ struct VpBitmapContour
     std::vector<QPoint> points;
 };
 
+// 一次位图矢量化的产物：SVG 数据、轮廓与统计。
 struct VpBitmapVectorResult
 {
     QByteArray svg_data;

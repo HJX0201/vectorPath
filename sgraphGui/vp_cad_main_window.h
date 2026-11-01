@@ -41,6 +41,7 @@ enum class VpPolygonBooleanOperation : std::uint8_t;
 enum class VpSvgLayerPriority : std::uint8_t;
 enum class VpToolMode;
 
+// 主窗口：组装 Ribbon、工作区与命令交互。
 class VpCadMainWindow final : public SARibbonMainWindow
 {
     Q_OBJECT

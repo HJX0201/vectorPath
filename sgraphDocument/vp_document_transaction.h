@@ -14,6 +14,7 @@ namespace Vp
 
 class VpCadDocument;
 
+// 一次可撤销编辑的事务入口，登记图元与图层变更。
 class VpDocumentTransaction final
 {
   public:

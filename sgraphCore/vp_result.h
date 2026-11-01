@@ -6,6 +6,7 @@
 namespace Vp
 {
 
+// 公共 API 的统一返回类型，用错误信息代替异常传播。
 template <typename TValue> class VpResult
 {
   public:

@@ -15,6 +15,7 @@ enum class VpVectorFillRule
     NonZero
 };
 
+// 矢量导入中的一条轮廓折线。
 struct VpVectorOutline
 {
     std::vector<VpPoint2d> points;
@@ -22,6 +23,7 @@ struct VpVectorOutline
     QColor color{0, 0, 0};
 };
 
+// 矢量导入中的一个带填充的闭合区域。
 struct VpVectorRegion
 {
     std::vector<std::vector<VpPoint2d>> contours;
@@ -29,6 +31,7 @@ struct VpVectorRegion
     VpVectorFillRule fill_rule = VpVectorFillRule::NonZero;
 };
 
+// SVG 解析结果：轮廓、区域与画布尺寸。
 struct VpSvgVectorData
 {
     std::vector<VpVectorOutline> outlines;

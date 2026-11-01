@@ -8,6 +8,7 @@
 namespace Vp
 {
 
+// 测试用的重载荷记录，统计拷贝与移动次数。
 struct VpCollectionRecord
 {
     std::uint64_t id = 0;
@@ -54,6 +55,7 @@ struct VpCollectionRecord
     }
 };
 
+// 测试用的标识类型，验证基于 ID 的集合。
 struct VpCollectionId
 {
     std::uint64_t id = 0;

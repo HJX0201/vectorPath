@@ -5,6 +5,7 @@
 namespace Vp
 {
 
+// 主题设计令牌，集中定义界面各处的颜色。
 struct VpDesignToken
 {
     QColor window;

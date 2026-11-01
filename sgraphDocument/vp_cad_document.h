@@ -20,6 +20,7 @@ namespace Vp
 
 class VpDocumentTransaction;
 
+// CAD 文档模型，持有图元、图层与撤销重做历史。
 class VpCadDocument final : public QObject
 {
     Q_OBJECT
@@ -110,6 +111,7 @@ class VpCadDocument final : public QObject
   private:
     friend class VpDocumentTransaction;
 
+    // 撤销/重做栈中的一条可回放变更记录。
     struct VpHistoryEntry
     {
         QString label;

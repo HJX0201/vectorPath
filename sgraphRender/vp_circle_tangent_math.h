@@ -9,6 +9,7 @@ namespace Vp
 namespace detail
 {
 
+// 内部三维向量，用于圆与直线相切的约束求解。
 struct VpVector3
 {
     double x = 0.0;
@@ -16,6 +17,7 @@ struct VpVector3
     double z = 0.0;
 };
 
+// 形如 n·x = d 的线性约束，与另一约束求交得解。
 struct VpLinearConstraint
 {
     VpVector3 normal;

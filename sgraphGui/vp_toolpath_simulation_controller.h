@@ -20,6 +20,7 @@ enum class VpSimulationState
     Running
 };
 
+// 刀具路径仿真的播放、暂停与步进控制。
 class VpToolpathSimulationController final : public QObject
 {
     Q_OBJECT

@@ -56,6 +56,7 @@ enum class VpDimensionType : std::uint8_t
     Ordinate = 6
 };
 
+// 单行文字图元。
 struct VpTextEntity
 {
     VpPoint2d position;
@@ -67,6 +68,7 @@ struct VpTextEntity
     VpTextVerticalAlignment vertical_alignment = VpTextVerticalAlignment::Baseline;
 };
 
+// 多行文字图元，带排版宽度与对齐方式。
 struct VpMTextEntity
 {
     VpPoint2d position;
@@ -78,6 +80,7 @@ struct VpMTextEntity
     VpTextHorizontalAlignment horizontal_alignment = VpTextHorizontalAlignment::Left;
 };
 
+// 引线图元：折线顶点与说明文字。
 struct VpLeaderEntity
 {
     std::vector<VpPoint2d> vertices;
@@ -87,6 +90,7 @@ struct VpLeaderEntity
     QString style_name = QStringLiteral("Standard");
 };
 
+// 线性/角度标注图元，引用标注样式与文字替代。
 struct VpLinearDimensionEntity
 {
     VpPoint2d first_point;
@@ -105,6 +109,7 @@ enum class VpHatchFillType : std::uint8_t
     Gradient = 2
 };
 
+// 填充图元：实体填充、图案填充与渐变。
 struct VpHatchEntity
 {
     std::vector<VpPoint2d> boundary;
@@ -132,6 +137,7 @@ enum class VpArrayType : std::uint8_t
     Path = 3
 };
 
+// 关联阵列参数，描述阵列成员的位置与索引。
 struct VpAssociativeArrayData
 {
     VpArrayId array_id = 0;
@@ -152,6 +158,7 @@ struct VpAssociativeArrayData
     VpEntityGeometry source_geometry = VpLineEntity{};
 };
 
+// 文档中一个图元的完整记录：标识、图层与几何。
 struct VpEntityRecord
 {
     VpEntityId id = 0;

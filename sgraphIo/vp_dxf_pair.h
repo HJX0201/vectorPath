@@ -9,6 +9,7 @@ class QTextStream;
 namespace Vp
 {
 
+// DXF 文件中的一组组码与值。
 struct VpDxfPair
 {
     int group_code = 0;

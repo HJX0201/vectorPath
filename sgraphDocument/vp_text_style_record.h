@@ -5,6 +5,7 @@
 namespace Vp
 {
 
+// 文字样式：字体、字高、宽度因子与倾斜角。
 struct VpTextStyleRecord
 {
     QString name = QStringLiteral("Standard");

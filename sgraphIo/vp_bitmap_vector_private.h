@@ -10,6 +10,7 @@ namespace Vp
 namespace bitmapVectorPrivate
 {
 
+// 位图矢量化中间结果中的一段边界线段。
 struct VpBoundarySegment
 {
     QPoint start;

@@ -25,6 +25,7 @@ enum class VpToolpathSortMode
     Shortest
 };
 
+// 刀具路径排序选项：扫描方向、起点与是否允许反向。
 struct VpToolpathSortOptions
 {
     VpToolpathSortMode mode = VpToolpathSortMode::RowScan;
@@ -34,6 +35,7 @@ struct VpToolpathSortOptions
     VpPoint2d shortest_start;
 };
 
+// 排序后的图元序列与被反向的图元编号。
 struct VpToolpathSortResult
 {
     std::vector<VpEntityRecord> entities;
@@ -46,6 +48,7 @@ enum class VpToolpathMotionType
     Cutting
 };
 
+// 刀具路径中的一段运动：快速定位或切削。
 struct VpToolpathMotion
 {
     VpToolpathMotionType type = VpToolpathMotionType::Rapid;
