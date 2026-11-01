@@ -61,13 +61,11 @@ SVG 字节。
 
 使用 Visual Studio 2022 打开根目录的 `vectorPath.sln`，选择 `Debug/Release` 和
 `Win32/x64`，将 `vectorPath` 设为启动项目即可编译运行。桌面构建需安装 C++ 桌面工具、
-Qt 5.12.10 MSVC 套件和 Qt VS Tools。解决方案直接使用原生 `.vcxproj`，无需 CMake、Ninja
-或 Python；仓库不包含 Qt SDK。
-最后的 CMake 版本保留在 Git 提交 `12fb231`；当前工作树只使用原生解决方案，第三方源码
-附带的 CMake 文件保持原样且不参与构建。
+Qt 5.12.10 MSVC 套件和 Qt VS Tools。解决方案直接使用原生 `.vcxproj`，是唯一的构建入口，
+不依赖 CMake、Ninja 或 Python；仓库不包含 Qt SDK。最后的 CMake 版本保留在 Git 提交
+`12fb231`，第三方源码附带的 CMake 文件保持原样且不参与构建。
 
-解决方案是唯一的构建入口，不依赖 CMake、Ninja 或 Python。命令行构建（VS 开发者
-PowerShell 或任意能调用 MSBuild 的终端）：
+命令行构建（VS 开发者 PowerShell 或任意能调用 MSBuild 的终端）：
 
 ```powershell
 msbuild vectorPath.sln /m /p:Configuration=Release /p:Platform=x64
@@ -90,6 +88,32 @@ msbuild sgraphGeometry/vp_geometry_core.vcxproj /m /p:Configuration=Release /p:P
 Qt 不在常用路径时设置 `SGRAPH_QT64_DIR`、`SGRAPH_QT32_DIR` 或 `QTDIR`，也可用
 `/p:VpQtDir=<路径>`，或在仓库根的 `vp_local.props` 中固定。完整说明见
 [构建说明](sgraphDocs/BUILDING.md)及[架构说明](sgraphDocs/ARCHITECTURE.md)。
+
+## 解决方案中的项目
+
+`vectorPath.sln` 包含 16 个原生 `.vcxproj`，在“解决方案资源管理器”里按磁盘目录分组。
+依赖方向自下而上：`Application → GUI → Render / IO / Commands → Document → Geometry →
+GeometryCore → Core`，第三方组件只在需要它们的模块里被引用。默认“生成解决方案”构建
+前 12 个项目，后 4 个需单独生成。
+
+| 项目 | 目录 | 类型 | 直接依赖 | 说明 |
+| --- | --- | --- | --- | --- |
+| `vectorPath` | `sgraphApp` | 可执行文件 | 其余 11 个自研/第三方项目 | 应用入口：装配 Ribbon 主窗口、主题、翻译与设置迁移；构建后部署 Qt 运行库、Qt ADS 与 LibreDWG。 |
+| `smartGui` | `sgraphGui` | 静态库 | smartRender、smartIo、SARibbonBar、qtadvanceddocking-qt5 | 主窗口、Ribbon、停靠面板、属性树、快捷键、对话框与主题管理。 |
+| `smartRender` | `sgraphRender` | 静态库 | smartCommands | OpenGL 视口：绘制、缩放选择、对象捕捉、夹点与各类编辑预览。 |
+| `smartCommands` | `sgraphCommands` | 静态库 | smartDocument | 命令目录、别名、补全，以及绝对/相对/极坐标输入解析。 |
+| `smartIo` | `sgraphIo` | 静态库 | smartDocument、Clipper2 | DXF/DWG/SVG/位图编解码、矢量导入、位图矢量化与填充生成。 |
+| `smartDocument` | `sgraphDocument` | 静态库 | smartGeometry | 文档模型：图元与图层、文字/标注/打印样式、事务与撤销重做、恢复与原生持久化。 |
+| `smartGeometry` | `sgraphGeometry` | 静态库（含 Qt） | smartGeometryCore | 仍依赖 Qt 的几何实现：文字、标注、填充、刀路，以及 Qt 点/文本适配。 |
+| `smartGeometryCore` | `sgraphGeometry` | 静态库（无 Qt） | smartCore、Clipper2 | 纯几何核心：六种曲线实体、标准图形、样条/椭圆、布尔运算、多边形测量与绘图辅助状态。 |
+| `smartCore` | `sgraphCore` | 接口库（仅头文件） | — | `VpResult<T>` 与 ID 集合工具；纯 C++，不产生二进制，其他模块按需包含。 |
+| `Clipper2` | `sgraphThirdParty` | 静态库（无 Qt） | — | 原样引入的多边形布尔库，只在几何核心与 IO 内部使用。 |
+| `SARibbonBar` | `sgraphThirdParty` | 静态库 | — | 原样引入的 Ribbon 控件库（SARibbon 2.9.0）。 |
+| `qtadvanceddocking-qt5` | `sgraphThirdParty` | 动态库 | — | 原样引入的 Qt 停靠窗口组件（Qt ADS 4.4.1），输出 `qtadvanceddocking-qt5.dll`。 |
+| `vectorPathDesktopTests` | `sgraphTests` | 可执行文件（默认不生成） | 与 `vectorPath` 相同 | 34 个桌面套件；`--list-suites` 列出名称，按套件名运行单个套件。 |
+| `vectorPathCoreTests` | `sgraphTests` | 可执行文件（默认不生成） | smartGeometryCore、smartCore、Clipper2 | 4 个无 Qt 套件，可在 `/p:VpCoreOnly=true` 下单独构建。 |
+| `vectorPathIdCollectionBenchmark` | `sgraphTests` | 可执行文件（默认不生成） | smartCore | ID 集合增删查性能基准，不依赖 Qt。 |
+| `smartBitmapVectorBenchmark` | `sgraphVectorBenchmark` | 可执行文件（默认不生成） | smartIo、smartDocument、smartGeometry | 位图矢量化正确性与性能基准，支持 `--cases`、`--seed`、`--smoke` 等参数。 |
 
 ## 文档
 
