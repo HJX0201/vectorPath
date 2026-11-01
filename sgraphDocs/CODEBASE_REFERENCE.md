@@ -63,7 +63,7 @@ vectorPath/
 ├─ sgraphGui/              主窗口、Ribbon、停靠面板、对话框、主题
 ├─ sgraphTests/            纯核心与 Qt 单元、集成测试
 ├─ sgraphVectorBenchmark/  位图基准、正确性验证和报告
-├─ sgraphBuildTools/       一个入口选择应用、核心、测试和性能基准
+├─ sgraphBuildTools/       各工程共用的 MSBuild 属性与部署目标
 ├─ sgraphThirdParty/       SARibbon、Qt ADS、Clipper2、LibreDWG 等
 ├─ sgraphDocs/             用户、开发、测试和功能证据文档
 ├─ .github/                CI、Issue 和 PR 模板
@@ -106,7 +106,7 @@ flowchart LR
 图中箭头由被依赖目标指向使用者。`smartGeometryCore` 仅编译一份纯算法，桌面聚合通过工程引用
 链接复用；辅助绘图状态由纯核心编译，Qt 点/文本适配由桌面聚合编译，核心不包含 Qt 适配头。
 
-解决方案默认生成应用及依赖；`vp_build.py --core` 不查找 Qt 或 Qt/MSBuild，仅构建 Core、
+解决方案默认生成应用及依赖；`/p:VpCoreOnly=true` 不查找 Qt 或 Qt/MSBuild，仅构建 Core、
 GeometryCore 和 Clipper2。测试和性能基准默认不参与解决方案生成；纯核心测试不加载 Qt。文本与颜色实体、
 Document、命令以及完整编辑交互仍依赖 Qt，原重构计划尚未全部完成。
 
@@ -1189,10 +1189,10 @@ smartBitmapVectorBenchmark
 
 ## 27. `sgraphTests`：纯核心与桌面测试
 
-普通测试默认不参与解决方案生成。通过 `--test` 开启后，4 个纯核心套件共用 `vectorPathCoreTests`，
-桌面模式再将 34 个 Qt 套件编入 `vectorPathDesktopTests`，普通测试只生成两个可执行程序。
-`vp_test.py` 保留 38 个原套件名称，每项以套件参数启动独立进程；Qt 运行器按套件初始化所需应用类型，
-需要 QWidget 时设置 `QT_QPA_PLATFORM=offscreen`。纯测试不创建 Qt 应用，也不加载 Qt DLL。
+普通测试默认不参与解决方案生成，按需单独构建。4 个纯核心套件共用 `vectorPathCoreTests`，
+34 个 Qt 套件编入 `vectorPathDesktopTests`，普通测试只生成两个可执行程序。
+测试程序用 `--list-suites` 列出套件名，用套件名参数运行单个套件；Qt 运行器按套件初始化所需
+应用类型，需要 QWidget 时设置 `QT_QPA_PLATFORM=offscreen`。纯测试不创建 Qt 应用，也不加载 Qt DLL。
 
 | 测试文件 | 套件/领域 | 主要场景 |
 | --- | --- | --- |
@@ -1237,8 +1237,8 @@ smartBitmapVectorBenchmark
 | `vp_quick_entity_operation_test.cpp` | `vectorPathQuickEntityOperationTests` | 快捷变换、选择要求、事务和错误结果。 |
 | `vp_svg_vector_import_test.cpp` | `vectorPathSvgVectorImportTests` | SVG path/区域/颜色层、位图核心、填充、去重和确定性。 |
 
-仅当桌面同时开启测试和性能基准时，注册位图 smoke 与输出布局两项，合计 40 项；
-纯核心只运行 4 个套件。性能程序默认不构建，只有 `--benchmarks` 不会运行测试。
+桌面测试与位图 smoke 合计 40 项检查，纯核心只运行 4 个套件。性能程序默认不构建，
+需要时单独生成它的 `.vcxproj`；只生成性能程序不会运行任何测试。
 具体清单可由测试程序的 `--list-suites` 查看，验证结果与测试程序数量应分别记录。
 
 ## 28. `sgraphVectorBenchmark`：位图正确性与性能基准
@@ -1247,9 +1247,9 @@ smartBitmapVectorBenchmark
 
 | 文件 | 类型/入口 | 作用、输入输出和关系 |
 | --- | --- | --- |
-| `sgraphVectorBenchmark/vp_bitmap_benchmark.vcxproj` | 可选 `smartBitmapVectorBenchmark` | 仅桌面开启基准时构建；同时开启测试才注册 20 case smoke 与布局检查。 |
+| `sgraphVectorBenchmark/vp_bitmap_benchmark.vcxproj` | 可选 `smartBitmapVectorBenchmark` | 单独构建；由 CI 的基准步运行 20 case smoke 并检查输出布局。 |
 | `sgraphVectorBenchmark/README.md` | 基准说明 | 运行参数、结果目录、正式/冒烟示例和口径。 |
-| `sgraphVectorBenchmark/vp_run_benchmark.py` | Python 入口 | 解析常用参数、构建 Release x64 benchmark 并传递执行参数。 |
+| `sgraphVectorBenchmark/README.md` 中的命令 | 运行参数 | 直接调用 `smartBitmapVectorBenchmark.exe` 并传入 `--cases`、`--seed`、`--output` 等参数。 |
 | `src/vp_bitmap_benchmark_types.h` | 5 个基准结构 | case、算法摘要、case 结果、选项等共享数据模型。 |
 | `src/vp_bitmap_benchmark_generator.h` | 生成接口 | 声明固定种子图像/案例生成和断点复用。 |
 | `src/vp_bitmap_benchmark_generator.cpp` | 生成实现 | 按 case 索引与种子生成合成图案；有效本地 PNG 复用，缺失/损坏/尺寸错则重建，不读取固定图片。 |
@@ -1260,7 +1260,7 @@ smartBitmapVectorBenchmark
 | `src/vp_bitmap_benchmark_report.h` | 报告接口 | 声明 aggregate、HTML 和 manifest 输出。 |
 | `src/vp_bitmap_benchmark_report.cpp` | 报告实现 | 统计耗时、加速比、分位数、峰值工作集，标题使用实际 case 数。 |
 | `src/vp_bitmap_vector_benchmark.cpp` | `main()` | 参数解析、三算法重复计时取中位数、验证、诊断文件和报告总控。 |
-| `sgraphBuildTools/vp_test.py` | smoke 与布局检查 | 执行小规模位图验证，并检查最终输出仅有 manifest 与 HTML。 |
+| `.github/workflows/windows-ci.yml` 的基准步 | smoke 与布局检查 | 运行 20 份样本，并检查最终输出仅有 manifest 与 HTML。 |
 
 ### 28.2 基准类型
 
@@ -1287,67 +1287,44 @@ options/seed
 `data/generated`。已有有效 PNG 可断点复用，但 manifest 必须记录本次真实输入与参数。
 样本、manifest 和 HTML 均仅在本地生成，整个结果目录由 Git 忽略，不再保存到仓库。
 
-## 29. 原生工程、构建脚本和发布
+## 29. 原生工程与发布
 
-### 29.1 原生主入口与命令行驱动
+### 29.1 原生主入口
 
 | 文件 | 作用 |
 | --- | --- |
-| 根 `vectorPath.sln` | Win32/x64、Debug/Release；默认生成应用与依赖，可选项目默认不勾选生成。 |
+| 根 `vectorPath.sln` | Win32/x64、Debug/Release；默认生成应用与依赖，可选项目默认不勾选生成；按目录分组。 |
 | 各模块 `vp_*.vcxproj` / `.filters` | 原生源列表、工程引用、QtMoc/QtRcc 与逻辑分组；Qt 适配不进入纯核心。 |
-| `sgraphBuildTools/vp_defaults.props`、`vp_common.props`、`vp_build.targets` | 共用路径、Qt 查找、编译属性、版本头与部署；本机配置可写入已忽略的 `vp_local.props`。 |
-| `sgraphBuildTools/vp_build.py` | 命令行入口，默认通过 MSBuild 构建 64 位 Release 应用。 |
-| `sgraphBuildTools/vp_build_common.py` | 参数解析、Qt/QtMSBuild/VS 查找、MSBuild、可选套件测试、清单和打包。 |
-| `sgraphBuildTools/vp_test.py` | 查询已编译测试程序的套件清单，逐套件建立进程并运行可选位图检查。 |
+| `sgraphBuildTools/vp_defaults.props`、`vp_common.props`、`vp_build.targets` | 共用路径、Qt 查找、编译属性与运行部署；本机配置可写入已忽略的 `vp_local.props`。 |
 
 ```powershell
-python sgraphBuildTools/vp_build.py
-python sgraphBuildTools/vp_build.py --bits 32 --config Debug --test
-python sgraphBuildTools/vp_build.py --core --test
-python sgraphBuildTools/vp_build.py --test --benchmarks
+msbuild vectorPath.sln /m /p:Configuration=Release /p:Platform=x64
+msbuild vectorPath.sln /m /p:Configuration=Debug /p:Platform=Win32
+msbuild sgraphTests/vp_desktop_tests.vcxproj /m /p:Configuration=Release /p:Platform=x64
+msbuild sgraphGeometry/vp_geometry_core.vcxproj /m /p:Configuration=Release /p:Platform=x64 /p:VpCoreOnly=true
 ```
 
-`--bits 32|64`、`--config Debug|Release` 选择架构和配置；`--core` 关闭桌面并显式禁用 Qt
-查找。`--test` 构建并运行测试；`--benchmarks` 开启性能程序，只有与 `--test` 同用才运行
-注册的基准检查。其余参数为 `--jobs auto|N`、`--qt-dir`、`--clean`、`--run`、`--package`。
-`--core` 不能与 `--run` 或 `--package` 同用。
+构建只依赖解决方案与上述公共属性文件：仓库没有 Python 驱动、CMake 或 Ninja 入口。测试与
+性能项目保留在解决方案中但不参与默认生成，按需单独构建；`/p:VpCoreOnly=true` 关闭桌面
+并跳过 Qt 查找。自研 CMake 定义已退出，最后版本为 Git 提交 `12fb231`；第三方原有 CMake
+文件作为上游源码保留，但当前构建不调用。
 
-Visual Studio 直接打开解决方案即可编译，无需 Python、CMake 或 Ninja。Python 仅用于
-命令行和批量验证，`--test` / `--benchmarks` 单独构建相应 `.vcxproj`。自研 CMake 定义及
-旧 CMake 开关已退出；最后的 CMake 版本为 Git 提交 `12fb231`。第三方原有 CMake 文件
-作为上游源码保留，但当前构建不调用它们。
+### 29.2 输出、部署和架构
 
-### 29.2 公共驱动
+桌面输出为 `build/msbuild/<位数>/<配置>`，核心输出为 `build/msbuild/core/<位数>/<配置>`。
+桌面要求 Qt 5.12.10 且架构匹配，32 位应用是真正 x86；核心输出不包含应用和 Qt 运行库。
 
-| 函数组 | 作用和失败边界 |
-| --- | --- |
-| `repo_root()` | 从脚本路径定位仓库，不依赖调用目录。 |
-| `pe_architecture()` | 验证 exe/DLL 为目标 x86 或 x64 架构。 |
-| Qt candidate/validate/find | 桌面模式检查 Qt 版本、架构、DLL 和部署工具；核心模式不调用。 |
-| VS environment | 激活与目标架构一致的 MSVC 环境。 |
-| `runtime_files()` / `file_origin()` | 枚举应用运行文件并标注来源。 |
-| `write_runtime_manifest()` | 写产品、版本、架构、文件大小及 SHA-256。 |
-| `create_package()` | 生成便携 ZIP 和同名 `.sha256`。 |
-| `run_build()` | 配置目标模式，构建，按需运行测试、打包与启动。 |
-
-`--clean` 只清理本次模式、位数和配置的 build 目录。默认不运行测试不代表交付可跳过验证，
-开发变更应显式使用 `--test`，位图/基准变更再开启 `--benchmarks`。
-
-### 29.3 输出、部署和架构
-
-桌面输出为 `build/msbuild/<位数>/<配置>`，核心输出为 `build/msbuild/core/<位数>/<配置>`。桌面要求
-Qt 5.12.10 且架构匹配，32 位应用是真正 x86；核心输出不包含应用和 Qt 运行库。
-
-windeployqt 部署桌面所需 Qt DLL 和插件，App 构建复制 Qt ADS 和 LibreDWG 工具。
-便携包使用 `vectorPath-0.2.0-alpha.1-windows-x64.zip` 等名称；manifest 和哈希从最终文件
-生成。正式位图测量入口仍为 `sgraphVectorBenchmark/vp_run_benchmark.py`，内部通过统一
-构建入口开启性能目标；仓库保留生成和验证代码，图片与报告只在本地生成，不随应用部署。
+`VpDeployRuntime` 用 windeployqt 部署桌面所需 Qt DLL 和插件，App 构建还复制 `qt_zh_CN.qm`、
+Qt ADS 与 LibreDWG 工具。测试和基准项目不部署运行库：运行桌面套件时设置
+`QT_QPA_PLATFORM=offscreen`、`QT_QPA_PLATFORM_PLUGIN_PATH` 与
+`VECTORPATH_LIBREDWG_DIR`。便携包、manifest 与哈希改由 Visual Studio 的发布流程或其他
+打包工具生成，仓库内不再保留打包脚本；图片与报告只在本地生成，不随应用部署。
 
 ## 30. GitHub Actions
 
 | 文件 | 作用 |
 | --- | --- |
-| `.github/workflows/windows-ci.yml` | 无 Qt 核心 Debug/Release 与桌面 Release x86/x64；全部调用统一入口，显式开启测试，桌面同时开启基准。 |
+| `.github/workflows/windows-ci.yml` | 无 Qt 核心 Debug/Release 与桌面 Release x86/x64；直接调用 MSBuild，跑完全部套件并做位图 smoke 布局校验。 |
 | `.github/ISSUE_TEMPLATE/bug_report.yml` | 要求版本、环境、复现、期望/实际和附件。 |
 | `.github/ISSUE_TEMPLATE/feature_request.yml` | 收集场景、目标、范围和验收。 |
 | `.github/ISSUE_TEMPLATE/config.yml` | Issue 模板选择与空白 Issue 策略。 |
@@ -1823,7 +1800,6 @@ sgraphTests/vp_window_control_test.cpp
 sgraphTests/vp_workspace_persistence_test.cpp
 sgraphVectorBenchmark/vp_bitmap_benchmark.vcxproj
 sgraphVectorBenchmark/README.md
-sgraphVectorBenchmark/vp_run_benchmark.py
 sgraphVectorBenchmark/src/vp_bitmap_benchmark_generator.cpp
 sgraphVectorBenchmark/src/vp_bitmap_benchmark_generator.h
 sgraphVectorBenchmark/src/vp_bitmap_benchmark_report.cpp
@@ -1834,9 +1810,6 @@ sgraphVectorBenchmark/src/vp_bitmap_benchmark_validation.h
 sgraphVectorBenchmark/src/vp_bitmap_flood_baseline.cpp
 sgraphVectorBenchmark/src/vp_bitmap_flood_baseline.h
 sgraphVectorBenchmark/src/vp_bitmap_vector_benchmark.cpp
-sgraphBuildTools/vp_test.py
-sgraphBuildTools/vp_build.py
-sgraphBuildTools/vp_build_common.py
 sgraphBuildTools/vp_defaults.props
 sgraphBuildTools/vp_common.props
 sgraphBuildTools/vp_build.targets
@@ -1876,7 +1849,7 @@ sgraphThirdParty/vp_qtads.vcxproj
 | `.smartcad` / `.smartcam` | 旧原生扩展名 | 持续支持打开/保存；新文件默认 `.vectorpath`。 |
 | `smartCadLearning/smartGraphics` | 最早设置来源 | 至少保留迁移周期和测试。 |
 | `smartCamLearning/smartCam` | 上一品牌设置来源 | 至少保留迁移周期和测试。 |
-| `SMARTCAD_BUILD_TESTS` / `SMARTCAM_BUILD_TESTS` | 已退出的旧 CMake 变量 | 原生工程不使用；命令行测试改用 `--test`。 |
+| `SMARTCAD_BUILD_TESTS` / `SMARTCAM_BUILD_TESTS` | 已退出的旧 CMake 变量 | 原生工程不使用；测试项目在解决方案中按需单独生成。 |
 | `smartCad.stb` / `smartCam.stb` | 旧打印样式名 | 新名优先，旧名作为查找别名。 |
 | Dock object name / workspace version | Qt ADS 布局恢复 | 变更时升级版本并提供回退布局。 |
 | `:/smartcad/themes` | qrc 内部资源前缀 | 修改会影响已编译资源路径；需同步 ThemeManager 和测试。 |

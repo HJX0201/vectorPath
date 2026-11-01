@@ -14,18 +14,18 @@
 | 文档与历史 | ID 集合删除已抽到核心，删除/撤销/重做共用；历史快照优化完成；文档对象、样式和持久化仍依赖 Qt |
 | 命令与交互 | `VpDraftingState` 已接管栅格、正交、追踪状态与运算；完整选择、夹点、工具命令及预览迁移仍待完成 |
 | Qt 边界 | 点、文本、错误转换编入 `smartGeometry` 桌面目标；设置迁移位于 `sgraphGui`；其余颜色、事件、文件边界尚待迁移 |
-| 构建与检查 | 统一入口按需选择应用、核心、测试和基准；无 Qt CI 保留，纯核心头和消费者不暴露 Qt/Clipper 类型 |
+| 构建与检查 | 解决方案按需生成应用、核心、测试和基准；无 Qt CI 保留，纯核心头和消费者不暴露 Qt/Clipper 类型 |
 
-无 Qt 核心入口：
+无 Qt 核心构建：
 
 ```powershell
-python sgraphBuildTools/vp_build.py --core --test
-python sgraphBuildTools/vp_build.py --core --test --config Debug
+msbuild sgraphTests/vp_core_tests.vcxproj /m /p:Configuration=Release /p:Platform=x64 /p:VpCoreOnly=true
+build/msbuild/core/64/Release/vectorPathCoreTests.exe --list-suites
 ```
 
-两者直接构建原生核心工程，不查找 Qt 或 Qt/MSBuild，并逐套件运行核心测试。
-同一入口不带参数时只构建 64 位 Release 应用，测试和性能基准默认关闭。CI 已改用统一入口，
-显式开启所需测试；本地成功不等同远端 CI 已运行。
+它直接构建原生核心工程，不查找 Qt 或 Qt/MSBuild，并逐套件运行核心测试。
+解决方案默认只构建应用及依赖，测试和性能基准默认关闭。CI 直接调用 MSBuild，显式生成并
+运行所需测试；本地成功不等同远端 CI 已运行。
 
 ## 项目组织收拢（2026-09-22 至 2026-09-23）
 
@@ -34,15 +34,15 @@ python sgraphBuildTools/vp_build.py --core --test --config Debug
   `smartGeometry` 编译；设置迁移移到 `sgraphGui/vp_application_settings_migration.*`。
 - 移除两个独立辅助目录与库目标，保留明确的无 Qt 源列表；未使用命令接口、转发头和
   无读取者的设计数据已删除，相应自动化实现证据清空，功能仍标记为 missing。
-- 五个旧构建包装入口合并为 `sgraphBuildTools/vp_build.py`，通过 `--bits`、`--config`、
-  `--core`、`--test`、`--benchmarks` 选择内容。
+- 五个旧构建包装入口先合并为单一脚本，后随构建治理收拢一并删除，构建统一回归原生
+  `vectorPath.sln` 与 MSBuild。
 - 38 个普通测试项目收拢为 `vectorPathCoreTests`、`vectorPathDesktopTests` 两个程序，
-  当前由 `vp_test.py` 按 38 个套件分进程运行；同时启用位图基准检查时为 40 项，无 Qt 模式为 4 项。
+  按 38 个套件逐个进程运行；同时运行位图基准检查时为 40 项，无 Qt 模式为 4 项。
 - 基准运行入口、生成器和验证代码保留，固定图片及历史 HTML/manifest 已移除；样本和结果
-  仅本地生成并忽略。性能项目通过 `--benchmarks` 按需构建，不作为默认应用依赖。
+  仅本地生成并忽略。性能项目按需单独构建，不作为默认应用依赖。
 
 当前工程已迁移为根 `vectorPath.sln`、模块 `.vcxproj` 和共享 MSBuild 属性；默认只生成
-应用及依赖，Python CLI 继续提供按需测试与基准。当前输出为 `build/msbuild` 下的模式、
+应用及依赖，测试与基准项目按需单独生成。当前输出为 `build/msbuild` 下的模式、
 架构及配置目录，详见 [BUILDING.md](BUILDING.md)。
 
 原生工程验收已完成：四种桌面配置各 40/40 检查通过并完成隐藏启动；无 Qt 核心
@@ -134,8 +134,8 @@ Debug 测试目录磁盘占用减少约 88.5%，整个 build 释放约 1.30 GiB�
 `vectorPathIdCollectionBenchmark` 默认不构建、不计入测试时间门槛；当前复现命令为：
 
 ```powershell
-python sgraphBuildTools/vp_build.py --core --benchmarks
-build/core/64/Release/sgraphTests/vectorPathIdCollectionBenchmark.exe
+msbuild sgraphTests/vp_id_collection_benchmark.vcxproj /m /p:Configuration=Release /p:Platform=x64 /p:VpCoreOnly=true
+build/msbuild/core/64/Release/vectorPathIdCollectionBenchmark.exe
 ```
 
 普通事务原来无条件在历史项保存一份全量 ID 数组，现在不再保存；每个历史项节省的有效

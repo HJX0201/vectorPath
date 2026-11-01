@@ -129,9 +129,9 @@ flowchart TD
 | `vp_bitmap_benchmark_validation.h/.cpp` | 轮廓哈希、SVG 验证、回栅格逐像素比较 |
 | `vp_bitmap_benchmark_report.h/.cpp` | 聚合、分位数和 HTML 报告 |
 | `vp_bitmap_vector_benchmark.cpp` | 三算法轮换执行、中位数、峰值工作集、失败产物和退出码 |
-| `sgraphVectorBenchmark/vp_run_benchmark.py` | Release x64 构建和 benchmark 启动入口 |
+| benchmark 的 `README.md` 中的 msbuild 命令 | Release x64 构建和 benchmark 启动入口 |
 | `sgraphVectorBenchmark/vp_bitmap_benchmark.vcxproj` | 原生 benchmark 项目，默认不参与解决方案生成 |
-| `sgraphBuildTools/vp_test.py` | 执行 smoke 并验证最终输出只保留 manifest 与 HTML |
+| `.github/workflows/windows-ci.yml` 的基准步 | 执行 smoke 并验证最终输出只保留 manifest 与 HTML |
 | `sgraphTests/vp_svg_vector_import_test.cpp` | 4 个位图核心专项 Qt Test |
 
 运行和本地输出约定位于 benchmark 的 `README.md`。仓库仅保留运行入口、生成器和验证代码，
@@ -955,7 +955,7 @@ parallel(N/auto) 设置；按 case index 轮换算法执行顺序；每种算法
 
 ```mermaid
 flowchart TD
-    A["vp_run_benchmark.py"] --> B["构建 Release x64 target"]
+    A["msbuild vp_bitmap_benchmark.vcxproj"] --> B["Release x64 target"]
     B --> C["benchmark main / parseOptions"]
     C --> D["日期序号结果目录"]
     D --> E["生成或复用 cases + manifest"]
@@ -1095,39 +1095,38 @@ VpResult<QString> writeBitmapBenchmarkReport(
 累计小于 flood”选择结论口径；写入包含 CSS、排序 JS、环境/参数、卡片和表格的 HTML。标题
 使用 `results.size()` 实际数量，不再写死 1000。文件无法写入时返回 failure；成功返回报告路径。
 
-## 25. Python、MSBuild 与输出布局
+## 25. MSBuild 与输出布局
 
-### 25.1 `vp_run_benchmark.py::parse_arguments()`
+### 25.1 构建入口
 
-声明 cases、seed、threads、repetitions、output 等脚本参数。脚本参数再转发给 C++ benchmark，
-避免用户手工定位可执行文件。
+基准程序由原生 `vp_bitmap_benchmark.vcxproj` 构建，不依赖任何脚本：
 
-### 25.2 `vp_run_benchmark.py::main()`
+```powershell
+msbuild sgraphVectorBenchmark/vp_bitmap_benchmark.vcxproj /m /p:Configuration=Release /p:Platform=x64
+build/msbuild/64/Release/smartBitmapVectorBenchmark.exe --cases 1000 --seed 20260727
+```
 
-定位仓库根，调用统一入口 `sgraphBuildTools/vp_build.py --bits <位数> --benchmarks`
-构建 Release benchmark，再启动生成的程序并返回退出码。默认位数为 64；构建步骤使用
-`check=True`，失败直接终止，默认不运行普通套件测试。
+`--cases`、`--seed`、`--threads`、`--repetitions`、`--output` 和 `--smoke` 直接由
+C++ `parseOptions()` 解析，没有中间包装层。
 
-### 25.3 Benchmark 原生工程
+### 25.2 Benchmark 原生工程
 
 `smartBitmapVectorBenchmark` 链接 smartIo、Qt Core/Gui/Concurrent；Windows 额外链接 Psapi。
-工程定义注入 benchmark root，不依赖固定图片目录。项目默认不参与解决方案生成，
-可右键单独构建，或由 `--benchmarks` 构建；同时使用 `--test` 才通过 `vp_test.py` 运行：
+工程定义注入 benchmark root，不依赖固定图片目录。项目默认不参与解决方案生成，在 VS 中
+右键单独生成，或用上面的 MSBuild 命令构建。
 
-- `vectorPathBitmapVectorBenchmarkSmoke`：20 case、seed 20260727、2 线程、1 次、smoke；
-- `vectorPathBitmapBenchmarkOutputLayout`：依赖 smoke，检查最终目录。
+### 25.3 输出布局校验
 
-### 25.4 `vp_test.py::verify_benchmark_layout()`
-
-要求 manifest 和 HTML 存在；cases 和 failures 不存在；顶层条目排序后必须恰好为这两个文件。
-同时检查 manifest 的样本数和条目数均为 20。任一不满足即报告检查失败并使测试入口返回非零退出码。
+CI 的基准步替代了原来的 Python 布局检查：运行 `--smoke --cases 20` 后要求 manifest 和
+HTML 存在、cases 和 failures 不存在、顶层条目排序后必须恰好为这两个文件，并检查 manifest
+的样本数和条目数均为 20。任一不满足即让任务失败。
 
 注意：manifest 中的 `file` 记录描述运行期输入路径，而成功结束后 cases 已清理；manifest 是
 可追溯元数据，不是长期 PNG 包。
 
 ## 26. 专项 Qt Test
 
-位图专项位于 `VpSvgVectorImportTest`，编入共享的 `vectorPathDesktopTests` 程序；`vp_test.py`
+位图专项位于 `VpSvgVectorImportTest`，编入共享的 `vectorPathDesktopTests` 程序；
 使用 `vectorPathSvgVectorImportTests` 套件参数单独启动进程，测试隔离方式保持不变：
 
 ### 26.1 `vectorizesSolidBitmapAsOneRegion()`
@@ -1251,7 +1250,7 @@ VpResult<QString> writeBitmapBenchmarkReport(
 - 修改 SVG 格式：更新 parser 验证、字节确定性和 GUI 消费边界；
 - 修改 generator：保留 seed 可复现性并更新类别/尺寸说明；
 - 修改计时：明确是否增加预热、保留哪次 metrics、如何取中位数；
-- 修改输出清理：同步 `vp_test.py` 的布局检查和 benchmark README。
+- 修改输出清理：同步 CI 的布局检查和 benchmark README。
 
 ## 32. 相关文档
 
@@ -1444,7 +1443,6 @@ def main() -> int
 ### 34.2 Benchmark 类型、实现与运行入口
 
 - `sgraphVectorBenchmark/vp_bitmap_benchmark.vcxproj`
-- `sgraphVectorBenchmark/vp_run_benchmark.py`
 - `sgraphVectorBenchmark/src/vp_bitmap_benchmark_types.h`
 - `sgraphVectorBenchmark/src/vp_bitmap_benchmark_generator.h`
 - `sgraphVectorBenchmark/src/vp_bitmap_benchmark_generator.cpp`
@@ -1455,7 +1453,6 @@ def main() -> int
 - `sgraphVectorBenchmark/src/vp_bitmap_benchmark_report.h`
 - `sgraphVectorBenchmark/src/vp_bitmap_benchmark_report.cpp`
 - `sgraphVectorBenchmark/src/vp_bitmap_vector_benchmark.cpp`
-- `sgraphBuildTools/vp_test.py`
 
 ### 34.3 专项测试与辅助资料
 

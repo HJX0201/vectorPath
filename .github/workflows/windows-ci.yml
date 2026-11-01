@@ -18,9 +18,25 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: false
+
       - name: Build and test without Qt
         shell: pwsh
-        run: python sgraphBuildTools/vp_build.py --core --test --config ${{ matrix.config }} --jobs 4
+        run: |
+          $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vswhere.exe'
+          $msbuild = & $vswhere -latest -products * -requires Microsoft.Component.MSBuild `
+            -find 'MSBuild\**\Bin\MSBuild.exe' | Select-Object -First 1
+          & $msbuild sgraphTests/vp_core_tests.vcxproj /nologo /m /verbosity:minimal `
+            /p:Configuration=${{ matrix.config }} /p:Platform=x64 /p:VpCoreOnly=true
+          if ($LASTEXITCODE -ne 0) {
+            throw 'Core build failed.'
+          }
+          $exe = Join-Path $PWD "build/msbuild/core/64/${{ matrix.config }}/vectorPathCoreTests.exe"
+          & $exe --list-suites | ForEach-Object {
+            & $exe $_
+            if ($LASTEXITCODE -ne 0) {
+              throw "Core suite $_ failed."
+            }
+          }
 
   build:
     runs-on: windows-2022
@@ -29,9 +45,11 @@ jobs:
       matrix:
         include:
           - bits: "64"
+            platform: x64
             config: Release
             qt_arch: win64_msvc2017_64
           - bits: "32"
+            platform: Win32
             config: Release
             qt_arch: win32_msvc2017
 
@@ -65,9 +83,86 @@ jobs:
           }
           "QtMsBuild=$qtMsBuildDirectory" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
-      - name: Build and test
+      - name: Build solution
         shell: pwsh
         run: |
           $qtDir = (& qmake -query QT_INSTALL_PREFIX).Trim()
-          python sgraphBuildTools/vp_build.py --bits ${{ matrix.bits }} --config ${{ matrix.config }} `
-            --qt-dir $qtDir --clean --jobs 4 --test --benchmarks
+          $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vswhere.exe'
+          $msbuild = & $vswhere -latest -products * -requires Microsoft.Component.MSBuild `
+            -find 'MSBuild\**\Bin\MSBuild.exe' | Select-Object -First 1
+          $properties = @(
+            '/p:Configuration=${{ matrix.config }}',
+            '/p:Platform=${{ matrix.platform }}',
+            "/p:VpQtDir=$qtDir"
+          )
+          & $msbuild vectorPath.sln /nologo /m /verbosity:minimal @properties
+          if ($LASTEXITCODE -ne 0) {
+            throw 'Solution build failed.'
+          }
+          foreach ($project in @(
+            'sgraphTests/vp_core_tests.vcxproj',
+            'sgraphTests/vp_desktop_tests.vcxproj',
+            'sgraphTests/vp_id_collection_benchmark.vcxproj',
+            'sgraphVectorBenchmark/vp_bitmap_benchmark.vcxproj'
+          )) {
+            & $msbuild $project /nologo /m /verbosity:minimal @properties
+            if ($LASTEXITCODE -ne 0) {
+              throw "Build failed: $project"
+            }
+          }
+
+      - name: Run test suites
+        shell: pwsh
+        run: |
+          $qtDir = (& qmake -query QT_INSTALL_PREFIX).Trim()
+          $output = Join-Path $PWD "build/msbuild/${{ matrix.bits }}/${{ matrix.config }}"
+          $env:PATH = "$qtDir\bin;$output;$env:PATH"
+          $env:QT_QPA_PLATFORM = 'offscreen'
+          $env:QT_QPA_PLATFORM_PLUGIN_PATH = Join-Path $qtDir 'plugins\platforms'
+          $env:VECTORPATH_LIBREDWG_DIR = Join-Path $PWD 'sgraphThirdParty\libredwg-0.14-win64'
+
+          $coreTests = Join-Path $output 'vectorPathCoreTests.exe'
+          & $coreTests --list-suites | ForEach-Object {
+            & $coreTests $_
+            if ($LASTEXITCODE -ne 0) {
+              throw "Core suite $_ failed."
+            }
+          }
+
+          $desktopTests = Join-Path $output 'vectorPathDesktopTests.exe'
+          & $desktopTests --list-suites | ForEach-Object {
+            & $desktopTests $_
+            if ($LASTEXITCODE -ne 0) {
+              throw "Desktop suite $_ failed."
+            }
+          }
+
+          & (Join-Path $output 'vectorPathIdCollectionBenchmark.exe')
+          if ($LASTEXITCODE -ne 0) {
+            throw 'ID collection benchmark failed.'
+          }
+
+      - name: Run bitmap benchmark smoke
+        shell: pwsh
+        run: |
+          $qtDir = (& qmake -query QT_INSTALL_PREFIX).Trim()
+          $output = Join-Path $PWD "build/msbuild/${{ matrix.bits }}/${{ matrix.config }}"
+          $env:PATH = "$qtDir\bin;$output;$env:PATH"
+          $env:QT_QPA_PLATFORM = 'offscreen'
+          $resultDirectory = Join-Path $env:RUNNER_TEMP 'vp-bitmap-smoke'
+          if (Test-Path -LiteralPath $resultDirectory) {
+            Remove-Item -LiteralPath $resultDirectory -Recurse -Force
+          }
+          & (Join-Path $output 'smartBitmapVectorBenchmark.exe') --smoke --cases 20 --output $resultDirectory
+          if ($LASTEXITCODE -ne 0) {
+            throw 'Bitmap benchmark smoke failed.'
+          }
+          $expected = @('manifest.json', 'bitmap_vector_benchmark_report.html')
+          $actual = Get-ChildItem -LiteralPath $resultDirectory -Force | Select-Object -ExpandProperty Name
+          if ((Compare-Object $expected $actual)) {
+            throw "Unexpected benchmark output: $actual"
+          }
+          $manifest = Get-Content -LiteralPath (Join-Path $resultDirectory 'manifest.json') -Raw | ConvertFrom-Json
+          if ($manifest.case_count -ne 20 -or $manifest.cases.Count -ne 20) {
+            throw 'Bitmap benchmark manifest is incomplete.'
+          }

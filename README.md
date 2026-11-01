@@ -66,29 +66,29 @@ Qt 5.12.10 MSVC 套件和 Qt VS Tools。解决方案直接使用原生 `.vcxproj
 最后的 CMake 版本保留在 Git 提交 `12fb231`；当前工作树只使用原生解决方案，第三方源码
 附带的 CMake 文件保持原样且不参与构建。
 
-命令行和批量验证入口仍为 `sgraphBuildTools/vp_build.py`，需要 Python 3.10 或更高版本。
-它直接调用 MSBuild，默认构建 64 位 Release 应用；测试与性能基准默认不构建。
+解决方案是唯一的构建入口，不依赖 CMake、Ninja 或 Python。命令行构建（VS 开发者
+PowerShell 或任意能调用 MSBuild 的终端）：
 
 ```powershell
-python sgraphBuildTools/vp_build.py
-python sgraphBuildTools/vp_build.py --bits 32 --config Debug
+msbuild vectorPath.sln /m /p:Configuration=Release /p:Platform=x64
+msbuild vectorPath.sln /m /p:Configuration=Debug /p:Platform=Win32
 ```
 
-脚本自动查找 Qt、激活 Visual Studio 环境并编译应用，将运行库部署到
-`build/msbuild/<位数>/<配置>`。需要测试或无 Qt 核心时显式开启：
+生成结果落在 `build/msbuild/<位数>/<配置>`，构建后自动部署 Qt DLL、插件、翻译、
+Qt ADS 与 LibreDWG 工具。测试、性能基准和纯核心不属于“生成解决方案”的默认范围，
+按需单独构建：
 
 ```powershell
-python sgraphBuildTools/vp_build.py --test
-python sgraphBuildTools/vp_build.py --core --test
-python sgraphBuildTools/vp_build.py --test --benchmarks
+msbuild sgraphTests/vp_desktop_tests.vcxproj /m /p:Configuration=Release /p:Platform=x64
+msbuild sgraphTests/vp_core_tests.vcxproj /m /p:Configuration=Release /p:Platform=x64
+msbuild sgraphGeometry/vp_geometry_core.vcxproj /m /p:Configuration=Release /p:Platform=x64 /p:VpCoreOnly=true
 ```
 
-普通测试共用 `vectorPathCoreTests` 和 `vectorPathDesktopTests` 两个程序，38 个测试
-套件仍各自启动独立进程。开启位图基准检查后共 40 项；无 Qt 模式仅运行 4 个核心套件。
-`--benchmarks` 只开启基准构建，搭配 `--test` 才运行注册的基准检查。
+测试程序按套件名运行：`vectorPathDesktopTests.exe --list-suites` 列出桌面 38 个套件，
+`vectorPathDesktopTests.exe <套件名>` 运行其中一个；核心测试为 4 个套件。
 
-Qt 不在常用路径时可向脚本传 `--qt-dir C:\Qt\Qt5.12.10\5.12.10\msvc2017_64`，或设置
-`SGRAPH_QT64_DIR`、`SGRAPH_QT32_DIR`、`QTDIR`。完整参数和当前核心边界见
+Qt 不在常用路径时设置 `SGRAPH_QT64_DIR`、`SGRAPH_QT32_DIR` 或 `QTDIR`，也可用
+`/p:VpQtDir=<路径>`，或在仓库根的 `vp_local.props` 中固定。完整说明见
 [构建说明](sgraphDocs/BUILDING.md)及[架构说明](sgraphDocs/ARCHITECTURE.md)。
 
 ## 文档

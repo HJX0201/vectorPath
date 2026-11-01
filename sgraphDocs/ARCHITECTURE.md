@@ -20,8 +20,8 @@ flowchart TD
 
 根 `vectorPath.sln` 是原生 Visual Studio 入口；各模块 `.vcxproj` 显式登记源文件和依赖。
 默认“生成解决方案”只构建应用及依赖，两个测试程序与性能项目可单独生成。
-命令行入口为 `sgraphBuildTools/vp_build.py`：直接调用 MSBuild，`--core` 构建纯核心且不查找
-Qt 或 Qt/MSBuild；`--test` 开启测试，`--benchmarks` 开启性能项目。
+构建只通过解决方案完成：`msbuild vectorPath.sln` 生成应用及依赖，测试与性能项目按需
+单独生成；纯核心用 `/p:VpCoreOnly=true` 只构建无 Qt 目标。
 最后的 CMake 入口留在 Git 提交 `12fb231`，当前不调用 vendor 自带 CMake，详见 [BUILDING.md](BUILDING.md)。
 
 ## 模块职责
@@ -39,7 +39,7 @@ Qt 或 Qt/MSBuild；`--test` 开启测试，`--benchmarks` 开启性能项目。
 - `sgraphApp`：应用组装、Qt 配置、翻译和设置迁移调用。
 - `sgraphTests`：两个普通测试可执行程序，保留 38 个分进程套件及可选集合基准。
 - `sgraphVectorBenchmark`：按需构建的位图生成器、基准和输出检查；样本与报告仅本地生成，结果目录全部忽略。
-- `sgraphBuildTools`：共享 MSBuild 属性、原生工程构建辅助文件、Python 驱动和分进程测试入口。
+- `sgraphBuildTools`：各工程共用的 MSBuild 属性与部署目标（`vp_defaults.props`、`vp_common.props`、`vp_build.targets`）。
 - `sgraphThirdParty`：原样引入的第三方源码与运行组件；`vp_*.vcxproj` 在该目录统一接入上游源码。
 
 ## 值类型与交互约定
