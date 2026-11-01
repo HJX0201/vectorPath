@@ -17,6 +17,7 @@ struct VpVectorDocumentImportReport
     std::size_t created_layer_count = 0;
 };
 
+// 把矢量几何导入文档并生成图元。
 VpResult<VpVectorDocumentImportReport> importVectorGeometry(VpCadDocument& document,
                                                             const VpVectorImportGeometry& geometry);
 

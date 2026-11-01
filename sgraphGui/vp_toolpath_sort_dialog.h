@@ -13,12 +13,15 @@ namespace Vp
 class VpToolpathSortDialog final : public QDialog
 {
   public:
+    // 构造排序设置对话框。
     explicit VpToolpathSortDialog(const VpToolpathSortOptions& initial_options,
                                   QWidget* parent = nullptr);
 
+    // 返回对话框中选择的排序选项。
     VpToolpathSortOptions options() const;
 
   private:
+    // 按模式启用或禁用相关控件。
     void updateControlStates();
 
     QCheckBox* m_row_scan_check = nullptr;

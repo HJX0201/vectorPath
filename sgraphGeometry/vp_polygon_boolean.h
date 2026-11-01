@@ -21,6 +21,7 @@ enum class VpPolygonBooleanOperation : std::uint8_t
 using VpPolygonPath = std::vector<VpPoint2d>;
 using VpPolygonPaths = std::vector<VpPolygonPath>;
 
+// 对多边形做并、交、差布尔运算。
 VpResult<VpPolygonPaths> polygonBoolean(const VpPolygonPaths& subject_paths,
                                         const VpPolygonPaths& clip_paths,
                                         VpPolygonBooleanOperation operation);

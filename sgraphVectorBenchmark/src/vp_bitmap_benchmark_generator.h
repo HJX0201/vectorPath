@@ -8,6 +8,7 @@
 namespace Vp
 {
 
+// 按选项生成基准测试用例。
 VpResult<std::vector<VpBitmapBenchmarkCase>>
 generateBitmapBenchmarkCases(const VpBitmapBenchmarkOptions& options);
 

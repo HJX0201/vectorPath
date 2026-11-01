@@ -21,10 +21,12 @@ struct VpLoadedDocumentStyles
     QString current_dimension_style = QStringLiteral("Standard");
 };
 
+// 把文字与标注样式写入二进制流。
 void writeDocumentStyles(QDataStream& stream, const std::vector<VpTextStyleRecord>& text_styles,
                          const QString& current_text_style,
                          const std::vector<VpDimensionStyleRecord>& dimension_styles,
                          const QString& current_dimension_style);
+// 从二进制流读回文字与标注样式。
 VpResult<VpLoadedDocumentStyles> readDocumentStyles(QDataStream& stream, quint32 format_version);
 
 } // namespace Vp

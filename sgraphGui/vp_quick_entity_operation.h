@@ -28,8 +28,10 @@ struct VpQuickEntityOperationResult
     std::vector<VpEntityId> created_entity_ids;
 };
 
+// 返回快捷操作要作用的对象集合。
 std::vector<VpEntityId> quickOperationTargetIds(const VpCadDocument& document,
                                                 const std::vector<VpEntityId>& selected_entity_ids);
+// 对选中对象执行快捷操作并返回统计。
 VpQuickEntityOperationResult
 applyQuickEntityOperation(VpCadDocument& document,
                           const std::vector<VpEntityId>& selected_entity_ids,

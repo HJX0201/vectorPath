@@ -8,6 +8,7 @@
 namespace Vp
 {
 
+// 解析 SVG 文本为矢量数据。
 VpResult<VpSvgVectorData> parseSvgVectorData(const QByteArray& svg_data);
 
 } // namespace Vp

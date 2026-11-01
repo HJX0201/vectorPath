@@ -16,6 +16,7 @@ struct VpSvgSubpath
     bool is_closed = false;
 };
 
+// 解析 SVG path 数据为子路径。
 VpResult<std::vector<VpSvgSubpath>> parseSvgPathData(const QString& path_data);
 
 } // namespace Vp

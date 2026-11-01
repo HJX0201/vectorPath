@@ -53,12 +53,15 @@ struct VpBitmapVectorResult
     VpBitmapVectorMetrics metrics;
 };
 
+// 把位图转换为轮廓、SVG 与统计结果。
 VpResult<VpBitmapVectorResult> bitmapToVectorResult(const QImage& source,
                                                     const VpBitmapVectorSettings& settings);
 
+// 把轮廓序列化为 SVG 路径数据。
 QByteArray bitmapContoursToSvgData(int width, int height,
                                    const std::vector<VpBitmapContour>& contours);
 
+// 把位图直接转换为 SVG 字节流。
 VpResult<QByteArray> bitmapToSvgData(const QImage& source, const VpBitmapVectorSettings& settings);
 
 } // namespace Vp

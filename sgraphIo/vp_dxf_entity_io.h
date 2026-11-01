@@ -13,8 +13,10 @@ class QTextStream;
 namespace Vp
 {
 
+// 从 DXF 组码解析单个图元。
 VpResult<VpEntityRecord> readDxfEntity(const QString& entity_name,
                                        const std::vector<VpDxfPair>& entity_pairs);
+// 把图元写成 DXF 组码。
 bool writeDxfEntity(QTextStream& stream, const VpEntityRecord& entity,
                     VpFileCompatibilityReport& report, bool count_entity = true);
 

@@ -48,11 +48,15 @@ struct VpVectorImportGeometry
     QStringList warnings;
 };
 
+// 用单线填充把区域转为多段线。
 VpResult<std::vector<VpPolylineEntity>> createSingleLineFill(const VpVectorRegion& region,
                                                              double spacing, double angle_degrees);
+// 用轮廓偏移生成填充多段线。
 VpResult<std::vector<VpPolylineEntity>> createPolygonOffsetFill(const VpVectorRegion& region,
                                                                 double spacing);
+// 把区域转换为填充图元。
 VpResult<std::vector<VpHatchEntity>> createRegionHatches(const VpVectorRegion& region);
+// 把 SVG 矢量数据转换为可导入的图元几何。
 VpResult<VpVectorImportGeometry> createVectorImportGeometry(const VpSvgVectorData& vector_data,
                                                             const VpVectorImportSettings& settings);
 

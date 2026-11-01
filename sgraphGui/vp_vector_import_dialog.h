@@ -23,22 +23,36 @@ namespace Vp
 class VpVectorImportDialog final : public QDialog
 {
   public:
+    // 用 SVG 数据构造导入对话框。
     explicit VpVectorImportDialog(QByteArray svg_data, QWidget* parent = nullptr);
+    // 用位图构造导入对话框。
     explicit VpVectorImportDialog(QImage bitmap, QWidget* parent = nullptr);
+    // 用已解析的矢量数据构造导入对话框。
     explicit VpVectorImportDialog(VpSvgVectorData vector_data, QWidget* parent = nullptr);
 
+    // 返回生成的导入几何。
     const VpVectorImportGeometry& importGeometry() const;
+    // 返回当前的矢量导入设置。
     VpVectorImportSettings vectorSettings() const;
+    // 返回生成的 SVG 数据。
     QByteArray generatedSvgData() const;
 
   private:
+    // 创建界面控件。
     void createInterface();
+    // 连接控件信号。
     void connectControls();
+    // 按当前设置重建矢量数据。
     void rebuildVectorData();
+    // 按当前设置重建导入几何。
     void rebuildGeometry();
+    // 刷新预览。
     void updatePreview();
+    // 选择位图背景色。
     void chooseBackgroundColor();
+    // 用左上角像素作为背景色。
     void useTopLeftBackground();
+    // 汇总界面上的导入设置。
     VpVectorImportSettings settings() const;
 
     QByteArray m_svg_data;

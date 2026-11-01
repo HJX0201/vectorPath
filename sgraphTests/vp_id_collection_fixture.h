@@ -37,6 +37,7 @@ struct VpCollectionRecord
         return *this;
     }
 
+    // 移动构造，用于统计移动次数。
     VpCollectionRecord(VpCollectionRecord&& other) noexcept = default;
 
     VpCollectionRecord& operator=(VpCollectionRecord&& other) noexcept

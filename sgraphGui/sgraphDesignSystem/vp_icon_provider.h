@@ -135,8 +135,10 @@ enum class VpIconType
 class VpIconProvider final
 {
   public:
+    // 按类型生成图标。
     static QIcon createIcon(VpIconType icon_type, const QColor& foreground,
                             const QColor& accent = QColor());
+    // 返回图标在资源中的名称。
     static QString iconName(VpIconType icon_type);
 };
 

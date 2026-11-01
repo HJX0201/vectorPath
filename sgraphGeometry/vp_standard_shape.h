@@ -17,6 +17,7 @@ enum class VpStandardShapeType
     Diamond
 };
 
+// 生成标准图形的顶点序列。
 std::vector<VpPoint2d> standardShapeVertices(VpStandardShapeType shape_type,
                                              const VpPoint2d& center,
                                              const VpPoint2d& radius_point);

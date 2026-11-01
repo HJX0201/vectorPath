@@ -18,6 +18,7 @@ struct VpBitmapValidationResult
     QImage difference;
 };
 
+// 校验三种算法的结果是否一致。
 VpBitmapValidationResult validateBitmapBenchmarkCase(const QImage& source,
                                                      const VpBitmapVectorResult& flood_fill,
                                                      const VpBitmapVectorResult& run_serial,

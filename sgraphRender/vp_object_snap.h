@@ -50,6 +50,7 @@ struct VpObjectSnapResult
     VpObjectSnapType type = VpObjectSnapType::Nearest;
 };
 
+// 在候选图元中查找最合适的捕捉点。
 std::optional<VpObjectSnapResult>
 findObjectSnap(const std::vector<const VpEntityRecord*>& entities, const VpPoint2d& cursor,
                const std::optional<VpPoint2d>& reference_point, double tolerance,

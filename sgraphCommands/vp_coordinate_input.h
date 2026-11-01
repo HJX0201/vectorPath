@@ -25,7 +25,9 @@ struct VpCoordinateInput
     double second_value = 0.0;
 };
 
+// 解析命令行文本为坐标输入。
 VpCoordinateInput parseCoordinateInput(const QString& text);
+// 结合参考点把坐标输入解析为绝对坐标。
 std::optional<VpPoint2d> resolveCoordinateInput(const VpCoordinateInput& input,
                                                 const std::optional<VpPoint2d>& reference_point);
 

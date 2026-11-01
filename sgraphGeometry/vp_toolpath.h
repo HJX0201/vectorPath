@@ -57,13 +57,20 @@ struct VpToolpathMotion
     VpEntityId entity_id = 0;
 };
 
+// 判断图元是否可加工。
 bool isMachinableEntity(const VpEntityRecord& entity) noexcept;
+// 返回走刀起点。
 VpPoint2d toolpathStartPoint(const VpEntityRecord& entity) noexcept;
+// 返回走刀终点。
 VpPoint2d toolpathEndPoint(const VpEntityRecord& entity) noexcept;
+// 判断图元能否反向加工。
 bool canReverseToolpath(const VpEntityRecord& entity) noexcept;
+// 返回反向后的图元副本。
 VpEntityRecord reversedToolpathEntity(const VpEntityRecord& entity);
+// 按选项对图元排序。
 VpToolpathSortResult sortToolpathEntities(const std::vector<VpEntityRecord>& entities,
                                           const VpToolpathSortOptions& options);
+// 把排序后的图元展开为运动段。
 std::vector<VpToolpathMotion> generateToolpathMotions(const std::vector<VpEntityRecord>& entities,
                                                       const VpPoint2d& initial_position);
 

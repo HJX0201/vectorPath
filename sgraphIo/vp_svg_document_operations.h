@@ -36,11 +36,14 @@ struct VpSvgDeduplicateReport
     std::size_t result_region_count = 0;
 };
 
+// 把指定图元的颜色区域转成矢量数据。
 VpSvgVectorData svgColorBlockVectorData(const VpCadDocument& document,
                                         const std::vector<VpEntityId>& target_entity_ids = {});
+// 为 SVG 颜色区域生成填充图元。
 VpResult<VpSvgFillReport> fillSvgColorBlocks(VpCadDocument& document,
                                              const VpVectorImportSettings& settings,
                                              const std::vector<VpEntityId>& target_entity_ids = {});
+// 按颜色合并 SVG 导入产生的重叠色块。
 VpResult<VpSvgDeduplicateReport> deduplicateSvgColorBlocks(VpCadDocument& document,
                                                            VpSvgLayerPriority priority);
 

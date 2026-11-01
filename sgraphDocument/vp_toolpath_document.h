@@ -16,6 +16,7 @@ struct VpToolpathDocumentSortResult
     int reversed_entity_count = 0;
 };
 
+// 对文档中选中的图元排序并写回事务。
 VpToolpathDocumentSortResult
 sortDocumentToolpaths(VpCadDocument& document, const std::vector<VpEntityId>& selected_entity_ids,
                       const VpToolpathSortOptions& options);

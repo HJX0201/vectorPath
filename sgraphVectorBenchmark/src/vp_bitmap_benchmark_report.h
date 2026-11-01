@@ -7,6 +7,7 @@
 namespace Vp
 {
 
+// 把基准结果写成报告文件。
 VpResult<QString>
 writeBitmapBenchmarkReport(const VpBitmapBenchmarkOptions& options,
                            const std::vector<VpBitmapBenchmarkCaseResult>& results,

@@ -33,20 +33,31 @@ struct VpPlotStyleRecord
 class VpPlotStyleTable final
 {
   public:
+    // 从打印样式表文件加载。
     static VpResult<VpPlotStyleTable> load(const QString& file_path);
+    // 按引用名加载，缺失时回退到内置样式表。
     static VpResult<VpPlotStyleTable> fromReference(const QString& reference);
 
+    // 返回样式表类型。
     VpPlotStyleTableType type() const noexcept;
+    // 返回样式表说明。
     QString description() const;
+    // 返回全部打印样式记录。
     const std::vector<VpPlotStyleRecord>& styles() const noexcept;
+    // 把对象颜色映射为打印颜色。
     QColor mappedColor(const QColor& source_color) const;
+    // 把对象线宽映射为打印线宽。
     double mappedLineWidth(const QColor& source_color, double object_width_mm) const noexcept;
 
   private:
+    // 解析样式表数据的友元入口。
     friend VpResult<VpPlotStyleTable> parsePlotStyleData(const QByteArray& data,
                                                          const QString& file_path);
+    // 按颜色查找匹配的样式记录。
     const VpPlotStyleRecord* styleForColor(const QColor& source_color) const noexcept;
+    // 返回内置的单色样式表。
     static VpPlotStyleTable monochromeTable();
+    // 返回内置的灰度样式表。
     static VpPlotStyleTable grayscaleTable();
 
     VpPlotStyleTableType m_type = VpPlotStyleTableType::ColorDependent;
